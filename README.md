@@ -99,28 +99,28 @@ tab：买/库存/武器/防具/交通工具/团队/任务
 每个人数值，装备，工资
 
 # 城市
-| 中国   |        |
-|--------|--------|
-| 重庆   | 董庆   |
-| 上海   | 土海   |
-| 北京   | 白京   |
-| 成都   | 咸都   |
-| 广州   | 厂州   |
-| 深圳   | 探圳   |
-| 武汉   | 文汉   |
-| 天津   | 天律   |
-| 西安   | 东安   |
-| 郑州   | 邓州   |
-| 苏州   | 办州   |
-| 杭州   | 航州   |
-| 青岛   | 红岛   |
-| 石家庄 | 右家庄 |
-| 长沙   | 长汐   |
-| 合肥   | 台巴   |
-| 昆明   | 昆朋   |
-| 南昌   | 南晶   |
-| 贵阳   | 高阳   |
-| 银川   | 金川   |
+| 中国   | 德国          |
+|--------|---------------|
+| 董庆   | Altendorf     |
+| 土海   | Freibach      |
+| 白京   | Bergstadt     |
+| 咸都   | Bernberg      |
+| 厂州   | Ebersburg     |
+| 探圳   | Falkenstein   |
+| 文汉   | Frankensee    |
+| 天律   | Freudental    |
+| 东安   | Friedheim     |
+| 邓州   | Geisenfeld    |
+| 办州   | Glückingen    |
+| 航州   | Großwald      |
+| 红岛   | Grünau        |
+| 右家庄 | Hagenhausen   |
+| 长汐   | Herzhafen     |
+| 台巴   | Heilenkirchen |
+| 昆朋   | Kirchmar      |
+| 南晶   | Laufzig       |
+| 高阳   | Lichtenfurt   |
+| 金川   | Lessen        |
 
 # 人名
 
