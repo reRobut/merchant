@@ -193,9 +193,14 @@
 
 			const TEAM_TEMPLATES = [{ name: "__PLAYER__", role: "", icon: "🧑‍💼", wage: 0, weapon: null, armor: null, isPlayer: true }];
 
-			// ── 名字生成（改用 data.js 中的 generateNpcName，按国家区分）──
+			// ── 名字生成（改用 data.js 中的 generateNpcName，按国家区分；如未加载则降级）──
 			function genName() {
-				return generateNpcName(G.country || LANG.current);
+				if (typeof generateNpcName === "function") return generateNpcName(G.country || LANG.current);
+				// 降级：简单随机名
+				const zhNames = ["李明","王芳","张伟","陈刚","刘洋","赵磊","孙颖","周涛"];
+				const enNames = ["Alex","Blake","Casey","Dana","Ellis","Fran","Gray","Harper"];
+				const pool = (LANG.current === "zh") ? zhNames : enNames;
+				return pool[Math.floor(Math.random() * pool.length)];
 			}
 
 			function genTalent() {
@@ -248,7 +253,7 @@
 			// ══════════════════════════════════
 			let G = {
 				lang: "zh", charName: "", country: "", city: "", prevCity: "",
-				gold: 100, day: 1, rep: 0,
+				gold: 1000, day: 1, rep: 0,
 				inventory: {}, cityPrices: {}, cityStock: {},
 				team: [], transports: [], quests: [],
 				equipWarehouse: [],
@@ -293,7 +298,7 @@
 				const cities = CITIES[selectedCountry];
 				G.city     = cities[Math.floor(Math.random() * cities.length)];
 				G.prevCity = G.city;
-				G.gold = 100; G.day = 1; G.rep = 0; G.inventory = {};
+				G.gold = 1000; G.day = 1; G.rep = 0; G.inventory = {};
 				G.team = TEAM_TEMPLATES.map((t) => { const m = {...t}; if (m.name === "__PLAYER__") m.name = name; return m; });
 				G.transports = TRANSPORTS.map((t) => ({...t}));
 				G.quests = QUESTS.map((q) => ({...q}));
@@ -349,12 +354,24 @@
 			}
 
 			// ── BUY TABLE ──
+			// 计算载具当前剩余容量
+			function getCargoCapacity() {
+				const transport = getActiveTransport ? getActiveTransport() : null;
+				const cap = transport ? (transport.cap || 0) : 0;
+				const used = Object.values(G.inventory).reduce((s, d) => s + (d.qty || 0), 0);
+				return Math.max(0, cap - used);
+			}
+
 			function renderBuyTable() {
 				const tbody = document.getElementById("buy-table-body");
+				const freeSlots = getCargoCapacity();
 				tbody.innerHTML = GOODS.map((g) => {
 					const price = G.cityPrices[g.id] || g.priceMin;
 					const stock = G.cityStock[g.id] || 0;
 					const owned = G.inventory[g.id]?.qty || 0;
+					// MAX 受三重限制：市场库存、现金可买量、载具剩余容量
+					const affordableQty = price > 0 ? Math.floor(G.gold / price) : stock;
+					const maxQty = Math.min(stock, affordableQty, freeSlots);
 					const goodName = LANG.current === "zh" ? g.name : g.nameEn;
 					return `<tr>
 						<td><span class="item-name">${g.icon} ${goodName}</span></td>
@@ -364,13 +381,33 @@
 						<td>
 							<div class="qty-controls">
 								<input type="number" class="qty-input" id="buy-qty-${g.id}" value="0" min="0" max="${stock}" oninput="calcBuyTotal()">
-								<button class="qty-shortcut" onclick="setBuyQty('${g.id}',${stock})">MAX</button>
+								<button class="qty-shortcut" onclick="setBuyQtyWithCapCheck('${g.id}',${maxQty},${freeSlots})">MAX</button>
 								<button class="qty-shortcut" onclick="setBuyQty('${g.id}',0)">0</button>
 							</div>
 						</td>
 						<td class="price-tag" id="buy-line-${g.id}">—</td>
 					</tr>`;
 				}).join("");
+			}
+
+			function setBuyQtyWithCapCheck(id, maxQty, freeSlots) {
+				if (freeSlots <= 0) {
+					showToast(LANG.current === "zh" ? "超出载具容量，请升级载具" : "Cargo full! Upgrade your transport.", "red");
+					return;
+				}
+				// 检查当前其他商品已选数量，进一步收紧容量
+				let otherSelected = 0;
+				GOODS.forEach(g => {
+					if (g.id === id) return;
+					otherSelected += parseInt(document.getElementById("buy-qty-" + g.id)?.value || 0);
+				});
+				const remaining = Math.max(0, freeSlots - otherSelected);
+				const finalQty = Math.min(maxQty, remaining);
+				if (finalQty <= 0) {
+					showToast(LANG.current === "zh" ? "超出载具容量，请升级载具" : "Cargo full! Upgrade your transport.", "red");
+					return;
+				}
+				setBuyQty(id, finalQty);
 			}
 
 			function setBuyQty(id, qty) { const inp = document.getElementById("buy-qty-" + id); if (inp) { inp.value = qty; calcBuyTotal(); } }
@@ -1133,6 +1170,8 @@
 				C.party  = { name: T("combatPartyName"), atk: totalAtk, def: totalDef, hp: totalHp, maxHp: totalHp };
 				C.allies = [];
 				document.getElementById("combat-modal").classList.add("open");
+				// 确保进入战斗时所有按钮均可点击
+				disableAllCombatButtons(false);
 				combatLogAdd(T("combatStart", totalAtk, totalDef, totalHp));
 				renderCombatScreen();
 			}
@@ -1235,6 +1274,10 @@
 				C.isExecutingTurn = true; disableAllCombatButtons(true);
 				let target = C.enemies[C.selectedEnemyIdx];
 				if (!target || target.hp <= 0) { let liveIdx = C.enemies.findIndex(e => e.hp > 0); if (liveIdx !== -1) { C.selectedEnemyIdx = liveIdx; target = C.enemies[liveIdx]; } }
+				if (!target) {
+					// 没有活着的敌人，安全解锁
+					C.isExecutingTurn = false; disableAllCombatButtons(false); return;
+				}
 				if (target) {
 					const eDef = target.aIdx > 0 ? (ARMORS[target.aIdx - 1]?.def || 0) : 0;
 					const dmg  = Math.max(Math.floor(C.party.atk * 0.05), C.party.atk - (target.def + eDef)) || 1;
@@ -1343,6 +1386,9 @@
 				G.gold = 100; G.inventory = {};
 				G.transports.forEach(t => { if (t.id !== "walk") t.owned = false; });
 				G.city = G.prevCity;
+				// 战败：清空装备仓库，并脱下所有成员装备
+				G.equipWarehouse = [];
+				G.team.forEach(m => { m.weapon = null; m.armor = null; });
 				G.team = G.team.filter(m => m.isPlayer);
 				_eventQueue = [];
 				if (_autoAdvanceTimer) { clearTimeout(_autoAdvanceTimer); _autoAdvanceTimer = null; }
