@@ -127,50 +127,50 @@ tab：买/库存/武器/防具/交通工具/团队/任务
 每个人数值，装备，工资
 
 # 城市
-| 中国   | 德国          |
-|--------|---------------|
-| 董庆   | Altendorf     |
-| 土海   | Freibach      |
-| 白京   | Bergstadt     |
-| 咸都   | Bernberg      |
-| 厂州   | Ebersburg     |
-| 探圳   | Falkenstein   |
-| 文汉   | Frankensee    |
-| 天律   | Freudental    |
-| 东安   | Friedheim     |
-| 邓州   | Geisenfeld    |
-| 办州   | Glückingen    |
-| 航州   | Großwald      |
-| 红岛   | Grünau        |
-| 右家庄 | Hagenhausen   |
-| 长汐   | Herzhafen     |
-| 台巴   | Heilenkirchen |
-| 昆朋   | Kirchmar      |
-| 南晶   | Laufzig       |
-| 高阳   | Lichtenfurt   |
-| 金川   | Lessen        |
+| 中国   | 德国          | 美国        |
+|--------|---------------|-------------|
+| 董庆   | Altendorf     | Derbyson    |
+| 土海   | Freibach      | Middlewood  |
+| 白京   | Bergstadt     | Oakford     |
+| 咸都   | Bernberg      | Forestland  |
+| 厂州   | Ebersburg     | Rockester   |
+| 探圳   | Falkenstein   | Laketown    |
+| 文汉   | Frankensee    | Bowlington  |
+| 天律   | Freudental    | Poormond    |
+| 东安   | Friedheim     | Mochevue    |
+| 邓州   | Geisenfeld    | Seaturtle   |
+| 办州   | Glückingen    | New City    |
+| 航州   | Großwald      | Califlora   |
+| 红岛   | Grünau        | Fallfield   |
+| 右家庄 | Hagenhausen   | St. Taylor  |
+| 长汐   | Herzhafen     | Dryington   |
+| 台巴   | Heilenkirchen | Redville    |
+| 昆朋   | Kirchmar      | Loud Hills  |
+| 南晶   | Laufzig       | Las Vacas   |
+| 高阳   | Lichtenfurt   | San Donaldo |
+| 金川   | Lessen        | Philosophia |
 
 # 人名
 
-| 姓 | 名 | Nach       | Vor       |
-|----|----|------------|-----------|
-| 王 | 泽 | Müller     | Sabine    |
-| 李 | 宇 | Schmidt    | Michael   |
-| 张 | 涵 | Fischer    | Susanne   |
-| 刘 | 晨 | Meyer      | Thomas    |
-| 陈 | 艺 | Weber      | Petra     |
-| 杨 | 嘉 | Schulz     | Andreas   |
-| 黄 | 雨 | Wagner     | Monika    |
-| 赵 | 欣 | Becker     | Peter     |
-| 吴 | 佳 | Hoffmann   | Claudia   |
-| 周 | 浩 | Schäfer    | Stefan    |
-| 徐 | 轩 | Bauer      | Stefanie  |
-| 孙 | 语 | Koch       | Christian |
-| 马 | 诺 | Schröder   | Andrea    |
-| 朱 | 思 | Klein      | Hans      |
-| 胡 | 博 | Richter    | Birgit    |
-| 郭 | 文 | Wolf       | Jan       |
-| 何 | 熙 | Neumann    | Wolfgang  |
-| 林 | 俊 | Schwarz    | Klaus     |
-| 罗 | 然 | Krüger     | Karin     |
-| 高 | 彤 | Zimmermann | Julia     |
+| 姓 | 名 | Nach       | Vor       | last      | first       |
+|----|----|------------|-----------|-----------|-------------|
+| 王 | 泽 | Müller     | Sabine    | Smith     | Michael     |
+| 李 | 宇 | Schmidt    | Michael   | Johnson   | John        |
+| 张 | 涵 | Fischer    | Susanne   | Williams  | James       |
+| 刘 | 晨 | Meyer      | Thomas    | Brown     | David       |
+| 陈 | 艺 | Weber      | Petra     | Jones     | Robert      |
+| 杨 | 嘉 | Schulz     | Andreas   | Garcia    | William     |
+| 黄 | 雨 | Wagner     | Monika    | Miller    | Mary        |
+| 赵 | 欣 | Becker     | Peter     | Davis     | Maria       |
+| 吴 | 佳 | Hoffmann   | Claudia   | Rodriguez | Daniel      |
+| 周 | 浩 | Schäfer    | Stefan    | Martinez  | Joseph      |
+| 徐 | 轩 | Bauer      | Stefanie  | Hernandez | Richard     |
+| 孙 | 语 | Koch       | Christian | Lopez     | Thomas      |
+| 马 | 诺 | Schröder   | Andrea    | Gonzalez  | Christopher |
+| 朱 | 思 | Klein      | Hans      | Wilson    | Jennifer    |
+| 胡 | 博 | Richter    | Birgit    | Anderson  | Matthew     |
+| 郭 | 文 | Wolf       | Jan       | Thomas    | Jose        |
+| 何 | 熙 | Neumann    | Wolfgang  | Moore     | Charles     |
+| 林 | 俊 | Schwarz    | Klaus     | Jackson   | Elizabeth   |
+| 罗 | 然 | Krüger     | Karin     | Martin    | Patricia    |
+| 高 | 彤 | Zimmermann | Julia     | Lee       | Linda       |
