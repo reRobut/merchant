@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游商模拟器 · Merchant</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+SC:wght@300;400;500;700&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0a07;
+  --bg2: #171209;
+  --bg3: #1f1710;
+  --bg4: #2a2016;
+  --bg5: #342a1e;
+  --gold: #c9a84c;
+  --gold2: #e8c96a;
+  --gold3: #f5dfa0;
+  --gold-dim: #6b5828;
+  --red: #8b2a2a;
+  --red2: #c44040;
+  --green: #2a5a3a;
+  --green2: #4a9a60;
+  --text: #d4c4a0;
+  --text2: #8a7a60;
+  --text3: #5a4e38;
+  --border: #3d3020;
+  --border2: #5a4530;
+  --accent: #c9a84c;
+  --shadow: 0 4px 24px rgba(0,0,0,0.8);
+  --radius: 4px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Serif SC', serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── BACKGROUND TEXTURE ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(201,168,76,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(139,42,42,0.05) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ─── SCREEN SYSTEM ─── */
+.screen { display: none; position: relative; z-index: 1; }
+.screen.active { display: flex; }
+
+/* ══════════════════════════════════
+   TITLE SCREEN
+══════════════════════════════════ */
+#screen-title {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+}
+.title-deco {
+  width: 360px; max-width: 90vw;
+  border-top: 1px solid var(--gold-dim);
+  border-bottom: 1px solid var(--gold-dim);
+  padding: 2rem 0;
+  margin-bottom: 1rem;
+  position: relative;
+}
+.title-deco::before, .title-deco::after {
+  content: '◆';
+  color: var(--gold);
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  font-size: 12px;
+}
+.title-deco::before { left: -8px; }
+.title-deco::after { right: -8px; }
+.game-title-cn {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  color: var(--gold2);
+  letter-spacing: 0.3em;
+  text-shadow: 0 0 40px rgba(201,168,76,0.4);
+  line-height: 1.2;
+}
+.game-title-en {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  color: var(--text2);
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+.title-ornament {
+  font-size: 1.4rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.2em;
+  margin: 1rem 0 2.5rem;
+}
+.menu-list {
+  display: flex; flex-direction: column; gap: 0.6rem;
+  width: 260px;
+}
+.menu-btn {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 0.75rem 1.5rem;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.1em;
+  position: relative;
+  overflow: hidden;
+}
+.menu-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.06), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+}
+.menu-btn:hover { border-color: var(--gold); color: var(--gold3); }
+.menu-btn:hover::before { transform: translateX(100%); }
+.menu-btn:active { transform: scale(0.98); }
+.version-tag {
+  margin-top: 3rem;
+  font-size: 0.7rem;
+  color: var(--text3);
+  letter-spacing: 0.2em;
+}
+
+/* ─── INLINE LANG SELECTOR ─── */
+.lang-inline-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+.lang-inline-btn {
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+.lang-inline-btn:hover { color: var(--text2); }
+.lang-inline-btn.active { color: var(--gold); }
+.lang-divider { color: var(--text3); font-size: 0.7rem; }
+
+/* ─── LANG SELECT SCREEN (legacy) ─── */
+#screen-lang {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 2.5rem;
+}
+.lang-select-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  color: var(--text2);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+.lang-select-grid {
+  display: flex;
+  gap: 1.2rem;
+}
+.lang-select-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 1.4rem 2.4rem;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 0.15em;
+  min-width: 130px;
+}
+.lang-select-btn:hover { border-color: var(--gold); color: var(--gold3); background: var(--bg4); }
+.lang-select-btn .lang-flag { font-size: 2rem; }
+
+/* ─── LANG PANEL (legacy - unused) ─── */
+.lang-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 0.5rem 1rem;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-btn:hover, .lang-btn.active { border-color: var(--gold); color: var(--gold2); }
+
+/* ══════════════════════════════════
+   NEW GAME SCREEN
+══════════════════════════════════ */
+#screen-newgame {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  padding: 2rem 2.5rem;
+  width: 440px; max-width: 95vw;
+  position: relative;
+}
+.panel::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 20px; right: 20px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.panel-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: var(--gold);
+  letter-spacing: 0.3em;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+.field-label {
+  font-size: 0.78rem;
+  color: var(--text2);
+  letter-spacing: 0.15em;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+.field-group { margin-bottom: 1.2rem; }
+.game-input {
+  width: 100%;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.6rem 0.8rem;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.game-input:focus { border-color: var(--gold); }
+.country-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+.country-card {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  padding: 0.6rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  font-size: 0.78rem;
+  color: var(--text2);
+}
+.country-card:hover { border-color: var(--gold-dim); color: var(--text); }
+.country-card.selected { border-color: var(--gold); color: var(--gold2); background: var(--bg5); }
+.country-flag { font-size: 1.3rem; display: block; margin-bottom: 3px; }
+.btn-primary {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold2);
+  padding: 0.75rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: rgba(201,168,76,0.1); color: var(--gold3); }
+.btn-back {
+  background: none; border: none;
+  color: var(--text3); font-size: 0.75rem;
+  cursor: pointer; margin-bottom: 1rem;
+  font-family: 'Noto Serif SC', serif;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+.btn-back:hover { color: var(--text2); }
+
+/* ══════════════════════════════════
+   GAME SCREEN
+══════════════════════════════════ */
+#screen-game {
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ─── TOP BAR ─── */
+.topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-city {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: var(--gold2);
+  letter-spacing: 0.15em;
+}
+.topbar-stats {
+  display: flex; gap: 1.2rem; flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--text2);
+}
+.stat-item { display: flex; align-items: center; gap: 0.3rem; }
+.stat-val { color: var(--text); font-weight: 500; }
+.stat-val.gold { color: var(--gold2); }
+.stat-val.green { color: var(--green2); }
+.stat-val.red { color: var(--red2); }
+.topbar-right { margin-left: auto; display: flex; gap: 0.5rem; }
+.btn-sm {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.72rem;
+  font-family: 'Noto Serif SC', serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+.btn-sm:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+/* ─── TABS ─── */
+.tabs {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  padding: 0 1rem;
+  gap: 0;
+  overflow-x: auto;
+}
+.tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text3);
+  padding: 0.7rem 1.1rem;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  letter-spacing: 0.08em;
+}
+.tab:hover { color: var(--text2); }
+.tab.active { border-bottom-color: var(--gold); color: var(--gold2); }
+
+/* ─── TAB CONTENT ─── */
+.tab-content { display: none; padding: 1.2rem; flex: 1; }
+.tab-content.active { display: block; }
+
+/* ─── TRADE TABLE (Buy / Inventory) ─── */
+.trade-table-wrap { overflow-x: auto; }
+.trade-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.trade-table th {
+  background: var(--bg3);
+  color: var(--text2);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  font-size: 0.75rem;
+}
+.trade-table td {
+  padding: 0.45rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.trade-table tr:last-child td { border-bottom: none; }
+.trade-table tr:hover td { background: var(--bg3); }
+.item-name { color: var(--text); }
+.item-cat {
+  font-size: 0.66rem;
+  color: var(--text3);
+  display: block;
+  margin-top: 1px;
+}
+.price-buy { color: var(--red2); }
+.price-sell { color: var(--green2); }
+.qty-owned { color: var(--text2); }
+.qty-controls {
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.qty-input {
+  width: 52px;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.25rem 0.4rem;
+  font-size: 0.8rem;
+  font-family: 'Noto Serif SC', serif;
+  text-align: center;
+  outline: none;
+}
+.qty-input:focus { border-color: var(--gold-dim); }
+.qty-shortcut {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text3);
+  padding: 0.2rem 0.35rem;
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.qty-shortcut:hover { border-color: var(--gold-dim); color: var(--gold); }
+.price-tag {
+  font-size: 0.75rem;
+  color: var(--text3);
+}
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 0.7rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-top: 1px solid var(--gold-dim);
+  margin-top: 0;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.total-price {
+  font-size: 0.85rem;
+}
+.total-price span { color: var(--gold2); font-weight: 500; }
+.btn-trade {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold2);
+  padding: 0.4rem 1.2rem;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  transition: all 0.2s;
+}
+.btn-trade:hover { background: rgba(201,168,76,0.12); }
+.btn-trade.sell { border-color: var(--green2); color: var(--green2); }
+.btn-trade.sell:hover { background: rgba(74,154,96,0.12); }
+
+/* ─── EQUIPMENT TAB ─── */
+.equip-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 640px) { .equip-layout { grid-template-columns: 1fr; } }
+.equip-section-title {
+  font-size: 0.75rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+.member-equip-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+.member-equip-name {
+  font-size: 0.82rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.member-role-badge {
+  font-size: 0.62rem;
+  background: var(--bg5);
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  padding: 1px 5px;
+}
+.equip-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+.equip-slot {
+  background: var(--bg4);
+  border: 1px dashed var(--border);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.72rem;
+  color: var(--text3);
+  min-height: 32px;
+  display: flex; align-items: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.equip-slot.filled {
+  border-style: solid;
+  border-color: var(--border2);
+  color: var(--text2);
+}
+.equip-slot:hover { border-color: var(--gold-dim); }
+.equip-slot-label {
+  font-size: 0.6rem;
+  color: var(--text3);
+  display: block;
+  margin-bottom: 1px;
+}
+.shop-items-grid {
+  display: flex; flex-direction: column; gap: 0.4rem;
+}
+.shop-item-row {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.shop-item-row:hover { border-color: var(--gold-dim); }
+.shop-item-name { color: var(--text); }
+.shop-item-stats { font-size: 0.68rem; color: var(--green2); }
+.shop-item-price { color: var(--red2); }
+.btn-buy-equip {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 0.2rem 0.5rem;
+  font-size: 0.68rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+.btn-buy-equip:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ─── INVENTORY SECTION ─── */
+.inv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+.inv-item {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  font-size: 0.7rem;
+  text-align: center;
+  cursor: grab;
+  position: relative;
+  transition: border-color 0.2s;
+  user-select: none;
+}
+.inv-item:hover { border-color: var(--gold-dim); }
+.inv-item-icon { font-size: 1.4rem; display: block; margin-bottom: 3px; }
+.inv-item-name { color: var(--text2); font-size: 0.66rem; }
+.inv-item-qty {
+  position: absolute; top: 2px; right: 4px;
+  font-size: 0.6rem; color: var(--gold);
+}
+.inv-item-sell {
+  display: block; margin-top: 3px;
+  font-size: 0.6rem; color: var(--text3);
+  cursor: pointer;
+}
+.inv-item-sell:hover { color: var(--green2); }
+
+/* ─── TEAM TAB ─── */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+.team-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 1rem;
+}
+.team-member-header {
+  display: flex; align-items: center; gap: 0.7rem;
+  margin-bottom: 0.8rem;
+}
+.team-avatar {
+  width: 36px; height: 36px;
+  background: var(--bg5);
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+.team-name { font-size: 0.88rem; color: var(--text); }
+.team-role { font-size: 0.66rem; color: var(--text3); margin-top: 1px; }
+.stat-bars { display: flex; flex-direction: column; gap: 0.35rem; }
+.stat-row {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.72rem;
+}
+.stat-row-label { color: var(--text3); width: 40px; flex-shrink: 0; }
+.stat-bar-bg {
+  flex: 1; height: 4px;
+  background: var(--bg5);
+  position: relative;
+}
+.stat-bar-fill {
+  height: 100%;
+  background: var(--gold);
+  position: absolute; left: 0; top: 0;
+}
+.stat-bar-fill.str { background: #c44040; }
+.stat-bar-fill.agi { background: #4a9a60; }
+.stat-bar-fill.int { background: #4a7ac4; }
+.stat-bar-fill.end { background: #c4924a; }
+.stat-num { color: var(--text2); font-size: 0.68rem; width: 22px; text-align: right; }
+.team-footer {
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+}
+.wage-label { color: var(--text3); }
+.wage-val { color: var(--red2); }
+
+/* ─── QUEST TAB ─── */
+.quest-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.quest-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  padding: 0.8rem 1rem;
+  transition: border-color 0.2s;
+}
+.quest-card.active-quest { border-left-color: var(--gold); }
+.quest-card.urgent { border-left-color: var(--red2); }
+.quest-title { font-size: 0.88rem; color: var(--text); margin-bottom: 0.3rem; }
+.quest-desc { font-size: 0.73rem; color: var(--text2); line-height: 1.5; margin-bottom: 0.5rem; }
+.quest-reward {
+  display: flex; gap: 1rem; font-size: 0.72rem;
+}
+.reward-item { color: var(--gold2); }
+.quest-deadline { color: var(--red2); }
+.btn-accept {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 0.25rem 0.7rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-family: 'Noto Serif SC', serif;
+  transition: all 0.2s;
+  margin-top: 0.4rem;
+}
+.btn-accept:hover { border-color: var(--gold); color: var(--gold); }
+.btn-accept.accepted { border-color: var(--gold); color: var(--gold); cursor: default; }
+
+/* ─── TRANSPORT TAB ─── */
+.transport-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.7rem;
+}
+.transport-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.9rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  position: relative;
+}
+.transport-card.owned { border-color: var(--gold); }
+.transport-card:hover:not(.owned) { border-color: var(--border2); }
+.transport-icon { font-size: 2rem; display: block; margin-bottom: 0.4rem; }
+.transport-name { font-size: 0.82rem; color: var(--text); margin-bottom: 0.2rem; }
+.transport-stats { font-size: 0.68rem; color: var(--text2); margin-bottom: 0.5rem; }
+.transport-price { font-size: 0.78rem; color: var(--red2); }
+.owned-badge {
+  position: absolute; top: 5px; right: 5px;
+  font-size: 0.6rem; background: var(--gold);
+  color: var(--bg); padding: 1px 5px;
+}
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 0.5rem 1.2rem;
+  font-size: 0.8rem;
+  z-index: 9999;
+  letter-spacing: 0.05em;
+  animation: toast-in 0.3s ease;
+  pointer-events: none;
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.toast.gold { border-color: var(--gold); color: var(--gold2); }
+.toast.red { border-color: var(--red2); color: var(--red2); }
+
+/* ─── SECTION LABELS ─── */
+.section-label {
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── TRAVEL MODAL ─── */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  padding: 1.5rem 2rem;
+  width: 360px; max-width: 95vw;
+  position: relative;
+}
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+.city-choose-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.city-btn {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 0.5rem 0.6rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-family: 'Noto Serif SC', serif;
+  transition: all 0.2s;
+  text-align: left;
+}
+.city-btn:hover { border-color: var(--gold-dim); color: var(--text); }
+.city-btn .travel-cost { font-size: 0.65rem; color: var(--red2); float: right; }
+.disabled-city { opacity: 0.4; cursor: not-allowed !important; }
+.btn-close-modal {
+  position: absolute; top: 0.7rem; right: 0.8rem;
+  background: none; border: none;
+  color: var(--text3); cursor: pointer; font-size: 1rem;
+}
+
+
+/* ─── PRICE LEVEL INDICATORS ─── */
+.price-bar-wrap {
+  height: 3px;
+  background: var(--bg5);
+  border-radius: 2px;
+  margin: 3px 0 2px;
+  width: 80px;
+  position: relative;
+  overflow: hidden;
+}
+.price-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--green2) 0%, var(--gold) 50%, var(--red2) 100%);
+  position: absolute; left: 0; top: 0;
+}
+.price-lvl {
+  font-size: 0.62rem;
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+.lvl-low  { background: rgba(74,154,96,0.15);  color: var(--green2); }
+.lvl-mid  { background: rgba(201,168,76,0.12); color: var(--gold); }
+.lvl-high { background: rgba(196,64,64,0.15);  color: var(--red2); }
+.lvl-peak { background: rgba(196,64,64,0.3);   color: #ff6060; animation: pulse-red 1.2s infinite; }
+@keyframes pulse-red {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); }
+
+/* File input hidden */
+#save-file-input { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     TITLE SCREEN
+══════════════════════════════════ -->
+<div id="screen-title" class="screen active">
+  <div class="title-deco">
+    <div class="game-title-cn" id="t-title-cn">游商模拟器</div>
+    <div class="game-title-en">MERCHANT</div>
+  </div>
+  <div class="title-ornament" id="t-ornament">— 行商四海，富甲天下 —</div>
+  <div class="menu-list">
+    <button class="menu-btn" onclick="showNewGame()" id="t-new-game">开始新游戏</button>
+    <button class="menu-btn" onclick="document.getElementById('save-file-input').click()" id="t-load-game">继续游戏</button>
+    <div class="lang-inline-row">
+      <button class="lang-inline-btn active" id="lang-btn-zh" onclick="chooseLang('zh')">🇨🇳 中文</button>
+      <span class="lang-divider">·</span>
+      <button class="lang-inline-btn" id="lang-btn-en" onclick="chooseLang('en')">🇬🇧 English</button>
+    </div>
+  </div>
+  <input type="file" id="save-file-input" accept=".json" onchange="loadSaveFile(event)">
+  <div class="version-tag">DEMO v0.1 · 游商模拟器</div>
+</div>
+
+<!-- ══════════════════════════════════
+     NEW GAME SCREEN
+══════════════════════════════════ -->
+<div id="screen-newgame" class="screen">
+  <button class="btn-back" id="btn-back-newgame" onclick="showScreen('title')">← 返回</button>
+  <div class="panel">
+    <div class="panel-title" id="ng-title">创建角色</div>
+    <div class="field-group">
+      <label class="field-label" id="ng-name-label">角色名称</label>
+      <input type="text" class="game-input" id="char-name" placeholder="请输入角色名..." maxlength="12">
+    </div>
+    <div class="field-group">
+      <label class="field-label" id="ng-country-label">选择国家</label>
+      <div class="country-grid" id="country-grid"></div>
+    </div>
+    <button class="btn-primary" onclick="startGame()" id="ng-start">踏上旅途</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     GAME SCREEN
+══════════════════════════════════ -->
+<div id="screen-game" class="screen" style="flex-direction:column;">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-city" id="city-name">—</div>
+    <div class="topbar-stats">
+      <div class="stat-item">💰 <span class="stat-val gold" id="stat-gold">—</span></div>
+      <div class="stat-item">📅 <span class="stat-val" id="stat-day">第1天</span></div>
+      <div class="stat-item">❤️ <span class="stat-val green" id="stat-rep">声誉: 0</span></div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-sm" onclick="openTravel()">前往城市 ▸</button>
+      <button class="btn-sm" onclick="saveGame()">保存存档</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('buy')" id="tab-buy">买入</button>
+    <button class="tab" onclick="switchTab('inventory')" id="tab-inv">库存</button>
+    <button class="tab" onclick="switchTab('weapon')" id="tab-weapon">武器</button>
+    <button class="tab" onclick="switchTab('armor')" id="tab-armor">防具</button>
+    <button class="tab" onclick="switchTab('transport')" id="tab-transport">交通</button>
+    <button class="tab" onclick="switchTab('team')" id="tab-team">团队</button>
+    <button class="tab" onclick="switchTab('quest')" id="tab-quest">任务</button>
+  </div>
+
+  <!-- ── BUY TAB ── -->
+  <div id="tab-content-buy" class="tab-content active">
+    <div class="section-label">市场商品</div>
+    <div class="trade-table-wrap">
+      <table class="trade-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>单价</th>
+            <th>库存</th>
+            <th>已拥有</th>
+            <th>购买数量</th>
+            <th>计价</th>
+          </tr>
+        </thead>
+        <tbody id="buy-table-body"></tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <div class="total-price">总价：<span id="buy-total">0</span> 金币</div>
+      <button class="btn-trade" onclick="executeBuy()">确认购买</button>
+    </div>
+  </div>
+
+  <!-- ── INVENTORY TAB ── -->
+  <div id="tab-content-inventory" class="tab-content">
+    <div class="section-label">我的库存</div>
+    <div class="trade-table-wrap">
+      <table class="trade-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>进价</th>
+            <th>市价</th>
+            <th>数量</th>
+            <th>售出数量</th>
+            <th>计价</th>
+          </tr>
+        </thead>
+        <tbody id="inv-table-body"></tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <div class="total-price">售出总额：<span id="sell-total">0</span> 金币</div>
+      <button class="btn-trade sell" onclick="executeSell()">确认售出</button>
+    </div>
+  </div>
+
+  <!-- ── WEAPON TAB ── -->
+  <div id="tab-content-weapon" class="tab-content">
+    <div class="equip-layout">
+      <div>
+        <div class="equip-section-title">团队武器装备</div>
+        <div id="weapon-member-list"></div>
+      </div>
+      <div>
+        <div class="equip-section-title">武器商店</div>
+        <div class="shop-items-grid" id="weapon-shop"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ARMOR TAB ── -->
+  <div id="tab-content-armor" class="tab-content">
+    <div class="equip-layout">
+      <div>
+        <div class="equip-section-title">团队防具装备</div>
+        <div id="armor-member-list"></div>
+      </div>
+      <div>
+        <div class="equip-section-title">防具商店</div>
+        <div class="shop-items-grid" id="armor-shop"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TRANSPORT TAB ── -->
+  <div id="tab-content-transport" class="tab-content">
+    <div class="section-label">可用交通工具</div>
+    <div class="transport-grid" id="transport-grid"></div>
+  </div>
+
+  <!-- ── TEAM TAB ── -->
+  <div id="tab-content-team" class="tab-content">
+    <div class="section-label">团队成员</div>
+    <div class="team-grid" id="team-grid"></div>
+  </div>
+
+  <!-- ── QUEST TAB ── -->
+  <div id="tab-content-quest" class="tab-content">
+    <div class="section-label">可接任务</div>
+    <div class="quest-list" id="quest-list"></div>
+  </div>
+
+</div>
+
+<!-- TRAVEL MODAL -->
+<div class="modal-overlay" id="travel-modal">
+  <div class="modal-box">
+    <button class="btn-close-modal" onclick="closeTravel()">✕</button>
+    <div class="modal-title" id="travel-modal-title">选择目的地</div>
+    <div id="travel-active-transport" style="font-size:0.72rem;color:var(--gold);margin-bottom:0.8rem;letter-spacing:0.08em;"></div>
+    <div class="city-choose-grid" id="city-grid" style="grid-template-columns:1fr 1fr;"></div>
+    <div id="travel-modal-hint" style="font-size:0.7rem;color:var(--text3);margin-top:0.6rem;">旅行消耗时间与汽油，注意携带量</div>
+  </div>
+</div>
+
+<script src="lang.js"></script>
+<script>
+// ══════════════════════════════════
+// DATA
+// ══════════════════════════════════
+// 语言模块已拆分至 lang.js
+
+const COUNTRIES = [
+  { id: 'china',   flag: '🇨🇳', name: '中国', nameEn: 'China' },
+  { id: 'germany', flag: '🇩🇪', name: '德国', nameEn: 'Germany' },
+];
+
+const CITIES = {
+  china:   ['董庆', '土海', '白京', '咸都', '厂州', '探圳', '文汉', '天律', '东安', '邓州', '办州', '航州', '红岛', '右家庄', '长汐', '台巴', '昆朋', '南晶', '高阳', '金川'],
+  germany: ['Altendorf', 'Freibach', 'Bergstadt', 'Bernberg', 'Ebersburg', 'Falkenstein', 'Frankensee', 'Freudental', 'Friedheim', 'Geisenfeld', 'Glückingen', 'Großwald', 'Grünau', 'Hagenhausen', 'Herzhafen', 'Heilenkirchen', 'Kirchmar', 'Laufzig', 'Lichtenfurt', 'Lessen'],
+};
+
+const GOODS = [
+  { id:'grain',     name:'谷物',   nameEn:'Grain',        icon:'🌾', cat:'粮食',   priceMin:5,    priceMax:10   },
+  { id:'fuel',      name:'汽油',   nameEn:'Fuel',         icon:'⛽', cat:'能源',   priceMin:30,   priceMax:50   },
+  { id:'textile',   name:'纺织品', nameEn:'Textiles',     icon:'🧵', cat:'纺织',   priceMin:50,   priceMax:100  },
+  { id:'medicine',  name:'医用品', nameEn:'Medicine',     icon:'💊', cat:'医疗',   priceMin:200,  priceMax:400  },
+  { id:'gems',      name:'宝石',   nameEn:'Gems',         icon:'💎', cat:'奢侈',   priceMin:1000, priceMax:2000 },
+  { id:'gold_bar',  name:'黄金',   nameEn:'Gold',         icon:'🥇', cat:'贵金属', priceMin:3000, priceMax:5000 },
+  { id:'contraband',name:'违禁品', nameEn:'Contraband',   icon:'📦', cat:'违禁',   priceMin:5,    priceMax:5000 },
+];
+
+const WEAPONS = [
+  { id:'branch',   name:'树枝',   nameEn:'Branch',    icon:'🪵',  atk:3,   price: 10   },
+  { id:'ironrod',  name:'铁棍',   nameEn:'Iron Rod',  icon:'🔩',  atk:10,  price: 50   },
+  { id:'knife',    name:'小刀',   nameEn:'Knife',     icon:'🔪',  atk:25,  price: 200  },
+  { id:'machete',  name:'砍刀',   nameEn:'Machete',   icon:'⚔️',  atk:50,  price: 500  },
+  { id:'axe',      name:'斧头',   nameEn:'Axe',       icon:'🪓',  atk:70,  price: 1500 },
+  { id:'holysword',name:'圣剑',   nameEn:'Holy Sword',icon:'✨',  atk:100, price: 6000 },
+];
+
+const ARMORS = [
+  { id:'leather', name:'皮甲',   nameEn:'Leather',   icon:'🥋', def:'+12', price: 150 },
+  { id:'chain',   name:'锁甲',   nameEn:'Chainmail', icon:'🛡️', def:'+22', price: 280 },
+  { id:'plate',   name:'板甲',   nameEn:'Plate',     icon:'🦾', def:'+35', price: 500 },
+  { id:'silk_a',  name:'丝绸甲', nameEn:'Silk Armor',icon:'👘', def:'+8',  price: 200 },
+];
+
+const TRANSPORTS = [
+  { id:'walk',    name:'步行',  nameEn:'Walking',   icon:'🚶', passengers:0, cap:10,  spd:1, fuelCost:0,  price:0,    owned:true  },
+  { id:'bike',    name:'自行车',nameEn:'Bicycle',   icon:'🚲', passengers:0, cap:30,  spd:2, fuelCost:0,  price:200,  owned:false },
+  { id:'moto',    name:'摩托车',nameEn:'Motorbike', icon:'🏍️', passengers:1, cap:30,  spd:3, fuelCost:1,  price:600,  owned:false },
+  { id:'trike',   name:'三轮车',nameEn:'Tricycle',  icon:'🛺', passengers:1, cap:100, spd:2, fuelCost:0,  price:400,  owned:false },
+  { id:'car',     name:'小轿车',nameEn:'Car',       icon:'🚗', passengers:3, cap:250, spd:5, fuelCost:3,  price:2000, owned:false },
+  { id:'van',     name:'小货车',nameEn:'Van',       icon:'🚐', passengers:2, cap:500, spd:4, fuelCost:5,  price:1500, owned:false },
+  { id:'truck',   name:'大货车',nameEn:'Truck',     icon:'🚚', passengers:2, cap:1000,spd:4, fuelCost:15, price:3000, owned:false },
+];
+
+const TEAM_TEMPLATES = [
+  { name:'玩家',  role:'商人', icon:'🧑‍💼', str:8,  agi:7,  int:12, end:9,  wage:0,   weapon:null, armor:null },
+  { name:'阿虎',  role:'护卫', icon:'💪',   str:15, agi:10, int:5,  end:13, wage:20,  weapon:'sword', armor:'leather' },
+  { name:'小翠',  role:'向导', icon:'🗺️',   str:6,  agi:14, int:10, end:8,  wage:15,  weapon:'dagger', armor:null },
+];
+
+const QUESTS = [
+  {
+    id:'q1', title:'丝绸之路', urgent:false,
+    desc:'将20件丝绸运至撒马尔罕，那里的商人愿意高价购买东方货物。',
+    reward:'800金币 + 声誉+10',
+    deadline:'第15天',
+    accepted: false,
+  },
+  {
+    id:'q2', title:'粮食危机', urgent:true,
+    desc:'北境遭遇饥荒，急需食盐与茶叶各30件。完成后获得特殊称号。',
+    reward:'1200金币 + 称号"善商"',
+    deadline:'第8天',
+    accepted: false,
+  },
+  {
+    id:'q3', title:'神秘货物', urgent:false,
+    desc:'一位蒙面商人委托你运送一箱货物至威尼斯，内容不明，报酬丰厚。',
+    reward:'2000金币',
+    deadline:'第30天',
+    accepted: false,
+  },
+];
+
+// ══════════════════════════════════
+// GAME STATE
+// ══════════════════════════════════
+let G = {
+  lang: 'zh',
+  charName: '',
+  country: '',
+  city: '',
+  gold: 1000,
+  day: 1,
+  rep: 0,
+  inventory: {},    // {goodId: {qty, avgPrice}}
+  cityPrices: {},   // {goodId: price}
+  cityStock: {},    // {goodId: qty}
+  team: [],
+  transports: [],
+  quests: [],
+};
+
+// ══════════════════════════════════
+// SCREENS
+// ══════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function showNewGame() {
+  renderCountryGrid();
+  showScreen('newgame');
+}
+
+function chooseLang(lang) {
+  LANG.current = lang;
+  G.lang = lang;
+  applyLang();
+  document.querySelectorAll('.lang-inline-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('lang-btn-' + lang);
+  if (btn) btn.classList.add('active');
+}
+
+// ══════════════════════════════════
+// NEW GAME
+// ══════════════════════════════════
+let selectedCountry = '';
+
+function renderCountryGrid() {
+  const grid = document.getElementById('country-grid');
+  grid.innerHTML = COUNTRIES.map(c => `
+    <div class="country-card ${selectedCountry===c.id?'selected':''}" onclick="selectCountry('${c.id}',this)">
+      <span class="country-flag">${c.flag}</span>
+      ${LANG.current==='zh' ? c.name : c.nameEn}
+    </div>
+  `).join('');
+}
+
+function selectCountry(id, el) {
+  selectedCountry = id;
+  document.querySelectorAll('.country-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function startGame() {
+  const name = document.getElementById('char-name').value.trim();
+  if (!name) { showToast(T('errName'), 'red'); return; }
+  if (!selectedCountry) { showToast(T('errCountry'), 'red'); return; }
+  G.charName = name;
+  G.country = selectedCountry;
+  const cities = CITIES[selectedCountry];
+  G.city = cities[Math.floor(Math.random() * cities.length)];
+  G.gold = 1000;
+  G.day = 1;
+  G.rep = 0;
+  G.inventory = {};
+  G.team = TEAM_TEMPLATES.map(t => ({ ...t }));
+  G.transports = TRANSPORTS.map(t => ({ ...t }));
+  G.quests = QUESTS.map(q => ({ ...q }));
+  generateCityPrices();
+  renderGame();
+  showScreen('game');
+  showToast(`${LANG.current==='zh'?'欢迎，':'Welcome, '}${name}！${LANG.current==='zh'?'你抵达了':'Arrived at '} ${G.city}`, 'gold');
+}
+
+function generateCityPrices() {
+  G.cityPrices = {};
+  G.cityStock = {};
+  GOODS.forEach(g => {
+    const price = Math.round(g.priceMin + Math.random() * (g.priceMax - g.priceMin));
+    G.cityPrices[g.id] = price;
+    G.cityStock[g.id] = Math.floor(5 + Math.random() * 40);
+  });
+}
+
+function priceLevel(goodId) {
+  const g = GOODS.find(x => x.id === goodId);
+  if (!g) return 0.5;
+  const price = G.cityPrices[goodId] || g.priceMin;
+  const range = g.priceMax - g.priceMin;
+  if (range === 0) return 0.5;
+  return (price - g.priceMin) / range;
+}
+
+function priceLevelLabel(goodId) {
+  const lvl = priceLevel(goodId);
+  if (lvl <= 0.25) return { text: '低价', cls: 'lvl-low' };
+  if (lvl <= 0.6)  return { text: '正常', cls: 'lvl-mid' };
+  if (lvl <= 0.85) return { text: '高价', cls: 'lvl-high' };
+  return { text: '暴涨', cls: 'lvl-peak' };
+}
+
+// ══════════════════════════════════
+// RENDER GAME
+// ══════════════════════════════════
+function renderGame() {
+  updateTopbar();
+  renderBuyTable();
+  renderInvTable();
+  renderWeaponTab();
+  renderArmorTab();
+  renderTransportGrid();
+  renderTeamGrid();
+  renderQuestList();
+}
+
+function updateTopbar() {
+  document.getElementById('city-name').textContent = `📍 ${G.city}`;
+  document.getElementById('stat-gold').textContent = G.gold.toLocaleString() + ' 金币';
+
+  document.getElementById('stat-day').textContent = `第 ${G.day} 天`;
+  document.getElementById('stat-rep').textContent = `声誉: ${G.rep}`;
+}
+
+// ── BUY TABLE ──
+function renderBuyTable() {
+  const tbody = document.getElementById('buy-table-body');
+  tbody.innerHTML = GOODS.map(g => {
+    const price = G.cityPrices[g.id] || g.priceMin;
+    const stock = G.cityStock[g.id] || 0;
+    const owned = G.inventory[g.id]?.qty || 0;
+    return `<tr>
+      <td>
+        <span class="item-name">${g.icon} ${g.name}</span>
+      </td>
+      <td style="font-weight:500">${price.toLocaleString()}</td>
+      <td>${stock}</td>
+      <td class="qty-owned">${owned}</td>
+      <td>
+        <div class="qty-controls">
+          <input type="number" class="qty-input" id="buy-qty-${g.id}" value="0" min="0" max="${stock}" oninput="calcBuyTotal()">
+          <button class="qty-shortcut" onclick="setBuyQty('${g.id}',${stock})">MAX</button>
+          <button class="qty-shortcut" onclick="setBuyQty('${g.id}',0)">0</button>
+        </div>
+      </td>
+      <td class="price-tag" id="buy-line-${g.id}">—</td>
+    </tr>`;
+  }).join('');
+}
+
+function setBuyQty(id, qty) {
+  const inp = document.getElementById('buy-qty-' + id);
+  if (inp) { inp.value = qty; calcBuyTotal(); }
+}
+
+function calcBuyTotal() {
+  let total = 0;
+  GOODS.forEach(g => {
+    const qty = parseInt(document.getElementById('buy-qty-' + g.id)?.value || 0);
+    const price = G.cityPrices[g.id] || g.priceMin;
+    const sub = qty * price;
+    total += sub;
+    const lineEl = document.getElementById('buy-line-' + g.id);
+    if (lineEl) lineEl.textContent = sub > 0 ? sub.toLocaleString() + ' 金' : '—';
+  });
+  document.getElementById('buy-total').textContent = total.toLocaleString();
+}
+
+function executeBuy() {
+  let total = 0;
+  const purchases = [];
+  GOODS.forEach(g => {
+    const qty = parseInt(document.getElementById('buy-qty-' + g.id)?.value || 0);
+    if (qty <= 0) return;
+    const price = G.cityPrices[g.id] || g.priceMin;
+    const stock = G.cityStock[g.id] || 0;
+    const actualQty = Math.min(qty, stock);
+    total += actualQty * price;
+    purchases.push({ g, qty: actualQty, price });
+  });
+  if (total === 0) { showToast(T('errNoGoods'), 'red'); return; }
+  if (total > G.gold) { showToast(T('errGold'), 'red'); return; }
+  purchases.forEach(({ g, qty, price }) => {
+    if (!G.inventory[g.id]) G.inventory[g.id] = { qty: 0, avgPrice: price };
+    const prev = G.inventory[g.id];
+    const newQty = prev.qty + qty;
+    prev.avgPrice = Math.round((prev.avgPrice * prev.qty + price * qty) / newQty);
+    prev.qty = newQty;
+    G.cityStock[g.id] = (G.cityStock[g.id] || 0) - qty;
+  });
+  G.gold -= total;
+  showToast(T('toastBuy') + ' ' + total.toLocaleString() + ' ' + T('gold'), 'gold');
+  renderGame();
+}
+
+// ── INVENTORY TABLE ──
+function renderInvTable() {
+  const tbody = document.getElementById('inv-table-body');
+  const items = Object.entries(G.inventory).filter(([,d]) => d.qty > 0);
+  if (items.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:1.5rem;">库存为空</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(([id, data]) => {
+    const g = GOODS.find(x => x.id === id);
+    if (!g) return '';
+    const mktPrice = G.cityPrices[g.id] || g.priceMin;
+    const profit = mktPrice - data.avgPrice;
+    const profitPct = data.avgPrice > 0 ? Math.round((profit / data.avgPrice) * 100) : 0;
+    const profitStr = profit >= 0
+      ? `<span class="price-sell">+${profit.toLocaleString()} (+${profitPct}%)</span>`
+      : `<span class="price-buy">${profit.toLocaleString()} (${profitPct}%)</span>`;
+    return `<tr>
+      <td>
+        <span class="item-name">${g.icon} ${g.name}</span>
+      </td>
+      <td>${data.avgPrice.toLocaleString()}</td>
+      <td>
+        <span class="${mktPrice > data.avgPrice ? 'price-sell' : 'price-buy'}">${mktPrice.toLocaleString()}</span><br>
+        <span style="font-size:0.68rem">${profitStr}</span>
+      </td>
+      <td class="qty-owned">${data.qty}</td>
+      <td>
+        <div class="qty-controls">
+          <input type="number" class="qty-input" id="sell-qty-${id}" value="0" min="0" max="${data.qty}" oninput="calcSellTotal()">
+          <button class="qty-shortcut" onclick="setSellQty('${id}',${data.qty})">MAX</button>
+          <button class="qty-shortcut" onclick="setSellQty('${id}',0)">0</button>
+        </div>
+      </td>
+      <td class="price-tag" id="sell-line-${id}">—</td>
+    </tr>`;
+  }).join('');
+}
+
+function setSellQty(id, qty) {
+  const inp = document.getElementById('sell-qty-' + id);
+  if (inp) { inp.value = qty; calcSellTotal(); }
+}
+
+function calcSellTotal() {
+  let total = 0;
+  Object.entries(G.inventory).forEach(([id, data]) => {
+    const qty = parseInt(document.getElementById('sell-qty-' + id)?.value || 0);
+    const g = GOODS.find(x => x.id === id);
+    if (!g) return;
+    const price = G.cityPrices[g.id] || g.priceMin;
+    const sub = qty * price;
+    total += sub;
+    const lineEl = document.getElementById('sell-line-' + id);
+    if (lineEl) lineEl.textContent = sub > 0 ? sub.toLocaleString() + ' 金' : '—';
+  });
+  document.getElementById('sell-total').textContent = total.toLocaleString();
+}
+
+function executeSell() {
+  let total = 0;
+  const sells = [];
+  Object.entries(G.inventory).forEach(([id, data]) => {
+    const qty = parseInt(document.getElementById('sell-qty-' + id)?.value || 0);
+    if (qty <= 0 || qty > data.qty) return;
+    const g = GOODS.find(x => x.id === id);
+    if (!g) return;
+    const price = G.cityPrices[g.id] || g.priceMin;
+    total += qty * price;
+    sells.push({ id, qty, price });
+  });
+  if (total === 0) { showToast(T('errNoSell'), 'red'); return; }
+  sells.forEach(({ id, qty }) => {
+    G.inventory[id].qty -= qty;
+    if (G.inventory[id].qty <= 0) delete G.inventory[id];
+  });
+  G.gold += total;
+  G.rep += Math.floor(total / 200);
+  showToast(T('toastSell') + ' ' + total + ' ' + T('gold'), 'gold');
+  renderGame();
+}
+
+// ── WEAPON TAB ──
+function renderWeaponTab() {
+  // Members
+  const list = document.getElementById('weapon-member-list');
+  list.innerHTML = G.team.map((m, i) => `
+    <div class="member-equip-card">
+      <div class="member-equip-name">
+        ${m.icon} ${m.name}
+        <span class="member-role-badge">${m.role}</span>
+      </div>
+      <div class="equip-slots">
+        <div>
+          <span class="equip-slot-label">主武器</span>
+          <div class="equip-slot filled" onclick="unequipWeapon(${i})">
+            ${m.weapon ? (WEAPONS.find(w=>w.id===m.weapon)?.icon||'⚔️') + ' ' + (WEAPONS.find(w=>w.id===m.weapon)?.name||'') : '空'}
+          </div>
+        </div>
+        <div>
+          <span class="equip-slot-label">副手</span>
+          <div class="equip-slot">(空)</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Shop
+  const shop = document.getElementById('weapon-shop');
+  shop.innerHTML = WEAPONS.map(w => `
+    <div class="shop-item-row">
+      <div>
+        <div class="shop-item-name">${w.icon} ${w.name}</div>
+        <div class="shop-item-stats">攻击 +${w.atk}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.3rem;">
+        <span class="shop-item-price">${w.price}金</span>
+        <select class="qty-input" id="weap-target" style="width:60px;font-size:0.68rem;" onchange="">
+          ${G.team.map((m,i)=>`<option value="${i}">${m.name}</option>`).join('')}
+        </select>
+        <button class="btn-buy-equip" onclick="buyWeapon('${w.id}',${w.price})">购买</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buyWeapon(weapId, price) {
+  if (G.gold < price) { showToast(T('errGold'), 'red'); return; }
+  const sel = document.querySelector('#weapon-shop select');
+  const idx = sel ? parseInt(sel.value) : 0;
+  G.gold -= price;
+  G.team[idx].weapon = weapId;
+  showToast(T('toastEquip'), 'gold');
+  renderGame();
+}
+
+function unequipWeapon(i) {
+  G.team[i].weapon = null;
+  renderWeaponTab();
+  updateTopbar();
+}
+
+// ── ARMOR TAB ──
+function renderArmorTab() {
+  const list = document.getElementById('armor-member-list');
+  list.innerHTML = G.team.map((m, i) => `
+    <div class="member-equip-card">
+      <div class="member-equip-name">
+        ${m.icon} ${m.name}
+        <span class="member-role-badge">${m.role}</span>
+      </div>
+      <div class="equip-slots">
+        <div>
+          <span class="equip-slot-label">身甲</span>
+          <div class="equip-slot filled" onclick="unequipArmor(${i})">
+            ${m.armor ? (ARMORS.find(a=>a.id===m.armor)?.icon||'🛡️') + ' ' + (ARMORS.find(a=>a.id===m.armor)?.name||'') : '空'}
+          </div>
+        </div>
+        <div>
+          <span class="equip-slot-label">头盔</span>
+          <div class="equip-slot">(空)</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const shop = document.getElementById('armor-shop');
+  shop.innerHTML = ARMORS.map(a => `
+    <div class="shop-item-row">
+      <div>
+        <div class="shop-item-name">${a.icon} ${a.name}</div>
+        <div class="shop-item-stats">${a.def} 防御</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.3rem;">
+        <span class="shop-item-price">${a.price}金</span>
+        <select class="qty-input" style="width:60px;font-size:0.68rem;">
+          ${G.team.map((m,i)=>`<option value="${i}">${m.name}</option>`).join('')}
+        </select>
+        <button class="btn-buy-equip" onclick="buyArmor('${a.id}',${a.price},this)">购买</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buyArmor(armorId, price, btn) {
+  if (G.gold < price) { showToast(T('errGold'), 'red'); return; }
+  const sel = btn.parentElement.querySelector('select');
+  const idx = sel ? parseInt(sel.value) : 0;
+  G.gold -= price;
+  G.team[idx].armor = armorId;
+  showToast(T('toastEquip'), 'gold');
+  renderGame();
+}
+
+function unequipArmor(i) {
+  G.team[i].armor = null;
+  renderArmorTab();
+  updateTopbar();
+}
+
+// ── TRANSPORT ──
+function renderTransportGrid() {
+  const grid = document.getElementById('transport-grid');
+  const tName = t => LANG.current === 'zh' ? t.name : t.nameEn;
+  grid.innerHTML = G.transports.map(t => {
+    const isActive = getActiveTransport && getActiveTransport().id === t.id;
+    return `
+    <div class="transport-card ${t.owned ? 'owned' : ''}" onclick="buyTransport('${t.id}')">
+      ${t.owned ? `<div class="owned-badge">${isActive ? '▶ ' : ''}${T('transportOwned')}</div>` : ''}
+      <span class="transport-icon">${t.icon}</span>
+      <div class="transport-name">${tName(t)}</div>
+      <div class="transport-stats" style="line-height:1.7">
+        <div>📦 ${t.cap} &nbsp; 🚀 ${t.spd}</div>
+        <div>👥 +${t.passengers} &nbsp; ⛽ ${t.fuelCost}/天</div>
+      </div>
+      <div class="transport-price">${t.owned ? '—' : t.price + ' ' + T('gold')}</div>
+    </div>`
+  }).join('');
+}
+
+function buyTransport(id) {
+  const t = G.transports.find(x => x.id === id);
+  if (!t || t.owned) return;
+  if (G.gold < t.price) { showToast(T('errGold'), 'red'); return; }
+  G.gold -= t.price;
+  t.owned = true;
+  const tName = LANG.current === 'zh' ? t.name : t.nameEn;
+  showToast(`${T('toastTransport')} ${tName} ${T('toastTransportOk')}`, 'gold');
+  renderGame();
+}
+
+// ── TEAM ──
+function renderTeamGrid() {
+  const grid = document.getElementById('team-grid');
+  grid.innerHTML = G.team.map(m => {
+    const totalWage = G.team.reduce((s, x) => s + x.wage, 0);
+    return `
+    <div class="team-card">
+      <div class="team-member-header">
+        <div class="team-avatar">${m.icon}</div>
+        <div>
+          <div class="team-name">${m.name}</div>
+          <div class="team-role">${m.role}</div>
+        </div>
+      </div>
+      <div class="stat-bars">
+        ${statBar('力量', m.str, 'str')}
+        ${statBar('敏捷', m.agi, 'agi')}
+        ${statBar('智识', m.int, 'int')}
+        ${statBar('耐力', m.end, 'end')}
+      </div>
+      <div class="team-footer">
+        <div>
+          ${m.weapon ? (WEAPONS.find(w=>w.id===m.weapon)?.icon||'')+'·'+( WEAPONS.find(w=>w.id===m.weapon)?.name||'') : '无武器'}
+          &nbsp;
+          ${m.armor ? (ARMORS.find(a=>a.id===m.armor)?.icon||'')+'·'+(ARMORS.find(a=>a.id===m.armor)?.name||'') : '无甲'}
+        </div>
+        <div>
+          <span class="wage-label">日薪：</span>
+          <span class="wage-val">${m.wage > 0 ? m.wage+'金' : '—'}</span>
+        </div>
+      </div>
+    </div>
+  `}).join('');
+}
+
+function statBar(label, val, cls) {
+  return `<div class="stat-row">
+    <div class="stat-row-label">${label}</div>
+    <div class="stat-bar-bg"><div class="stat-bar-fill ${cls}" style="width:${Math.min(val/20*100,100)}%"></div></div>
+    <div class="stat-num">${val}</div>
+  </div>`;
+}
+
+// ── QUESTS ──
+function renderQuestList() {
+  const list = document.getElementById('quest-list');
+  list.innerHTML = G.quests.map(q => `
+    <div class="quest-card ${q.accepted ? 'active-quest' : ''} ${q.urgent ? 'urgent' : ''}">
+      <div class="quest-title">${q.urgent ? '🔴 ' : ''}${q.title}</div>
+      <div class="quest-desc">${q.desc}</div>
+      <div class="quest-reward">
+        <span class="reward-item">🏆 ${q.reward}</span>
+        <span class="quest-deadline">⏱ ${q.deadline}</span>
+      </div>
+      <button class="btn-accept ${q.accepted ? 'accepted' : ''}" onclick="acceptQuest('${q.id}')">
+        ${q.accepted ? '✓ 已接受' : '接受任务'}
+      </button>
+    </div>
+  `).join('');
+}
+
+function acceptQuest(id) {
+  const q = G.quests.find(x => x.id === id);
+  if (q && !q.accepted) {
+    q.accepted = true;
+    showToast(T('toastQuestAccept') + ' ' + q.title, 'gold');
+    renderQuestList();
+  }
+}
+
+// ══════════════════════════════════
+// TRAVEL
+// ══════════════════════════════════
+function getActiveTransport() {
+  // Best owned transport by speed
+  const owned = G.transports.filter(t => t.owned);
+  return owned.reduce((best, t) => t.spd > best.spd ? t : best, owned[0]);
+}
+
+function openTravel() {
+  const country = G.country;
+  const allCities = (CITIES[country] || []).filter(c => c !== G.city);
+  const shuffled = allCities.sort(() => Math.random() - 0.5).slice(0, 2);
+  const transport = getActiveTransport();
+  const fuelGood = G.inventory['fuel'];
+  const fuelOwned = fuelGood ? fuelGood.qty : 0;
+
+  const options = shuffled.map(city => {
+    const dist = Math.floor(1 + Math.random() * 20);
+    const days = Math.ceil(dist / transport.spd);
+    const fuelNeeded = days * transport.fuelCost;
+    const crimeRate = Math.floor(15 + Math.random() * 66); // 15–80
+    return { city, dist, days, fuelNeeded, crimeRate };
+  });
+
+  G._travelOptions = options;
+  const grid = document.getElementById('city-grid');
+  const distLabel = T('travelDist');
+  const daysLabel = T('travelDays');
+  const fuelLabel = T('travelFuel');
+
+  grid.innerHTML = options.map((o, i) => {
+    const canGo = transport.fuelCost === 0 || fuelOwned >= o.fuelNeeded;
+    const fuelStr = transport.fuelCost > 0
+      ? `<span style="color:var(--red2)">⛽ ${o.fuelNeeded}${fuelLabel}</span>`
+      : `<span style="color:var(--green2)">⛽ 0</span>`;
+    const crimeColor = o.crimeRate < 30 ? 'var(--green2)' : o.crimeRate < 55 ? 'var(--gold)' : 'var(--red2)';
+    const crimeLabel = LANG.current === 'zh' ? '治安' : 'Crime';
+    return `
+    <button class="city-btn ${canGo?'':'disabled-city'}" onclick="${canGo?`confirmTravel(${i})`:''}">
+      <strong>${o.city}</strong>
+      <div style="font-size:0.65rem;margin-top:4px;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+        <span>📏 ${o.dist}${distLabel}</span>
+        <span>📅 ${o.days}${daysLabel}</span>
+        ${fuelStr}
+        <span style="color:${crimeColor}">⚠️ ${crimeLabel} ${o.crimeRate}%</span>
+      </div>
+    </button>`;
+  }).join('');
+
+  const tName = LANG.current === 'zh' ? transport.name : transport.nameEn;
+  document.getElementById('travel-active-transport').textContent =
+    `${transport.icon} ${tName} · ${LANG.current==='zh'?'速度':'Speed'}: ${transport.spd}`;
+
+  document.getElementById('travel-modal').classList.add('open');
+}
+
+function closeTravel() {
+  document.getElementById('travel-modal').classList.remove('open');
+}
+
+function confirmTravel(idx) {
+  const o = G._travelOptions[idx];
+  const transport = getActiveTransport();
+
+  // Deduct fuel
+  if (transport.fuelCost > 0) {
+    const fuelInv = G.inventory['fuel'];
+    if (!fuelInv || fuelInv.qty < o.fuelNeeded) {
+      showToast(T('errFuel'), 'red'); return;
+    }
+    fuelInv.qty -= o.fuelNeeded;
+    if (fuelInv.qty <= 0) delete G.inventory['fuel'];
+  }
+
+  G.city = o.city;
+  G.day += o.days;
+  generateCityPrices();
+
+  // Deduct team wages
+  const wage = G.team.reduce((s, m) => s + m.wage, 0);
+  G.gold -= wage * o.days;
+
+  closeTravel();
+  renderGame();
+
+  const fuelMsg = transport.fuelCost > 0 ? `，${T('toastDays')} ${o.fuelNeeded}` : '';
+  showToast(`${T('toastArrive')} ${o.city}！${T('toastTrip')} ${o.days}${T('travelDays')}${fuelMsg}`, 'gold');
+
+  // Trigger road events (one per day of travel)
+  setTimeout(() => triggerRoadEvents(o.crimeRate, o.days), 600);
+}
+
+// ── ROAD EVENTS ──
+function getRoadEvent(crimeRate) {
+  const nothing_weight   = 200 - (2 * crimeRate);
+  const steal_weight     = 0.5 * crimeRate;
+  const police_weight    = 0.5 * crimeRate;
+  const criminal_weight  = crimeRate;
+
+  const events = [
+    { id: 'nothing',   weight: nothing_weight },
+    { id: 'find_item', weight: 30 },
+    { id: 'person',    weight: 20 },
+    { id: 'merchant',  weight: 25 },
+    { id: 'steal',     weight: steal_weight },
+    { id: 'police',    weight: police_weight },
+    { id: 'criminal',  weight: criminal_weight },
+  ];
+
+  const roll = Math.random() * 300;
+  let sum = 0;
+  for (const e of events) {
+    sum += e.weight;
+    if (roll <= sum) return e.id;
+  }
+  return 'nothing';
+}
+
+const ROAD_EVENT_DATA = {
+  nothing:   { icon: '🌄', zh: '无事发生，一路平静。',                        en: 'The road was quiet. Nothing happened.' },
+  find_item: { icon: '💰', zh: '路边发现遗失物，捡到了一些金币！+50金',          en: 'Found lost goods by the road! +50 gold', gold: 50 },
+  person:    { icon: '🤕', zh: '路边有人失去意识，你施以援手，声誉+2。',          en: 'Someone unconscious on the road — you helped. Rep +2', rep: 2 },
+  merchant:  { icon: '🤝', zh: '遇到友善的行商，互通有无，声誉+1。',             en: 'Met a friendly trader. Small talk. Rep +1', rep: 1 },
+  steal:     { icon: '🦹', zh: '遭遇盗窃！被偷走了部分金币。',                  en: 'Pickpocketed! Lost some gold.' },
+  police:    { icon: '👮', zh: '执法检查！货物被临时扣押审查，延误1天。',          en: 'Police checkpoint! Goods inspected — delayed 1 day.', delay: 1 },
+  criminal:  { icon: '🔫', zh: '遇到犯罪分子！发生冲突，损失金币。',             en: 'Ambushed by criminals! Lost gold in the struggle.' },
+};
+
+// 每天一回合，把所有回合结果先算出来排成队列，再逐个弹出
+let _eventQueue = [];
+
+function triggerRoadEvents(crimeRate, days) {
+  _eventQueue = [];
+
+  for (let d = 0; d < days; d++) {
+    const eventId = getRoadEvent(crimeRate);
+    const data    = ROAD_EVENT_DATA[eventId];
+
+    // 计算本回合效果
+    let goldDelta = 0;
+    let repDelta  = data.rep || 0;
+    let extraDays = 0;
+
+    if (eventId === 'find_item') {
+      goldDelta = data.gold || 50;
+    } else if (eventId === 'steal') {
+      goldDelta = -Math.floor(G.gold * (0.05 + Math.random() * 0.1));
+      goldDelta = Math.max(goldDelta, -200);
+    } else if (eventId === 'criminal') {
+      goldDelta = -Math.floor(30 + Math.random() * 120);
+      goldDelta = Math.max(goldDelta, -G.gold);
+    } else if (eventId === 'police') {
+      extraDays = 1;
+    }
+
+    // 立刻结算到游戏状态（后面弹窗只是展示）
+    G.gold  = Math.max(0, G.gold + goldDelta);
+    G.rep  += repDelta;
+    G.day  += extraDays;
+
+    _eventQueue.push({ day: d + 1, totalDays: days, eventId, data, goldDelta, repDelta, extraDays });
+  }
+
+  renderGame();
+  _showNextEvent();
+}
+
+function _showNextEvent() {
+  // 跳过"无事发生"，直到找到值得展示的事件，或队列清空
+  while (_eventQueue.length > 0 && _eventQueue[0].eventId === 'nothing') {
+    _eventQueue.shift();
+  }
+  if (_eventQueue.length === 0) return;
+
+  const item = _eventQueue.shift();
+  _renderEventModal(item);
+}
+
+function _renderEventModal(item) {
+  const old = document.getElementById('road-event-modal');
+  if (old) old.remove();
+
+  const { day, totalDays, data, goldDelta, repDelta, extraDays } = item;
+  const desc        = LANG.current === 'zh' ? data.zh : data.en;
+  const titleLabel  = LANG.current === 'zh' ? '途中事件' : 'Road Event';
+  const dayLabel    = LANG.current === 'zh' ? `第 ${day} 天 / 共 ${totalDays} 天` : `Day ${day} of ${totalDays}`;
+  // 还有更多事件时显示"下一个"，否则显示"抵达"
+  const remaining   = _eventQueue.filter(e => e.eventId !== 'nothing').length;
+  const closeLabel  = remaining > 0
+    ? (LANG.current === 'zh' ? `继续 (还有 ${remaining} 个事件)` : `Next (${remaining} more)`)
+    : (LANG.current === 'zh' ? '抵达目的地' : 'Arrive');
+
+  let effects = '';
+  if (goldDelta > 0)  effects += `<span style="color:var(--gold2)">💰 +${goldDelta}</span>`;
+  if (goldDelta < 0)  effects += `<span style="color:var(--red2)">💰 ${goldDelta}</span>`;
+  if (repDelta  > 0)  effects += `<span style="color:var(--green2)">⭐ +${repDelta}</span>`;
+  if (extraDays > 0)  effects += `<span style="color:var(--text2)">📅 +${extraDays}d</span>`;
+
+  const modal = document.createElement('div');
+  modal.id    = 'road-event-modal';
+  modal.className = 'modal-overlay open';
+  modal.innerHTML = `
+    <div class="modal-box" style="text-align:center;max-width:320px;">
+      <div style="font-size:0.65rem;color:var(--text3);letter-spacing:0.15em;margin-bottom:0.6rem;">${dayLabel}</div>
+      <div style="font-size:2.4rem;margin-bottom:0.5rem;">${data.icon}</div>
+      <div class="modal-title">${titleLabel}</div>
+      <div style="font-size:0.85rem;color:var(--text);line-height:1.6;margin-bottom:0.9rem;">${desc}</div>
+      ${effects ? `<div style="display:flex;gap:0.8rem;justify-content:center;font-size:0.85rem;margin-bottom:1rem;">${effects}</div>` : ''}
+      <button class="btn-primary" style="margin-top:0;" onclick="document.getElementById('road-event-modal').remove(); _showNextEvent();">${closeLabel}</button>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+// ══════════════════════════════════
+// TABS
+// ══════════════════════════════════
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + (id==='buy'?'buy':id==='inventory'?'inv':id)).classList.add('active');
+  document.getElementById('tab-content-' + id).classList.add('active');
+}
+
+// ══════════════════════════════════
+// SAVE / LOAD
+// ══════════════════════════════════
+function saveGame() {
+  const blob = new Blob([JSON.stringify(G, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `merchant_save_day${G.day}.json`;
+  a.click();
+  showToast(T('toastSave'), 'gold');
+}
+
+function loadSaveFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      G = JSON.parse(ev.target.result);
+      LANG.current = G.lang || 'zh';
+      applyLang();
+      renderGame();
+      showScreen('game');
+      showToast(T('toastLoad') + ' ' + G.day + ' ' + T('toastLoadDay'), 'gold');
+    } catch {
+      showToast(T('toastCorrupt'), 'red');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ══════════════════════════════════
+// TOAST
+// ══════════════════════════════════
+let toastTimer;
+function showToast(msg, type = '') {
+  const old = document.querySelector('.toast');
+  if (old) old.remove();
+  clearTimeout(toastTimer);
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  toastTimer = setTimeout(() => t.remove(), 2800);
+}
+
+// ══════════════════════════════════
+// INIT
+// ══════════════════════════════════
+applyLang();
+</script>
+</body>
+</html>
