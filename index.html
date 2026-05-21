@@ -293,7 +293,7 @@
 				const cities = CITIES[selectedCountry];
 				G.city     = cities[Math.floor(Math.random() * cities.length)];
 				G.prevCity = G.city;
-				G.gold = 1000; G.day = 1; G.rep = 0; G.inventory = {};
+				G.gold = 100; G.day = 1; G.rep = 0; G.inventory = {};
 				G.team = TEAM_TEMPLATES.map((t) => { const m = {...t}; if (m.name === "__PLAYER__") m.name = name; return m; });
 				G.transports = TRANSPORTS.map((t) => ({...t}));
 				G.quests = QUESTS.map((q) => ({...q}));
