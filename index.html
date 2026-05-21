@@ -696,10 +696,12 @@
 			// ── TRANSPORT ──
 			function renderTransportGrid() {
 				const grid = document.getElementById("transport-grid");
+				const activeId = getActiveTransport()?.id;
 				grid.innerHTML = G.transports.map((t) => {
 					const tName = LANG.current === "zh" ? t.name : t.nameEn;
-					const isActive = getActiveTransport && getActiveTransport().id === t.id;
-					return `<div class="transport-card ${t.owned ? "owned" : ""}" onclick="buyTransport('${t.id}')">
+					const isActive = activeId === t.id;
+					const switchBtn = t.owned && !isActive ? `<button onclick="switchTransport('${t.id}')" style="margin-top:0.5rem;font-size:0.68rem;padding:0.25rem 0.7rem;background:none;border:1px solid var(--gold);color:var(--gold);cursor:pointer;font-family:inherit;letter-spacing:0.05em;">切换使用</button>` : "";
+					return `<div class="transport-card ${t.owned ? "owned" : ""}" onclick="${t.owned ? '' : `buyTransport('${t.id}')`}" style="${t.owned ? '' : 'cursor:pointer'}">
 						${t.owned ? `<div class="owned-badge">${isActive ? "▶ " : ""}${T("transportOwned")}</div>` : ""}
 						<span class="transport-icon">${t.icon}</span>
 						<div class="transport-name">${tName}</div>
@@ -708,8 +710,18 @@
 							<div>👥 +${t.passengers} &nbsp; ⛽ ${t.fuelCost}/天</div>
 						</div>
 						<div class="transport-price">${t.owned ? "—" : t.price + " " + T("gold")}</div>
+						${switchBtn}
 					</div>`;
 				}).join("");
+			}
+
+			function switchTransport(id) {
+				const t = G.transports.find(x => x.id === id);
+				if (!t || !t.owned) return;
+				G.activeTransportId = id;
+				const tName = LANG.current === "zh" ? t.name : t.nameEn;
+				showToast(`已切换为 ${t.icon} ${tName}`, "gold");
+				renderGame();
 			}
 
 			function buyTransport(id) {
@@ -718,6 +730,7 @@
 				if (G.gold < t.price) { showToast(T("errGold"), "red"); return; }
 				G.gold -= t.price;
 				t.owned = true;
+				G.activeTransportId = id;
 				showToast(T("toastTransport", LANG.current === "zh" ? t.name : t.nameEn), "gold");
 				renderGame();
 			}
@@ -835,6 +848,11 @@
 			// ══════════════════════════════════
 			function getActiveTransport() {
 				const owned = G.transports.filter((t) => t.owned);
+				if (!owned.length) return G.transports.find(t => t.id === "walk") || G.transports[0];
+				if (G.activeTransportId) {
+					const sel = owned.find(t => t.id === G.activeTransportId);
+					if (sel) return sel;
+				}
 				return owned.reduce((best, t) => (t.spd > best.spd ? t : best), owned[0]);
 			}
 
@@ -939,9 +957,12 @@
 				steal: { icon: "🦹", choices: null,
 					zh: () => T("roadSteal"), en: () => T("roadSteal"),
 					resolve: () => {
+						if (G.gold < 0) {
+							return { text: "小偷靠近后翻了翻你的钱袋，发现你比他还穷——失望地摇摇头，悻悻离去。" };
+						}
 						const pct  = 0.01 + Math.random() * 0.19;
 						const lost = Math.max(1, Math.floor(G.gold * pct));
-						G.gold = Math.max(0, G.gold - lost);
+						G.gold -= lost;
 						return { goldDelta: -lost, text: T("roadStealResult", lost, Math.round(pct * 100)) };
 					},
 				},
@@ -1009,8 +1030,11 @@
 					choices: [
 						{ label: () => T("choiceSurrender_zh"),
 							resolve: () => {
+								if (G.gold < 0) {
+									return { text: "歹徒搜遍你全身，发现你比他们还惨——他们面面相觑，失望地扬长而去。" };
+								}
 								const goldLost = Math.floor(G.gold * 0.5);
-								G.gold = Math.max(0, G.gold - goldLost);
+								G.gold -= goldLost;
 								const invKeys = Object.keys(G.inventory);
 								invKeys.filter(() => Math.random() < 0.5).forEach((k) => delete G.inventory[k]);
 								return { goldDelta: -goldLost, text: T("roadCriminalSurrender", goldLost) };
@@ -1337,7 +1361,7 @@
 				C._escapeResumeArgs = { step: currentStep + 1, queue: queueArr };
 			}
 
-			function resolveEnemyEscapeChoice(wantsPursue, enemyName, currentStep) {
+				function resolveEnemyEscapeChoice(wantsPursue, enemyName, currentStep) {
 				document.getElementById("escape-intervene-modal").remove();
 				let enemy = C.enemies.find(e => e.name === enemyName);
 				if (wantsPursue) {
@@ -1347,6 +1371,8 @@
 					combatLogAdd(T("combatLetGo", enemy.name)); enemy.hp = 0;
 				}
 				renderCombatScreen();
+				// 若所有敌人都已倒下或逃脱，直接结束战斗进入下一回合
+				if (C.enemies.every(e => e.hp <= 0)) { handleCombatVictory(); return; }
 				const args = C._escapeResumeArgs;
 				let step = args.step, enemyQueue = args.queue;
 				function nextEnemyStrikeResume() {
