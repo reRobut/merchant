@@ -1303,3 +1303,243 @@
 				50% { opacity: 0.6; }
 				100% { opacity: 1; }
 			}
+/* ══════════════════════════════════
+   高分辨率屏幕适配
+══════════════════════════════════ */
+@media (min-width: 1440px) {
+    html { font-size: 17px; }
+}
+@media (min-width: 1920px) {
+    html { font-size: 18px; }
+}
+@media (min-width: 2560px) {
+    html { font-size: 20px; }
+}
+
+/* ══════════════════════════════════
+   手机端适配（≤ 640px）
+══════════════════════════════════ */
+@media (max-width: 640px) {
+
+    /* ─── 全局字号微调 ─── */
+    html { font-size: 15px; }
+
+    /* ─── 标题屏 ─── */
+    #screen-title {
+        padding: 1.5rem 1rem;
+        justify-content: center;
+    }
+    .title-deco {
+        width: 92vw;
+        padding: 1.4rem 0;
+    }
+    .game-title-cn {
+        font-size: clamp(1.8rem, 10vw, 2.4rem);
+        letter-spacing: 0.2em;
+    }
+    .game-title-en {
+        font-size: clamp(0.72rem, 3.5vw, 0.9rem);
+        letter-spacing: 0.3em;
+    }
+    .title-ornament {
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        margin: 0.8rem 0 1.8rem;
+    }
+    .menu-list {
+        width: 88vw;
+        max-width: 320px;
+    }
+    .menu-btn {
+        padding: 0.85rem 1.2rem;
+        font-size: 0.95rem;
+    }
+
+    /* ─── 新游戏屏 ─── */
+    #screen-newgame {
+        padding: 1rem;
+        justify-content: flex-start;
+        padding-top: 2rem;
+    }
+    .panel {
+        width: 100%;
+        padding: 1.4rem 1.2rem;
+    }
+    .country-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .country-card {
+        font-size: 0.82rem;
+        padding: 0.55rem 0.3rem;
+    }
+    .btn-back {
+        font-size: 0.85rem;
+        padding: 0.4rem 0;
+    }
+
+    /* ─── 顶栏 ─── */
+    .topbar {
+        padding: 0.5rem 0.8rem;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        row-gap: 0.4rem;
+    }
+    .topbar-city {
+        font-size: 0.88rem;
+        flex: 0 0 auto;
+    }
+    .topbar-stats {
+        flex: 1 1 100%;
+        order: 3;
+        gap: 0.8rem;
+        font-size: 0.78rem;
+        justify-content: flex-start;
+    }
+    .topbar-right {
+        margin-left: auto;
+        flex: 0 0 auto;
+        gap: 0.4rem;
+    }
+    .btn-sm {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.6rem;
+    }
+
+    /* ─── 标签页 ─── */
+    .tabs {
+        padding: 0 0.3rem;
+        /* 隐藏滚动条但保留功能 */
+        scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+        padding: 0.65rem 0.75rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+    }
+
+    /* ─── 标签内容区 ─── */
+    .tab-content {
+        padding: 0.9rem 0.8rem;
+    }
+
+    /* ─── 交易表格 ─── */
+    .trade-table {
+        font-size: 0.78rem;
+        min-width: 480px; /* 保证横向滚动而非挤压 */
+    }
+    .trade-table th {
+        font-size: 0.72rem;
+        padding: 0.45rem 0.5rem;
+    }
+    .trade-table td {
+        padding: 0.4rem 0.5rem;
+    }
+    .qty-input {
+        width: 44px;
+        font-size: 0.78rem;
+    }
+    .qty-shortcut {
+        padding: 0.2rem 0.3rem;
+        font-size: 0.65rem;
+    }
+    .table-footer {
+        padding: 0.65rem 0.6rem;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .total-price { font-size: 0.82rem; }
+    .btn-trade {
+        padding: 0.4rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    /* ─── 装备标签（已有 1 栏响应，补细节） ─── */
+    .equip-layout { gap: 0.8rem; }
+    .shop-item-row { font-size: 0.8rem; }
+    .btn-buy-equip { font-size: 0.72rem; padding: 0.25rem 0.5rem; }
+    .member-equip-card { padding: 0.7rem; }
+    .equip-slots { grid-template-columns: 1fr 1fr; gap: 0.3rem; }
+    .equip-slot { font-size: 0.74rem; min-height: 36px; }
+
+    /* ─── 团队标签 ─── */
+    .team-grid { grid-template-columns: 1fr; gap: 0.7rem; }
+    .team-card { padding: 0.85rem; }
+
+    /* ─── 交通标签 ─── */
+    .transport-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+    }
+    .transport-card { padding: 0.75rem; }
+    .transport-icon { font-size: 1.6rem; }
+
+    /* ─── 任务标签 ─── */
+    .quest-card { padding: 0.75rem 0.85rem; }
+    .quest-title { font-size: 0.88rem; }
+    .quest-desc { font-size: 0.76rem; }
+
+    /* ─── 旅行弹窗 ─── */
+    .modal-box {
+        padding: 1.2rem 1rem;
+        width: 94vw;
+        max-width: 94vw;
+    }
+    .modal-title { font-size: 0.88rem; }
+    .city-choose-grid { grid-template-columns: 1fr 1fr !important; gap: 0.4rem; }
+    .city-btn { font-size: 0.82rem; padding: 0.55rem 0.5rem; }
+
+    /* ─── 战斗弹窗 ─── */
+    #combat-modal .modal-box {
+        width: 96vw !important;
+        max-width: 96vw !important;
+        height: 90vh !important;
+        padding: 0.9rem !important;
+    }
+    .combat-arena {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    .combat-side { padding: 0.6rem; }
+    .combat-side-title { font-size: 0.8rem; }
+    .combat-actions-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.4rem;
+    }
+    /* 末两个按钮（逃跑/投降）单独一行居中 */
+    .combat-btn:nth-child(4),
+    .combat-btn:nth-child(5) {
+        grid-column: span 1;
+    }
+    .combat-btn { font-size: 0.78rem; padding: 0.55rem 0.1rem; }
+    .combat-log-wrapper { height: 110px; font-size: 0.72rem; }
+    #combat-modal .modal-title { font-size: 1rem !important; }
+
+    /* ─── Toast 提示 ─── */
+    .toast { font-size: 0.82rem; width: 88vw; text-align: center; }
+
+    /* ─── Section 标签 ─── */
+    .section-label { font-size: 0.75rem; }
+
+    /* ─── 小字号下限统一提升 ─── */
+    .version-tag      { font-size: 0.72rem; }
+    .price-lvl        { font-size: 0.68rem; }
+    .owned-badge      { font-size: 0.65rem; }
+    .item-cat         { font-size: 0.68rem; }
+    .stat-row         { font-size: 0.74rem; }
+    .team-footer      { font-size: 0.74rem; }
+    .equip-slot-label { font-size: 0.62rem; }
+}
+
+/* ══════════════════════════════════
+   超小屏（≤ 380px，如 iPhone SE）
+══════════════════════════════════ */
+@media (max-width: 380px) {
+    html { font-size: 14px; }
+    .tab { padding: 0.6rem 0.6rem; font-size: 0.78rem; }
+    .combat-actions-grid { grid-template-columns: repeat(2, 1fr); }
+    .country-grid { grid-template-columns: repeat(2, 1fr); }
+    .transport-grid { grid-template-columns: 1fr; }
+}
