@@ -139,6 +139,21 @@ const TEXTS = {
     choiceSurrender_zh: '🏳 投降交出财物', choiceFight_zh: '⚔️ 迎战',
     // 价格档位
     priceLow: '低价', priceMid: '正常', priceHigh: '高价', pricePeak: '暴涨',
+    // 交通切换
+    toastSwitchTransport: (icon, name) => `已切换为 ${icon} ${name}`,
+    // 战斗界面
+    combatMemberCount: (n) => `成员 ${n} 人`,
+    // 敌方力量描述
+    forceDesc: (count, typeName, tiers) => `${count}名${typeName}（${tiers}）`,
+    tierSuffix: '级',
+    enemyTypePolice: '执法者', enemyTypeMerchant: '普通商人', enemyTypeCriminal: '犯罪分子',
+    // 路途事件-特殊结局
+    roadStealBroke: '小偷靠近后翻了翻你的钱袋，发现你比他还穷——失望地摇摇头，悻悻离去。',
+    roadCriminalBroke: '歹徒搜遍你全身，发现你比他们还惨——他们面面相觑，失望地扬长而去。',
+    // 声誉变化
+    repGainCriminal: (tier, delta) => `击毙 ${tier} 级犯罪分子，声誉 +${delta}`,
+    repLossMerchant: '袭击商人，声誉 -5',
+    repLossPolice: '对抗执法者，声誉 -10',
   },
   en: {
     titleCn: '游商模拟器', ornament: '— Trade the World, Rule the Market —',
@@ -254,6 +269,21 @@ const TEXTS = {
     choiceRobMerchant_zh: '🗡 Rob them', choiceGreet_zh: '😊 Greet him',
     choiceSurrender_zh: '🏳 Surrender', choiceFight_zh: '⚔️ Fight',
     priceLow: 'Low', priceMid: 'Normal', priceHigh: 'High', pricePeak: 'Peak',
+    // Transport switch
+    toastSwitchTransport: (icon, name) => `Switched to ${icon} ${name}`,
+    // Combat screen
+    combatMemberCount: (n) => `${n} member${n !== 1 ? 's' : ''}`,
+    // Enemy force description
+    forceDesc: (count, typeName, tiers) => `${count} ${typeName} (${tiers})`,
+    tierSuffix: '',
+    enemyTypePolice: 'Officers', enemyTypeMerchant: 'Merchants', enemyTypeCriminal: 'Criminals',
+    // Road events - special outcomes
+    roadStealBroke: 'The thief rummaged through your purse, only to find you poorer than them — they shook their head and slunk away.',
+    roadCriminalBroke: 'The bandits searched you thoroughly, then realized you were worse off than them — they exchanged glances and left in disappointment.',
+    // Reputation changes
+    repGainCriminal: (tier, delta) => `Killed tier-${tier} criminal, REP +${delta}`,
+    repLossMerchant: 'Attacked a merchant, REP -5',
+    repLossPolice: 'Fought law enforcement, REP -10',
   },
 };
 

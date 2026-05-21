@@ -720,7 +720,7 @@
 				if (!t || !t.owned) return;
 				G.activeTransportId = id;
 				const tName = LANG.current === "zh" ? t.name : t.nameEn;
-				showToast(`已切换为 ${t.icon} ${tName}`, "gold");
+				showToast(T("toastSwitchTransport", t.icon, tName), "gold");
 				renderGame();
 			}
 
@@ -937,7 +937,7 @@
 					const avg  = (wIdx + aIdx) / 2;
 					const tier = avg <= 1 ? "E" : avg <= 2 ? "D" : avg <= 3 ? "C" : avg <= 4 ? "B" : avg <= 5 ? "A" : "S";
 					party.push({
-						name: `${cnType}#${i+1}`, type: typeStr,
+						name: `${typeStr}#${i+1}`, type: typeStr,
 						atk: Math.floor(Math.random() * 101), def: Math.floor(Math.random() * 101),
 						hp: Math.floor(200 + Math.random() * 201), maxHp: 0,
 						wIdx, aIdx, tier, hasAttemptedFlee: false,
@@ -948,7 +948,9 @@
 			}
 
 			function getForceDesc(force) {
-				return `${force.length}名${force[0].name.substring(0,3)}（${force.map(f => f.tier + '级').join('，')}）`;
+				const typeName = T("enemyType" + force[0].type.charAt(0).toUpperCase() + force[0].type.slice(1));
+				const tiers = force.map(f => f.tier + T("tierSuffix")).join(LANG.current === "zh" ? "，" : ", ");
+				return T("forceDesc", force.length, typeName, tiers);
 			}
 
 			const ROAD_EVENT_DATA = {
@@ -958,7 +960,7 @@
 					zh: () => T("roadSteal"), en: () => T("roadSteal"),
 					resolve: () => {
 						if (G.gold < 0) {
-							return { text: "小偷靠近后翻了翻你的钱袋，发现你比他还穷——失望地摇摇头，悻悻离去。" };
+							return { text: T("roadStealBroke") };
 						}
 						const pct  = 0.01 + Math.random() * 0.19;
 						const lost = Math.max(1, Math.floor(G.gold * pct));
@@ -994,7 +996,7 @@
 					],
 				},
 				police: { icon: "👮",
-					setup: function() { this.enemies = generateEnemyForce("police", "执法者"); },
+					setup: function() { this.enemies = generateEnemyForce("police"); },
 					zh: function() { return `前方设有执法检查站，${getForceDesc(this.enemies)}示意你停下接受盘查。`; },
 					en: function() { return T("roadPolice"); },
 					choices: [
@@ -1014,7 +1016,7 @@
 					],
 				},
 				merchant: { icon: "🤝",
-					setup: function() { this.enemies = generateEnemyForce("merchant", "普通商人"); },
+					setup: function() { this.enemies = generateEnemyForce("merchant"); },
 					zh: function() { return `路上遇到${getForceDesc(this.enemies)}，向你友好地点头示意。`; },
 					en: function() { return T("roadMerchant"); },
 					choices: [
@@ -1024,14 +1026,14 @@
 					],
 				},
 				criminal: { icon: "🔫",
-					setup: function() { this.enemies = generateEnemyForce("criminal", "犯罪分子"); },
+					setup: function() { this.enemies = generateEnemyForce("criminal"); },
 					zh: function() { return `${getForceDesc(this.enemies)}拦住了去路，眼神凶狠地盯着你的货物。`; },
 					en: function() { return T("roadCriminal"); },
 					choices: [
 						{ label: () => T("choiceSurrender_zh"),
 							resolve: () => {
 								if (G.gold < 0) {
-									return { text: "歹徒搜遍你全身，发现你比他们还惨——他们面面相觑，失望地扬长而去。" };
+									return { text: T("roadCriminalBroke") };
 								}
 								const goldLost = Math.floor(G.gold * 0.5);
 								G.gold -= goldLost;
@@ -1210,7 +1212,7 @@
 							<span style="color:var(--gold)">${Math.max(0, C.party.hp)} / ${C.party.maxHp}</span>
 						</div>
 						<div class="combat-hp-bar-bg"><div class="combat-hp-bar-fill" style="width: ${hpPct}%;"></div></div>
-						<div style="font-size:0.65rem;color:var(--text3);margin-top:3px;">⚔ ${C.party.atk} &nbsp; 🛡 ${C.party.def} &nbsp; 成员 ${G.team.length} 人</div>
+						<div style="font-size:0.65rem;color:var(--text3);margin-top:3px;">⚔ ${C.party.atk} &nbsp; 🛡 ${C.party.def} &nbsp; ${T("combatMemberCount", G.team.length)}</div>
 					</div>`;
 				} else {
 					allyListEl.innerHTML = "";
@@ -1396,13 +1398,27 @@
 			function handleCombatVictory() {
 				combatLogAdd(T("combatVictory"));
 				if (!G.equipWarehouse) G.equipWarehouse = [];
+				const TIER_REP = { E: 1, D: 2, C: 3, B: 4, A: 5, S: 6 };
 				C.enemies.forEach(e => {
 					if (e.hp <= 0 && !e.name.includes("逃脱")) {
+						// 声誉变化
+						if (e.type === "criminal") {
+							const delta = TIER_REP[e.tier] || 1;
+							G.rep += delta;
+							combatLogAdd(`<span style='color:var(--green2);font-size:0.75rem;'>⭐ ${T("repGainCriminal", e.tier, delta)}</span>`);
+						} else if (e.type === "merchant") {
+							G.rep = Math.max(0, G.rep - 5);
+							combatLogAdd(`<span style='color:var(--red2);font-size:0.75rem;'>⭐ ${T("repLossMerchant")}</span>`);
+						} else if (e.type === "police") {
+							G.rep = Math.max(0, G.rep - 10);
+							combatLogAdd(`<span style='color:var(--red2);font-size:0.75rem;'>⭐ ${T("repLossPolice")}</span>`);
+						}
+						// 战利品
 						if (e.wIdx > 0 && Math.random() < 0.3) { const lootW = WEAPONS[e.wIdx - 1]; combatLogAdd(T("combatLootW", lootW.name)); G.equipWarehouse.push({ type: 'weapon', id: lootW.id, name: lootW.name, icon: lootW.icon, stat: lootW.atk, buyPrice: lootW.price }); }
 						if (e.aIdx > 0 && Math.random() < 0.3) { const lootA = ARMORS[e.aIdx - 1];  combatLogAdd(T("combatLootA", lootA.name)); G.equipWarehouse.push({ type: 'armor',  id: lootA.id, name: lootA.name, icon: lootA.icon, stat: lootA.def, buyPrice: lootA.price }); }
 					}
 				});
-				G.rep += 5; renderGame();
+				renderGame();
 				setTimeout(closeCombatCleanup, 3000);
 			}
 
