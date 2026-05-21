@@ -5,1186 +5,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Merchant</title>
 		<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+SC:wght@300;400;500;700&family=IM+Fell+English+SC&display=swap" rel="stylesheet" />
-		<style>
-			:root {
-				--bg: #0d0a07;
-				--bg2: #171209;
-				--bg3: #1f1710;
-				--bg4: #2a2016;
-				--bg5: #342a1e;
-				--gold: #c9a84c;
-				--gold2: #e8c96a;
-				--gold3: #f5dfa0;
-				--gold-dim: #caa036;
-				--red: #8b2a2a;
-				--red2: #c44040;
-				--green: #2a5a3a;
-				--green2: #4a9a60;
-				--text: #f4e2b9;
-				--text2: #dcbf90;
-				--text3: #cac0ab;
-				--border: #3d3020;
-				--border2: #7f6449;
-				--accent: #c9a84c;
-				--shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
-				--radius: 4px;
-			}
-			* {
-				box-sizing: border-box;
-				margin: 0;
-				padding: 0;
-			}
-			body {
-				font-family: "Noto Serif SC", serif;
-				background: var(--bg);
-				color: var(--text);
-				min-height: 100vh;
-				overflow-x: hidden;
-			}
-
-			/* ─── BACKGROUND TEXTURE ─── */
-			body::before {
-				content: "";
-				position: fixed;
-				inset: 0;
-				background-image: radial-gradient(ellipse at 20% 30%, rgba(201, 168, 76, 0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 70%, rgba(139, 42, 42, 0.05) 0%, transparent 60%);
-				pointer-events: none;
-				z-index: 0;
-			}
-
-			/* ─── SCREEN SYSTEM ─── */
-			.screen {
-				display: none;
-				position: relative;
-				z-index: 1;
-			}
-			.screen.active {
-				display: flex;
-			}
-
-			/* ══════════════════════════════════
-   TITLE SCREEN
-══════════════════════════════════ */
-			#screen-title {
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				min-height: 100vh;
-				padding: 2rem;
-				text-align: center;
-			}
-			.title-deco {
-				width: 360px;
-				max-width: 90vw;
-				border-top: 1px solid var(--gold-dim);
-				border-bottom: 1px solid var(--gold-dim);
-				padding: 2rem 0;
-				margin-bottom: 1rem;
-				position: relative;
-			}
-			.title-deco::before,
-			.title-deco::after {
-				content: "◆";
-				color: var(--gold);
-				position: absolute;
-				top: 50%;
-				transform: translateY(-50%);
-				font-size: 12px;
-			}
-			.title-deco::before {
-				left: -8px;
-			}
-			.title-deco::after {
-				right: -8px;
-			}
-			.game-title-cn {
-				font-family: "Noto Serif SC", serif;
-				font-weight: 700;
-				font-size: clamp(2rem, 6vw, 3.2rem);
-				color: var(--gold2);
-				letter-spacing: 0.3em;
-				text-shadow: 0 0 40px rgba(201, 168, 76, 0.4);
-				line-height: 1.2;
-			}
-			.game-title-en {
-				font-family: "Cinzel", serif;
-				font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-				color: var(--text2);
-				letter-spacing: 0.5em;
-				text-transform: uppercase;
-				margin-top: 0.5rem;
-			}
-			.title-ornament {
-				font-size: 1.4rem;
-				color: var(--gold-dim);
-				letter-spacing: 0.2em;
-				margin: 1rem 0 2.5rem;
-			}
-			.menu-list {
-				display: flex;
-				flex-direction: column;
-				gap: 0.6rem;
-				width: 260px;
-			}
-			.menu-btn {
-				background: transparent;
-				border: 1px solid var(--border2);
-				color: var(--text);
-				padding: 0.75rem 1.5rem;
-				font-family: "Noto Serif SC", serif;
-				font-size: 0.95rem;
-				cursor: pointer;
-				transition: all 0.2s;
-				letter-spacing: 0.1em;
-				position: relative;
-				overflow: hidden;
-			}
-			.menu-btn::before {
-				content: "";
-				position: absolute;
-				inset: 0;
-				background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.06), transparent);
-				transform: translateX(-100%);
-				transition: transform 0.3s;
-			}
-			.menu-btn:hover {
-				border-color: var(--gold);
-				color: var(--gold3);
-			}
-			.menu-btn:hover::before {
-				transform: translateX(100%);
-			}
-			.menu-btn:active {
-				transform: scale(0.98);
-			}
-			.version-tag {
-				margin-top: 3rem;
-				font-size: 0.7rem;
-				color: var(--text3);
-				letter-spacing: 0.2em;
-			}
-
-			/* ─── INLINE LANG SELECTOR ─── */
-			.lang-inline-row {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				gap: 0.5rem;
-				margin-top: 0.4rem;
-			}
-			.lang-inline-btn {
-				background: none;
-				border: none;
-				color: var(--text3);
-				font-family: "Noto Serif SC", serif;
-				font-size: 0.75rem;
-				cursor: pointer;
-				padding: 0.2rem 0.4rem;
-				letter-spacing: 0.08em;
-				transition: color 0.2s;
-			}
-			.lang-inline-btn:hover {
-				color: var(--text2);
-			}
-			.lang-inline-btn.active {
-				color: var(--gold);
-			}
-			.lang-divider {
-				color: var(--text3);
-				font-size: 0.7rem;
-			}
-
-			/* ─── LANG SELECT SCREEN (legacy) ─── */
-			#screen-lang {
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				min-height: 100vh;
-				gap: 2.5rem;
-			}
-			.lang-select-title {
-				font-family: "Cinzel", serif;
-				font-size: 0.85rem;
-				color: var(--text2);
-				letter-spacing: 0.4em;
-				text-transform: uppercase;
-			}
-			.lang-select-grid {
-				display: flex;
-				gap: 1.2rem;
-			}
-			.lang-select-btn {
-				background: var(--bg3);
-				border: 1px solid var(--border2);
-				color: var(--text);
-				padding: 1.4rem 2.4rem;
-				font-family: "Noto Serif SC", serif;
-				font-size: 1.1rem;
-				cursor: pointer;
-				transition: all 0.2s;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				gap: 0.5rem;
-				letter-spacing: 0.15em;
-				min-width: 130px;
-			}
-			.lang-select-btn:hover {
-				border-color: var(--gold);
-				color: var(--gold3);
-				background: var(--bg4);
-			}
-			.lang-select-btn .lang-flag {
-				font-size: 2rem;
-			}
-
-			/* ─── LANG PANEL (legacy - unused) ─── */
-			.lang-btn {
-				background: var(--bg3);
-				border: 1px solid var(--border);
-				color: var(--text2);
-				padding: 0.5rem 1rem;
-				font-family: "Noto Serif SC", serif;
-				font-size: 0.85rem;
-				cursor: pointer;
-				transition: all 0.2s;
-			}
-			.lang-btn:hover,
-			.lang-btn.active {
-				border-color: var(--gold);
-				color: var(--gold2);
-			}
-
-			/* ══════════════════════════════════
-   NEW GAME SCREEN
-══════════════════════════════════ */
-			#screen-newgame {
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				min-height: 100vh;
-				padding: 2rem;
-			}
-			.panel {
-				background: var(--bg2);
-				border: 1px solid var(--border2);
-				padding: 2rem 2.5rem;
-				width: 440px;
-				max-width: 95vw;
-				position: relative;
-			}
-			.panel::before {
-				content: "";
-				position: absolute;
-				top: -1px;
-				left: 20px;
-				right: 20px;
-				height: 1px;
-				background: linear-gradient(90deg, transparent, var(--gold), transparent);
-			}
-			.panel-title {
-				font-family: "Cinzel", serif;
-				font-size: 1rem;
-				color: var(--gold);
-				letter-spacing: 0.3em;
-				text-align: center;
-				margin-bottom: 1.5rem;
-				text-transform: uppercase;
-			}
-			.field-label {
-				font-size: 0.78rem;
-				color: var(--text2);
-				letter-spacing: 0.15em;
-				margin-bottom: 0.4rem;
-				display: block;
-			}
-			.field-group {
-				margin-bottom: 1.2rem;
-			}
-			.game-input {
-				width: 100%;
-				background: var(--bg4);
-				border: 1px solid var(--border);
-				color: var(--text);
-				padding: 0.6rem 0.8rem;
-				font-family: "Noto Serif SC", serif;
-				font-size: 0.9rem;
-				outline: none;
-				transition: border-color 0.2s;
-			}
-			.game-input:focus {
-				border-color: var(--gold);
-			}
-			.country-grid {
-				display: grid;
-				grid-template-columns: repeat(2, 1fr);
-				gap: 0.5rem;
-			}
-			.country-card {
-				background: var(--bg4);
-				border: 1px solid var(--border);
-				padding: 0.6rem;
-				cursor: pointer;
-				text-align: center;
-				transition: all 0.2s;
-				font-size: 0.78rem;
-				color: var(--text2);
-			}
-			.country-card:hover {
-				border-color: var(--gold-dim);
-				color: var(--text);
-			}
-			.country-card.selected {
-				border-color: var(--gold);
-				color: var(--gold2);
-				background: var(--bg5);
-			}
-
-			.btn-primary {
-				width: 100%;
-				background: transparent;
-				border: 1px solid var(--gold);
-				color: var(--gold2);
-				padding: 0.75rem;
-				font-family: "Cinzel", serif;
-				font-size: 0.85rem;
-				letter-spacing: 0.2em;
-				cursor: pointer;
-				margin-top: 1rem;
-				transition: all 0.2s;
-			}
-			.btn-primary:hover {
-				background: rgba(201, 168, 76, 0.1);
-				color: var(--gold3);
-			}
-			.btn-back {
-				background: none;
-				border: none;
-				color: var(--text3);
-				font-size: 0.75rem;
-				cursor: pointer;
-				margin-bottom: 1rem;
-				font-family: "Noto Serif SC", serif;
-				letter-spacing: 0.1em;
-				transition: color 0.2s;
-			}
-			.btn-back:hover {
-				color: var(--text2);
-			}
-
-			/* ══════════════════════════════════
-   GAME SCREEN
-══════════════════════════════════ */
-			#screen-game {
-				flex-direction: column;
-				min-height: 100vh;
-			}
-
-			/* ─── TOP BAR ─── */
-			.topbar {
-				background: var(--bg2);
-				border-bottom: 1px solid var(--border);
-				padding: 0.6rem 1.2rem;
-				display: flex;
-				align-items: center;
-				gap: 1.5rem;
-				flex-wrap: wrap;
-				position: sticky;
-				top: 0;
-				z-index: 100;
-			}
-			.topbar-city {
-				font-family: "Cinzel", serif;
-				font-size: 1rem;
-				color: var(--gold2);
-				letter-spacing: 0.15em;
-			}
-			.topbar-stats {
-				display: flex;
-				gap: 1.2rem;
-				flex-wrap: wrap;
-				font-size: 0.78rem;
-				color: var(--text2);
-			}
-			.stat-item {
-				display: flex;
-				align-items: center;
-				gap: 0.3rem;
-			}
-			.stat-val {
-				color: var(--text);
-				font-weight: 500;
-			}
-			.stat-val.gold {
-				color: var(--gold2);
-			}
-			.stat-val.green {
-				color: var(--green2);
-			}
-			.stat-val.red {
-				color: var(--red2);
-			}
-			.topbar-right {
-				margin-left: auto;
-				display: flex;
-				gap: 0.5rem;
-			}
-			.btn-sm {
-				background: var(--bg4);
-				border: 1px solid var(--border);
-				color: var(--text2);
-				padding: 0.3rem 0.7rem;
-				font-size: 0.72rem;
-				font-family: "Noto Serif SC", serif;
-				cursor: pointer;
-				transition: all 0.2s;
-				letter-spacing: 0.05em;
-			}
-			.btn-sm:hover {
-				border-color: var(--gold-dim);
-				color: var(--gold);
-			}
-
-			/* ─── TABS ─── */
-			.tabs {
-				background: var(--bg2);
-				border-bottom: 1px solid var(--border);
-				display: flex;
-				padding: 0 1rem;
-				gap: 0;
-				overflow-x: auto;
-			}
-			.tab {
-				background: none;
-				border: none;
-				border-bottom: 2px solid transparent;
-				color: var(--text3);
-				padding: 0.7rem 1.1rem;
-				font-family: "Noto Serif SC", serif;
-				font-size: 0.82rem;
-				cursor: pointer;
-				transition: all 0.2s;
-				white-space: nowrap;
-				letter-spacing: 0.08em;
-			}
-			.tab:hover {
-				color: var(--text2);
-			}
-			.tab.active {
-				border-bottom-color: var(--gold);
-				color: var(--gold2);
-			}
-
-			/* ─── TAB CONTENT ─── */
-			.tab-content {
-				display: none;
-				padding: 1.2rem;
-				flex: 1;
-			}
-			.tab-content.active {
-				display: block;
-			}
-
-			/* ─── TRADE TABLE (Buy / Inventory) ─── */
-			.trade-table-wrap {
-				overflow-x: auto;
-			}
-			.trade-table {
-				width: 100%;
-				border-collapse: collapse;
-				font-size: 0.82rem;
-			}
-			.trade-table th {
-				background: var(--bg3);
-				color: var(--text2);
-				font-weight: 400;
-				letter-spacing: 0.1em;
-				padding: 0.5rem 0.7rem;
-				text-align: left;
-				border-bottom: 1px solid var(--border);
-				white-space: nowrap;
-				font-size: 0.75rem;
-			}
-			.trade-table td {
-				padding: 0.45rem 0.7rem;
-				border-bottom: 1px solid var(--border);
-				vertical-align: middle;
-			}
-			.trade-table tr:last-child td {
-				border-bottom: none;
-			}
-			.trade-table tr:hover td {
-				background: var(--bg3);
-			}
-			.item-name {
-				color: var(--text);
-			}
-			.item-cat {
-				font-size: 0.66rem;
-				color: var(--text3);
-				display: block;
-				margin-top: 1px;
-			}
-			.price-buy {
-				color: var(--red2);
-			}
-			.price-sell {
-				color: var(--green2);
-			}
-			.qty-owned {
-				color: var(--text2);
-			}
-			.qty-controls {
-				display: flex;
-				align-items: center;
-				gap: 0.3rem;
-			}
-			.qty-input {
-				width: 52px;
-				background: var(--bg4);
-				border: 1px solid var(--border);
-				color: var(--text);
-				padding: 0.25rem 0.4rem;
-				font-size: 0.8rem;
-				font-family: "Noto Serif SC", serif;
-				text-align: center;
-				outline: none;
-			}
-			.qty-input:focus {
-				border-color: var(--gold-dim);
-			}
-			.qty-shortcut {
-				background: var(--bg4);
-				border: 1px solid var(--border);
-				color: var(--text3);
-				padding: 0.2rem 0.35rem;
-				font-size: 0.65rem;
-				cursor: pointer;
-				transition: all 0.15s;
-				white-space: nowrap;
-			}
-			.qty-shortcut:hover {
-				border-color: var(--gold-dim);
-				color: var(--gold);
-			}
-			.price-tag {
-				font-size: 0.75rem;
-				color: var(--text3);
-			}
-			.table-footer {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				padding: 0.8rem 0.7rem;
-				background: var(--bg3);
-				border: 1px solid var(--border);
-				border-top: 1px solid var(--gold-dim);
-				margin-top: 0;
-				flex-wrap: wrap;
-				gap: 0.5rem;
-			}
-			.total-price {
-				font-size: 0.85rem;
-			}
-			.total-price span {
-				color: var(--gold2);
-				font-weight: 500;
-			}
-			.btn-trade {
-				background: transparent;
-				border: 1px solid var(--gold);
-				color: var(--gold2);
-				padding: 0.4rem 1.2rem;
-				font-family: "Noto Serif SC", serif;
-				font-size: 0.8rem;
-				cursor: pointer;
-				letter-spacing: 0.1em;
-				transition: all 0.2s;
-			}
-			.btn-trade:hover {
-				background: rgba(201, 168, 76, 0.12);
-			}
-			.btn-trade.sell {
-				border-color: var(--green2);
-				color: var(--green2);
-			}
-			.btn-trade.sell:hover {
-				background: rgba(74, 154, 96, 0.12);
-			}
-
-			/* ─── EQUIPMENT TAB ─── */
-			.equip-layout {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 1rem;
-			}
-			@media (max-width: 640px) {
-				.equip-layout {
-					grid-template-columns: 1fr;
-				}
-			}
-			.equip-section-title {
-				font-size: 0.75rem;
-				color: var(--gold);
-				letter-spacing: 0.2em;
-				text-transform: uppercase;
-				margin-bottom: 0.8rem;
-				padding-bottom: 0.4rem;
-				border-bottom: 1px solid var(--border);
-			}
-			.member-equip-card {
-				background: var(--bg3);
-				border: 1px solid var(--border);
-				padding: 0.8rem;
-				margin-bottom: 0.6rem;
-			}
-			.member-equip-name {
-				font-size: 0.82rem;
-				color: var(--text);
-				margin-bottom: 0.5rem;
-				display: flex;
-				align-items: center;
-				gap: 0.5rem;
-			}
-			.member-role-badge {
-				font-size: 0.62rem;
-				background: var(--bg5);
-				border: 1px solid var(--border2);
-				color: var(--text3);
-				padding: 1px 5px;
-			}
-			.equip-slots {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 0.4rem;
-			}
-			.equip-slot {
-				background: var(--bg4);
-				border: 1px dashed var(--border);
-				padding: 0.4rem 0.6rem;
-				font-size: 0.72rem;
-				color: var(--text3);
-				min-height: 32px;
-				display: flex;
-				align-items: center;
-				cursor: pointer;
-				transition: border-color 0.2s;
-			}
-			.equip-slot.filled {
-				border-style: solid;
-				border-color: var(--border2);
-				color: var(--text2);
-			}
-			.equip-slot:hover {
-				border-color: var(--gold-dim);
-			}
-			.equip-slot-label {
-				font-size: 0.6rem;
-				color: var(--text3);
-				display: block;
-				margin-bottom: 1px;
-			}
-			.shop-items-grid {
-				display: flex;
-				flex-direction: column;
-				gap: 0.4rem;
-			}
-			.shop-item-row {
-				background: var(--bg3);
-				border: 1px solid var(--border);
-				padding: 0.5rem 0.7rem;
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				font-size: 0.78rem;
-				cursor: pointer;
-				transition: border-color 0.2s;
-			}
-			.shop-item-row:hover {
-				border-color: var(--gold-dim);
-			}
-			.shop-item-name {
-				color: var(--text);
-			}
-			.shop-item-stats {
-				font-size: 0.68rem;
-				color: var(--green2);
-			}
-			.shop-item-price {
-				color: var(--red2);
-			}
-			.btn-buy-equip {
-				background: var(--bg4);
-				border: 1px solid var(--border);
-				color: var(--text2);
-				padding: 0.2rem 0.5rem;
-				font-size: 0.68rem;
-				cursor: pointer;
-				transition: all 0.15s;
-				margin-left: 0.5rem;
-				white-space: nowrap;
-			}
-			.btn-buy-equip:hover {
-				border-color: var(--gold);
-				color: var(--gold);
-			}
-
-			/* ─── INVENTORY SECTION ─── */
-			.inv-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-				gap: 0.4rem;
-				margin-top: 0.5rem;
-			}
-			.inv-item {
-				background: var(--bg3);
-				border: 1px solid var(--border);
-				padding: 0.5rem;
-				font-size: 0.7rem;
-				text-align: center;
-				cursor: grab;
-				position: relative;
-				transition: border-color 0.2s;
-				user-select: none;
-			}
-			.inv-item:hover {
-				border-color: var(--gold-dim);
-			}
-			.inv-item-icon {
-				font-size: 1.4rem;
-				display: block;
-				margin-bottom: 3px;
-			}
-			.inv-item-name {
-				color: var(--text2);
-				font-size: 0.66rem;
-			}
-			.inv-item-qty {
-				position: absolute;
-				top: 2px;
-				right: 4px;
-				font-size: 0.6rem;
-				color: var(--gold);
-			}
-			.inv-item-sell {
-				display: block;
-				margin-top: 3px;
-				font-size: 0.6rem;
-				color: var(--text3);
-				cursor: pointer;
-			}
-			.inv-item-sell:hover {
-				color: var(--green2);
-			}
-
-			/* ─── TEAM TAB ─── */
-			.team-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-				gap: 0.8rem;
-			}
-			.team-card {
-				background: var(--bg3);
-				border: 1px solid var(--border);
-				padding: 1rem;
-			}
-			.team-member-header {
-				display: flex;
-				align-items: center;
-				gap: 0.7rem;
-				margin-bottom: 0.8rem;
-			}
-			.team-avatar {
-				width: 36px;
-				height: 36px;
-				background: var(--bg5);
-				border: 1px solid var(--border2);
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-size: 1.2rem;
-			}
-			.team-name {
-				font-size: 0.88rem;
-				color: var(--text);
-			}
-			.team-role {
-				font-size: 0.66rem;
-				color: var(--text3);
-				margin-top: 1px;
-			}
-			.stat-bars {
-				display: flex;
-				flex-direction: column;
-				gap: 0.35rem;
-			}
-			.stat-row {
-				display: flex;
-				align-items: center;
-				gap: 0.5rem;
-				font-size: 0.72rem;
-			}
-			.stat-row-label {
-				color: var(--text3);
-				width: 40px;
-				flex-shrink: 0;
-			}
-			.stat-bar-bg {
-				flex: 1;
-				height: 4px;
-				background: var(--bg5);
-				position: relative;
-			}
-			.stat-bar-fill {
-				height: 100%;
-				background: var(--gold);
-				position: absolute;
-				left: 0;
-				top: 0;
-			}
-			.stat-bar-fill.str {
-				background: #c44040;
-			}
-			.stat-bar-fill.agi {
-				background: #4a9a60;
-			}
-			.stat-bar-fill.int {
-				background: #4a7ac4;
-			}
-			.stat-bar-fill.end {
-				background: #c4924a;
-			}
-			.stat-num {
-				color: var(--text2);
-				font-size: 0.68rem;
-				width: 22px;
-				text-align: right;
-			}
-			.team-footer {
-				margin-top: 0.8rem;
-				padding-top: 0.6rem;
-				border-top: 1px solid var(--border);
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				font-size: 0.72rem;
-			}
-			.wage-label {
-				color: var(--text3);
-			}
-			.wage-val {
-				color: var(--red2);
-			}
-
-			/* ─── QUEST TAB ─── */
-			.quest-list {
-				display: flex;
-				flex-direction: column;
-				gap: 0.6rem;
-			}
-			.quest-card {
-				background: var(--bg3);
-				border: 1px solid var(--border);
-				border-left: 3px solid var(--border);
-				padding: 0.8rem 1rem;
-				transition: border-color 0.2s;
-			}
-			.quest-card.active-quest {
-				border-left-color: var(--gold);
-			}
-			.quest-card.urgent {
-				border-left-color: var(--red2);
-			}
-			.quest-title {
-				font-size: 0.88rem;
-				color: var(--text);
-				margin-bottom: 0.3rem;
-			}
-			.quest-desc {
-				font-size: 0.73rem;
-				color: var(--text2);
-				line-height: 1.5;
-				margin-bottom: 0.5rem;
-			}
-			.quest-reward {
-				display: flex;
-				gap: 1rem;
-				font-size: 0.72rem;
-			}
-			.reward-item {
-				color: var(--gold2);
-			}
-			.quest-deadline {
-				color: var(--red2);
-			}
-			.btn-accept {
-				background: transparent;
-				border: 1px solid var(--border2);
-				color: var(--text2);
-				padding: 0.25rem 0.7rem;
-				font-size: 0.7rem;
-				cursor: pointer;
-				font-family: "Noto Serif SC", serif;
-				transition: all 0.2s;
-				margin-top: 0.4rem;
-			}
-			.btn-accept:hover {
-				border-color: var(--gold);
-				color: var(--gold);
-			}
-			.btn-accept.accepted {
-				border-color: var(--gold);
-				color: var(--gold);
-				cursor: default;
-			}
-
-			/* ─── TRANSPORT TAB ─── */
-			.transport-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-				gap: 0.7rem;
-			}
-			.transport-card {
-				background: var(--bg3);
-				border: 1px solid var(--border);
-				padding: 0.9rem;
-				text-align: center;
-				cursor: pointer;
-				transition: border-color 0.2s;
-				position: relative;
-			}
-			.transport-card.owned {
-				border-color: var(--gold);
-			}
-			.transport-card:hover:not(.owned) {
-				border-color: var(--border2);
-			}
-			.transport-icon {
-				font-size: 2rem;
-				display: block;
-				margin-bottom: 0.4rem;
-			}
-			.transport-name {
-				font-size: 0.82rem;
-				color: var(--text);
-				margin-bottom: 0.2rem;
-			}
-			.transport-stats {
-				font-size: 0.68rem;
-				color: var(--text2);
-				margin-bottom: 0.5rem;
-			}
-			.transport-price {
-				font-size: 0.78rem;
-				color: var(--red2);
-			}
-			.owned-badge {
-				position: absolute;
-				top: 5px;
-				right: 5px;
-				font-size: 0.6rem;
-				background: var(--gold);
-				color: var(--bg);
-				padding: 1px 5px;
-			}
-
-			/* ─── TOAST ─── */
-			.toast {
-				position: fixed;
-				bottom: 1.5rem;
-				left: 50%;
-				transform: translateX(-50%);
-				background: var(--bg3);
-				border: 1px solid var(--border2);
-				color: var(--text);
-				padding: 0.5rem 1.2rem;
-				font-size: 0.8rem;
-				z-index: 9999;
-				letter-spacing: 0.05em;
-				animation: toast-in 0.3s ease;
-				pointer-events: none;
-			}
-			@keyframes toast-in {
-				from {
-					opacity: 0;
-					transform: translateX(-50%) translateY(10px);
-				}
-				to {
-					opacity: 1;
-					transform: translateX(-50%) translateY(0);
-				}
-			}
-			.toast.gold {
-				border-color: var(--gold);
-				color: var(--gold2);
-			}
-			.toast.red {
-				border-color: var(--red2);
-				color: var(--red2);
-			}
-
-			/* ─── SECTION LABELS ─── */
-			.section-label {
-				font-size: 0.7rem;
-				color: var(--gold);
-				letter-spacing: 0.25em;
-				text-transform: uppercase;
-				margin-bottom: 0.7rem;
-				display: flex;
-				align-items: center;
-				gap: 0.5rem;
-			}
-			.section-label::after {
-				content: "";
-				flex: 1;
-				height: 1px;
-				background: var(--border);
-			}
-
-			/* ─── TRAVEL MODAL ─── */
-			.modal-overlay {
-				display: none;
-				position: fixed;
-				inset: 0;
-				background: rgba(0, 0, 0, 0.85);
-				z-index: 200;
-				align-items: center;
-				justify-content: center;
-			}
-			.modal-overlay.open {
-				display: flex;
-			}
-			.modal-box {
-				background: var(--bg2);
-				border: 1px solid var(--border2);
-				padding: 1.5rem 2rem;
-				width: 360px;
-				max-width: 95vw;
-				position: relative;
-			}
-			.modal-title {
-				font-family: "Cinzel", serif;
-				font-size: 0.9rem;
-				color: var(--gold);
-				letter-spacing: 0.2em;
-				margin-bottom: 1rem;
-				text-transform: uppercase;
-			}
-			.city-choose-grid {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 0.5rem;
-				margin-bottom: 1rem;
-			}
-			.city-btn {
-				background: var(--bg4);
-				border: 1px solid var(--border);
-				color: var(--text2);
-				padding: 0.5rem 0.6rem;
-				font-size: 0.78rem;
-				cursor: pointer;
-				font-family: "Noto Serif SC", serif;
-				transition: all 0.2s;
-				text-align: left;
-			}
-			.city-btn:hover {
-				border-color: var(--gold-dim);
-				color: var(--text);
-			}
-			.city-btn .travel-cost {
-				font-size: 0.65rem;
-				color: var(--red2);
-				float: right;
-			}
-			.disabled-city {
-				opacity: 0.4;
-				cursor: not-allowed !important;
-			}
-			.btn-close-modal {
-				position: absolute;
-				top: 0.7rem;
-				right: 0.8rem;
-				background: none;
-				border: none;
-				color: var(--text3);
-				cursor: pointer;
-				font-size: 1rem;
-			}
-
-			/* ─── PRICE LEVEL INDICATORS ─── */
-			.price-bar-wrap {
-				height: 3px;
-				background: var(--bg5);
-				border-radius: 2px;
-				margin: 3px 0 2px;
-				width: 80px;
-				position: relative;
-				overflow: hidden;
-			}
-			.price-bar-fill {
-				height: 100%;
-				border-radius: 2px;
-				background: linear-gradient(90deg, var(--green2) 0%, var(--gold) 50%, var(--red2) 100%);
-				position: absolute;
-				left: 0;
-				top: 0;
-			}
-			.price-lvl {
-				font-size: 0.62rem;
-				padding: 1px 5px;
-				border-radius: 2px;
-				font-weight: 500;
-				letter-spacing: 0.05em;
-			}
-			.lvl-low {
-				background: rgba(74, 154, 96, 0.15);
-				color: var(--green2);
-			}
-			.lvl-mid {
-				background: rgba(201, 168, 76, 0.12);
-				color: var(--gold);
-			}
-			.lvl-high {
-				background: rgba(196, 64, 64, 0.15);
-				color: var(--red2);
-			}
-			.lvl-peak {
-				background: rgba(196, 64, 64, 0.3);
-				color: #ff6060;
-				animation: pulse-red 1.2s infinite;
-			}
-			@keyframes pulse-red {
-				0%,
-				100% {
-					opacity: 1;
-				}
-				50% {
-					opacity: 0.6;
-				}
-			}
-
-			/* SCROLLBAR */
-			::-webkit-scrollbar {
-				width: 4px;
-				height: 4px;
-			}
-			::-webkit-scrollbar-track {
-				background: var(--bg);
-			}
-			::-webkit-scrollbar-thumb {
-				background: var(--border2);
-			}
-
-			/* File input hidden */
-			#save-file-input {
-				display: none;
-			}
-		</style>
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
-		<!-- ══════════════════════════════════
-     TITLE SCREEN
-══════════════════════════════════ -->
 		<div id="screen-title" class="screen active">
 			<div class="title-deco">
 				<div class="game-title-cn" id="t-title-cn">游商模拟器</div>
@@ -1204,9 +27,6 @@
 			<div class="version-tag">DEMO v0.1 · by 纯一星鸣</div>
 		</div>
 
-		<!-- ══════════════════════════════════
-     NEW GAME SCREEN
-══════════════════════════════════ -->
 		<div id="screen-newgame" class="screen">
 			<button class="btn-back" id="btn-back-newgame" onclick="showScreen('title')">← 返回</button>
 			<div class="panel">
@@ -1223,11 +43,7 @@
 			</div>
 		</div>
 
-		<!-- ══════════════════════════════════
-     GAME SCREEN
-══════════════════════════════════ -->
 		<div id="screen-game" class="screen" style="flex-direction: column">
-			<!-- TOP BAR -->
 			<div class="topbar">
 				<div class="topbar-city" id="city-name">—</div>
 				<div class="topbar-stats">
@@ -1241,7 +57,6 @@
 				</div>
 			</div>
 
-			<!-- TABS -->
 			<div class="tabs">
 				<button class="tab active" onclick="switchTab('buy')" id="tab-buy">买入</button>
 				<button class="tab" onclick="switchTab('inventory')" id="tab-inv">库存</button>
@@ -1252,7 +67,6 @@
 				<button class="tab" onclick="switchTab('quest')" id="tab-quest">任务</button>
 			</div>
 
-			<!-- ── BUY TAB ── -->
 			<div id="tab-content-buy" class="tab-content active">
 				<div class="section-label">市场商品</div>
 				<div class="trade-table-wrap">
@@ -1271,12 +85,11 @@
 					</table>
 				</div>
 				<div class="table-footer">
-					<div class="total-price">总价：<span id="buy-total">0</span> 金币</div>
+					<div class="total-price">总价：<span id="buy-total">0</span> 币</div>
 					<button class="btn-trade" onclick="executeBuy()">确认购买</button>
 				</div>
 			</div>
 
-			<!-- ── INVENTORY TAB ── -->
 			<div id="tab-content-inventory" class="tab-content">
 				<div class="section-label">我的库存</div>
 				<div class="trade-table-wrap">
@@ -1295,12 +108,11 @@
 					</table>
 				</div>
 				<div class="table-footer">
-					<div class="total-price">售出总额：<span id="sell-total">0</span> 金币</div>
+					<div class="total-price">售出总额：<span id="sell-total">0</span> 币</div>
 					<button class="btn-trade sell" onclick="executeSell()">确认售出</button>
 				</div>
 			</div>
 
-			<!-- ── WEAPON TAB ── -->
 			<div id="tab-content-weapon" class="tab-content">
 				<div class="equip-layout">
 					<div>
@@ -1314,7 +126,6 @@
 				</div>
 			</div>
 
-			<!-- ── ARMOR TAB ── -->
 			<div id="tab-content-armor" class="tab-content">
 				<div class="equip-layout">
 					<div>
@@ -1328,26 +139,22 @@
 				</div>
 			</div>
 
-			<!-- ── TRANSPORT TAB ── -->
 			<div id="tab-content-transport" class="tab-content">
 				<div class="section-label">可用交通工具</div>
 				<div class="transport-grid" id="transport-grid"></div>
 			</div>
 
-			<!-- ── TEAM TAB ── -->
 			<div id="tab-content-team" class="tab-content">
 				<div class="section-label">团队成员</div>
 				<div class="team-grid" id="team-grid"></div>
 			</div>
 
-			<!-- ── QUEST TAB ── -->
 			<div id="tab-content-quest" class="tab-content">
 				<div class="section-label">可接任务</div>
 				<div class="quest-list" id="quest-list"></div>
 			</div>
 		</div>
 
-		<!-- TRAVEL MODAL -->
 		<div class="modal-overlay" id="travel-modal">
 			<div class="modal-box">
 				<button class="btn-close-modal" onclick="closeTravel()">✕</button>
@@ -1358,67 +165,70 @@
 			</div>
 		</div>
 
+		<div class="modal-overlay" id="combat-modal" style="z-index: 3000;">
+			<div class="modal-box" style="max-width: 600px; width: 90%; height: 85vh; padding: 1.2rem;">
+				<div class="combat-container">
+					<div class="combat-header">
+						<div class="modal-title" id="combat-title" style="font-size: 1.2rem; margin-bottom: 0.2rem;">⚔️ 遭遇战斗 ⚔️</div>
+						<div id="combat-subtitle" style="font-size: 0.75rem; color: var(--text3);">回合制策略交锋</div>
+					</div>
+					
+					<div class="combat-arena">
+						<div class="combat-side">
+							<div class="combat-side-title" id="combat-ally-title">我的团队</div>
+							<div id="combat-allies-list"></div>
+						</div>
+						<div class="combat-side">
+							<div class="combat-side-title" id="combat-enemy-title">敌方队列</div>
+							<div id="combat-enemies-list"></div>
+						</div>
+					</div>
+
+					<div class="combat-log-wrapper" id="combat-log-scroll">
+						<div id="combat-log-container"></div>
+					</div>
+
+					<div class="combat-actions-grid">
+						<button class="combat-btn" id="combat-btn-auto" onclick="combatToggleAuto()">自动攻击</button>
+						<button class="combat-btn" id="combat-btn-attack" onclick="combatManualAttack()">攻击</button>
+						<button class="combat-btn" id="combat-btn-heal" onclick="combatHeal()">治疗</button>
+						<button class="combat-btn" id="combat-btn-flee" onclick="combatFlee()">逃跑</button>
+						<button class="combat-btn" id="combat-btn-surrender" onclick="combatSurrender()">投降</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<script src="lang.js"></script>
+		<script src="data.js"></script>
 		<script>
-			// ══════════════════════════════════
-			// DATA
-			// ══════════════════════════════════
-			// 语言模块已拆分至 lang.js
+			
+			// ── 货币补丁：统一改为"币" / "coins" ──
+			document.addEventListener("DOMContentLoaded", function() {
+				if (typeof LANG !== "undefined") {
+					if (LANG.zh) LANG.zh.gold = "币";
+					if (LANG.en) LANG.en.gold = "coins";
+				}
+			});
 
-			const COUNTRIES = [
-				{ id: "china", name: "中国", nameEn: "China" },
-				{ id: "germany", name: "德国", nameEn: "Germany" },
-			];
-
-			const CITIES = {
-				china: ["董庆", "土海", "白京", "咸都", "厂州", "探圳", "文汉", "天律", "东安", "邓州", "办州", "航州", "红岛", "右家庄", "长汐", "台巴", "昆朋", "南晶", "高阳", "金川"],
-				germany: ["Altendorf", "Freibach", "Bergstadt", "Bernberg", "Ebersburg", "Falkenstein", "Frankensee", "Freudental", "Friedheim", "Geisenfeld", "Glückingen", "Großwald", "Grünau", "Hagenhausen", "Herzhafen", "Heilenkirchen", "Kirchmar", "Laufzig", "Lichtenfurt", "Lessen"],
-			};
-
-			const GOODS = [
-				{ id: "grain", name: "谷物", nameEn: "Grain", icon: "🌾", cat: "粮食", priceMin: 5, priceMax: 10 },
-				{ id: "fuel", name: "汽油", nameEn: "Fuel", icon: "⛽", cat: "能源", priceMin: 30, priceMax: 50 },
-				{ id: "textile", name: "纺织品", nameEn: "Textiles", icon: "🧵", cat: "纺织", priceMin: 50, priceMax: 100 },
-				{ id: "medicine", name: "医用品", nameEn: "Medicine", icon: "💊", cat: "医疗", priceMin: 200, priceMax: 400 },
-				{ id: "gems", name: "宝石", nameEn: "Gems", icon: "💎", cat: "奢侈", priceMin: 1000, priceMax: 2000 },
-				{ id: "gold_bar", name: "黄金", nameEn: "Gold", icon: "🥇", cat: "贵金属", priceMin: 3000, priceMax: 5000 },
-				{ id: "contraband", name: "违禁品", nameEn: "Contraband", icon: "📦", cat: "违禁", priceMin: 5, priceMax: 5000 },
-			];
-
-			const WEAPONS = [
-				{ id: "branch", name: "树枝", nameEn: "Branch", icon: "🪵", atk: 3, price: 10 },
-				{ id: "ironrod", name: "铁棍", nameEn: "Iron Rod", icon: "🔩", atk: 10, price: 50 },
-				{ id: "knife", name: "小刀", nameEn: "Knife", icon: "🔪", atk: 25, price: 200 },
-				{ id: "machete", name: "砍刀", nameEn: "Machete", icon: "⚔️", atk: 50, price: 500 },
-				{ id: "axe", name: "斧头", nameEn: "Axe", icon: "🪓", atk: 70, price: 1500 },
-				{ id: "holysword", name: "圣剑", nameEn: "Holy Sword", icon: "✨", atk: 100, price: 6000 },
-			];
-
-			const ARMORS = [
-				{ id: "tshirt", name: "T恤", nameEn: "T-Shirt", icon: "👕", def: 3, price: 10 },
-				{ id: "hoodie", name: "卫衣", nameEn: "Hoodie", icon: "🧥", def: 10, price: 50 },
-				{ id: "jacket", name: "皮夹克", nameEn: "Leather Jacket", icon: "🥋", def: 25, price: 200 },
-				{ id: "vest", name: "战术马甲", nameEn: "Tactical Vest", icon: "🦺", def: 50, price: 500 },
-				{ id: "kevlar", name: "防弹衣", nameEn: "Kevlar Vest", icon: "🛡️", def: 70, price: 1500 },
-				{ id: "riot", name: "防暴盔甲", nameEn: "Riot Armor", icon: "🦾", def: 100, price: 6000 },
-			];
-
-			const TRANSPORTS = [
-				{ id: "walk", name: "步行", nameEn: "Walking", icon: "🚶", passengers: 0, cap: 10, spd: 1, fuelCost: 0, price: 0, owned: true },
-				{ id: "bike", name: "自行车", nameEn: "Bicycle", icon: "🚲", passengers: 0, cap: 30, spd: 2, fuelCost: 0, price: 200, owned: false },
-				{ id: "moto", name: "摩托车", nameEn: "Motorbike", icon: "🏍️", passengers: 1, cap: 30, spd: 3, fuelCost: 1, price: 600, owned: false },
-				{ id: "trike", name: "三轮车", nameEn: "Tricycle", icon: "🛺", passengers: 1, cap: 100, spd: 2, fuelCost: 0, price: 400, owned: false },
-				{ id: "car", name: "小轿车", nameEn: "Car", icon: "🚗", passengers: 3, cap: 250, spd: 5, fuelCost: 3, price: 2000, owned: false },
-				{ id: "van", name: "小货车", nameEn: "Van", icon: "🚐", passengers: 2, cap: 500, spd: 4, fuelCost: 5, price: 1500, owned: false },
-				{ id: "truck", name: "大货车", nameEn: "Truck", icon: "🚚", passengers: 2, cap: 1000, spd: 4, fuelCost: 15, price: 3000, owned: false },
-			];
 
 			const TEAM_TEMPLATES = [{ name: "__PLAYER__", role: "", icon: "🧑‍💼", wage: 0, weapon: null, armor: null, isPlayer: true }];
 
-			// ── NPC 生成 ──
-			const NPC_ICONS = ["🧑", "👩", "👨", "🧔", "👩\u200d🦱", "👨\u200d🦳", "🧕", "👱", "🧑\u200d🦰", "👩\u200d🦳"];
-			const NPC_NAMES_ZH = ["王芳", "李明", "张伟", "陈静", "赵磊", "刘燕", "周洋", "吴涛", "郑霞", "钱勇", "孙娜", "林峰", "黄梅", "何超", "马丽"];
-			const NPC_NAMES_EN = ["Wei", "Fang", "Lei", "Jing", "Yang", "Yan", "Tao", "Na", "Feng", "Mei", "Chao", "Li", "Yong", "Ming", "Xia"];
+		
+			function genName() {
+				const isZh = LANG.current === "zh";
+				if (isZh) {
+					const sur = NPC_SURNAMES_ZH[Math.floor(Math.random() * NPC_SURNAMES_ZH.length)];
+					const giv = NPC_GIVEN_ZH[Math.floor(Math.random() * NPC_GIVEN_ZH.length)];
+					// 偶尔双字名
+					const extra = Math.random() < 0.4 ? NPC_GIVEN_ZH[Math.floor(Math.random() * NPC_GIVEN_ZH.length)] : "";
+					return sur + giv + extra;
+				} else {
+					const first = NPC_FIRST_EN[Math.floor(Math.random() * NPC_FIRST_EN.length)];
+					const last = NPC_LAST_EN[Math.floor(Math.random() * NPC_LAST_EN.length)];
+					return first + " " + last;
+				}
+			}
 
 			function genTalent() {
 				const factor = Math.random() * Math.random() * Math.random();
@@ -1428,27 +238,30 @@
 			function genNPC() {
 				const atkBase = Math.floor(Math.random() * 101); // 0-100
 				const defBase = Math.floor(Math.random() * 101); // 0-100
+				const hpBase = Math.floor(200 + Math.random() * 201); // 200-400
 				const talent = genTalent(); // 1.0-10.0，大多数接近1
-				// 天赋随机加成攻击或防御其中一项
-				const talentOn = Math.random() < 0.5 ? "atk" : "def";
+				// 天赋随机加成攻击、防御或HP其中一项
+				const roll = Math.random();
+				const talentOn = roll < 0.33 ? "atk" : roll < 0.66 ? "def" : "hp";
 				const atkTotal = talentOn === "atk" ? Math.round(atkBase * talent) : atkBase;
 				const defTotal = talentOn === "def" ? Math.round(defBase * talent) : defBase;
-				// 工资 = (加成后攻击 + 加成后防御) / 10
-				const wage = Math.max(1, Math.round((atkTotal + defTotal) / 10));
+				const hpTotal = talentOn === "hp" ? Math.round(hpBase * talent) : hpBase;
+				// 工资 = (攻击 + 防御 + HP) × 天赋值 / 10
+				const wage = Math.max(1, Math.round((atkTotal + defTotal + hpTotal) * talent / 10));
+				const name = genName();
 				const isZh = LANG.current === "zh";
-				const nameList = isZh ? NPC_NAMES_ZH : NPC_NAMES_EN;
-				const name = nameList[Math.floor(Math.random() * nameList.length)];
-				const icon = NPC_ICONS[Math.floor(Math.random() * NPC_ICONS.length)];
 				return {
 					name,
-					icon,
+					icon: "🧑",
 					role: isZh ? "旅人" : "Traveler",
 					atkBase,
 					defBase,
+					hpBase,
 					talent,
 					talentOn,
 					atk: atkTotal,
 					def: defTotal,
+					hp: hpTotal,
 					wage,
 					weapon: null,
 					armor: null,
@@ -1476,26 +289,8 @@
 					title: "丝绸之路",
 					urgent: false,
 					desc: "将20件丝绸运至撒马尔罕，那里的商人愿意高价购买东方货物。",
-					reward: "800金币 + 声誉+10",
+					reward: "800币 + 声誉+10",
 					deadline: "第15天",
-					accepted: false,
-				},
-				{
-					id: "q2",
-					title: "粮食危机",
-					urgent: true,
-					desc: "北境遭遇饥荒，急需食盐与茶叶各30件。完成后获得特殊称号。",
-					reward: '1200金币 + 称号"善商"',
-					deadline: "第8天",
-					accepted: false,
-				},
-				{
-					id: "q3",
-					title: "神秘货物",
-					urgent: false,
-					desc: "一位蒙面商人委托你运送一箱货物至威尼斯，内容不明，报酬丰厚。",
-					reward: "2000金币",
-					deadline: "第30天",
 					accepted: false,
 				},
 			];
@@ -1508,6 +303,7 @@
 				charName: "",
 				country: "",
 				city: "",
+				prevCity: "", // 增加对上一座城市的追踪，用于战败、投降返回
 				gold: 1000,
 				day: 1,
 				rep: 0,
@@ -1578,6 +374,7 @@
 				G.country = selectedCountry;
 				const cities = CITIES[selectedCountry];
 				G.city = cities[Math.floor(Math.random() * cities.length)];
+				G.prevCity = G.city; // 默认前一座城市为首发点
 				G.gold = 1000;
 				G.day = 1;
 				G.rep = 0;
@@ -1638,7 +435,7 @@
 
 			function updateTopbar() {
 				document.getElementById("city-name").textContent = `📍 ${G.city}`;
-				document.getElementById("stat-gold").textContent = G.gold.toLocaleString() + " 金币";
+				document.getElementById("stat-gold").textContent = G.gold.toLocaleString() + (LANG.current === "zh" ? " 币" : " coins");
 
 				document.getElementById("stat-day").textContent = `第 ${G.day} 天`;
 				document.getElementById("stat-rep").textContent = `声誉: ${G.rep}`;
@@ -1686,7 +483,7 @@
 					const sub = qty * price;
 					total += sub;
 					const lineEl = document.getElementById("buy-line-" + g.id);
-					if (lineEl) lineEl.textContent = sub > 0 ? sub.toLocaleString() + " 金" : "—";
+					if (lineEl) lineEl.textContent = sub > 0 ? sub.toLocaleString() + " 币" : "—";
 				});
 				document.getElementById("buy-total").textContent = total.toLocaleString();
 			}
@@ -1781,7 +578,7 @@
 					const sub = qty * price;
 					total += sub;
 					const lineEl = document.getElementById("sell-line-" + id);
-					if (lineEl) lineEl.textContent = sub > 0 ? sub.toLocaleString() + " 金" : "—";
+					if (lineEl) lineEl.textContent = sub > 0 ? sub.toLocaleString() + " 币" : "—";
 				});
 				document.getElementById("sell-total").textContent = total.toLocaleString();
 			}
@@ -1851,8 +648,8 @@
         <div class="shop-item-stats">攻击 +${w.atk}</div>
       </div>
       <div style="display:flex;align-items:center;gap:0.3rem;">
-        <span class="shop-item-price">${w.price}金</span>
-        <select class="qty-input" id="weap-target" style="width:60px;font-size:0.68rem;" onchange="">
+        <span class="shop-item-price">${w.price}币</span>
+        <select class="qty-input" id="weap-target-${w.id}" style="width:60px;font-size:0.68rem;" onchange="">
           ${G.team.map((m, i) => `<option value="${i}">${m.name}</option>`).join("")}
         </select>
         <button class="btn-buy-equip" onclick="buyWeapon('${w.id}',${w.price})">购买</button>
@@ -1867,7 +664,7 @@
 					showToast(T("errGold"), "red");
 					return;
 				}
-				const sel = document.querySelector("#weapon-shop select");
+				const sel = document.getElementById("weap-target-" + weapId);
 				const idx = sel ? parseInt(sel.value) : 0;
 				G.gold -= price;
 				G.team[idx].weapon = weapId;
@@ -1918,8 +715,8 @@
         <div class="shop-item-stats">+${a.def} 防御</div>
       </div>
       <div style="display:flex;align-items:center;gap:0.3rem;">
-        <span class="shop-item-price">${a.price}金</span>
-        <select class="qty-input" style="width:60px;font-size:0.68rem;">
+        <span class="shop-item-price">${a.price}币</span>
+        <select class="qty-input" id="armor-target-${a.id}" style="width:60px;font-size:0.68rem;">
           ${G.team.map((m, i) => `<option value="${i}">${m.name}</option>`).join("")}
         </select>
         <button class="btn-buy-equip" onclick="buyArmor('${a.id}',${a.price},this)">购买</button>
@@ -1934,7 +731,7 @@
 					showToast(T("errGold"), "red");
 					return;
 				}
-				const sel = btn.parentElement.querySelector("select");
+				const sel = document.getElementById("armor-target-" + armorId);
 				const idx = sel ? parseInt(sel.value) : 0;
 				G.gold -= price;
 				G.team[idx].armor = armorId;
@@ -1998,13 +795,16 @@
 						if (isPlayer) {
 							statsHtml = `<div style="font-size:0.72rem;color:var(--text3);margin-bottom:0.6rem;text-align:center;letter-spacing:0.05em;">${isZh ? "（玩家角色）" : "(Player character)"}</div>`;
 						} else {
-							// 攻击/防御显示：有天赋加成的那项写括号
+							// 有天赋加成的那项显示倍数
 							const atkLabel = m.talentOn === "atk" && m.atkBase !== undefined ? `${m.atk} <span style="color:var(--text3);font-size:0.68rem;">(${m.atkBase}×${m.talent})</span>` : `${m.atk ?? "-"}`;
 							const defLabel = m.talentOn === "def" && m.defBase !== undefined ? `${m.def} <span style="color:var(--text3);font-size:0.68rem;">(${m.defBase}×${m.talent})</span>` : `${m.def ?? 0}${armorDef > 0 ? `<span style="font-size:0.68rem;color:var(--text3)"> +${armorDef}</span>` : ""}`;
+							const hpVal = m.hp ?? m.hpBase ?? 200;
+							const hpLabel = m.talentOn === "hp" && m.hpBase !== undefined ? `${hpVal} <span style="color:var(--text3);font-size:0.68rem;">(${m.hpBase}×${m.talent})</span>` : `${hpVal}`;
 							statsHtml = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.35rem 0.8rem;font-size:0.75rem;margin-bottom:0.6rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem 0.5rem;font-size:0.75rem;margin-bottom:0.6rem;">
         <div style="color:var(--text3)">${isZh ? "攻击" : "ATK"} <span style="color:var(--red2);font-weight:500">${atkLabel}</span></div>
         <div style="color:var(--text3)">${isZh ? "防御" : "DEF"} <span style="color:var(--green2);font-weight:500">${defLabel}</span></div>
+        <div style="color:var(--text3)">HP <span style="color:#6ab0f5;font-weight:500">${hpLabel}</span></div>
       </div>`;
 						}
 
@@ -2015,7 +815,6 @@
 						return `
     <div class="team-card">
       <div class="team-member-header">
-        <div class="team-avatar">${m.icon}</div>
         <div style="flex:1">
           <div class="team-name">${m.name}${rescuedBadge}</div>
           ${m.role ? `<div class="team-role">${m.role}</div>` : ""}
@@ -2031,7 +830,7 @@
         </div>
         <div>
           <span class="wage-label">${isZh ? "日薪：" : "Wage: "}</span>
-          <span class="wage-val">${m.wage > 0 ? m.wage + (isZh ? "金" : "/day") : "—"}</span>
+          <span class="wage-val">${m.wage > 0 ? m.wage + (isZh ? "币" : " coins") : "—"}</span>
         </div>
       </div>
     </div>
@@ -2189,6 +988,8 @@
 					if (fuelInv.qty <= 0) delete G.inventory["fuel"];
 				}
 
+				// 记录当前城市为 prevCity，以便返回
+				G.prevCity = G.city;
 				G.city = o.city;
 				G.day += o.days;
 				generateCityPrices();
@@ -2199,8 +1000,6 @@
 
 				closeTravel();
 				renderGame();
-
-				const fuelMsg = transport.fuelCost > 0 ? `，${T("toastDays")} ${o.fuelNeeded}` : "";
 
 				// Trigger road events (one per day of travel)
 				setTimeout(() => triggerRoadEvents(o.crimeRate, o.days), 600);
@@ -2234,27 +1033,71 @@
 				return "nothing";
 			}
 
-			// 事件定义：choices 数组的每个选项包含 label_zh/en、outcome 函数（返回 {goldDelta, repDelta, invLoss, extraDays, text_zh, text_en}）
+			// 生成特定数量与等级的敌对队列
+			function generateEnemyForce(typeStr, cnType) {
+				const size = Math.floor(Math.random() * 3) + 1; // 1-3名
+				const party = [];
+				const tiers = ["E", "D", "C", "B", "A", "S"];
+				
+				for(let i=0; i<size; i++) {
+					const atk = Math.floor(Math.random() * 101);
+					const def = Math.floor(Math.random() * 101);
+					const hp = Math.floor(200 + Math.random() * 201); // 200-400 HP
+					
+					// 随机选取武器与防具索引 0-6 (0=无, 1-6对应实际物品)
+					const wIdx = Math.floor(Math.random() * 7);
+					const aIdx = Math.floor(Math.random() * 7);
+					const avg = (wIdx + aIdx) / 2;
+					
+					let tier = "E";
+					if (avg <= 1) tier = "E";
+					else if (avg <= 2) tier = "D";
+					else if (avg <= 3) tier = "C";
+					else if (avg <= 4) tier = "B";
+					else if (avg <= 5) tier = "A";
+					else tier = "S";
+					
+					party.push({
+						name: `${cnType}#${i+1}`,
+						type: typeStr,
+						atk: atk,
+						def: def,
+						hp: hp,
+						maxHp: hp,
+						wIdx: wIdx,
+						aIdx: aIdx,
+						tier: tier,
+						hasAttemptedFlee: false
+					});
+				}
+				return party;
+			}
+
+			function getForceDesc(force) {
+				return `${force.length}名${force[0].name.substring(0,3)}（${force.map(f => f.tier + '级').join('，')}）`;
+			}
+
+			// 事件定义已经完全接入实时生成的战斗队列与指令
 			const ROAD_EVENT_DATA = {
 				nothing: {
 					icon: "🌄",
 					zh: "无事发生，一路平静如水。",
 					en: "The road was quiet. Nothing happened.",
-					choices: null, // 无选择，自动3秒推进
+					choices: null,
 				},
 				steal: {
 					icon: "🦹",
 					zh: "发现有人在暗中翻你的包囊——你的钱袋变轻了。",
 					en: "Someone has been picking your pockets. Your coin pouch is lighter.",
-					choices: null, // 被动事件，自动结算后推进
+					choices: null,
 					resolve: () => {
-						const pct = 0.01 + Math.random() * 0.19; // 1–20%
+						const pct = 0.01 + Math.random() * 0.19;
 						const lost = Math.max(1, Math.floor(G.gold * pct));
 						G.gold = Math.max(0, G.gold - lost);
 						const isZh = LANG.current === "zh";
 						return {
 							goldDelta: -lost,
-							text: isZh ? `被盗走了 ${lost} 金（${Math.round(pct * 100)}%）。` : `Lost ${lost} gold (${Math.round(pct * 100)}%).`,
+							text: isZh ? `被盗走了 ${lost} 币（${Math.round(pct * 100)}%）。` : `Lost ${lost} coins (${Math.round(pct * 100)}%).`,
 						};
 					},
 				},
@@ -2271,7 +1114,7 @@
 								G.gold += gold;
 								G.rep = Math.max(0, G.rep - 3);
 								const isZh = LANG.current === "zh";
-								return { goldDelta: gold, repDelta: -3, text: isZh ? `搜得 ${gold} 金，但此事有损名誉。` : `Found ${gold} gold, but your reputation suffers.` };
+								return { goldDelta: gold, repDelta: -3, text: isZh ? `搜得 ${gold} 币，但此事有损名誉。` : `Found ${gold} coins, but your reputation suffers.` };
 							},
 						},
 						{
@@ -2282,11 +1125,10 @@
 								const freeSeats = getTransportFreeSeats();
 								G.rep += 2;
 								if (freeSeats > 0) {
-									// 生成NPC并加入队伍
 									const npc = genNPC();
 									G.team.push(npc);
 									renderGame();
-									return { repDelta: 2, text: isZh ? `你将其救醒，对方感激涕零。${npc.icon} ${npc.name} 决定暂时加入你的队伍，搭乘你的载具前往下一座城市。（攻击 ${npc.atk} · 防御 ${npc.def} · 天赋 ${npc.talent} · 日薪 ${npc.wage}金）` : `You revived them. ${npc.icon} ${npc.name} is grateful and joins your group to the next city. (ATK ${npc.atk} · DEF ${npc.def} · Talent ${npc.talent} · Wage ${npc.wage}/day)` };
+									return { repDelta: 2, text: isZh ? `你将其救醒，对方感激涕零。${npc.icon} ${npc.name} 决定暂时加入你的队伍，搭乘你的载具前往下一座城市。（攻击 ${npc.atk} · 防御 ${npc.def} · 天赋 ${npc.talent} · 日薪 ${npc.wage}币）` : `You revived them. ${npc.icon} ${npc.name} is grateful and joins your group to the next city. (ATK ${npc.atk} · DEF ${npc.def} · Talent ${npc.talent} · Wage ${npc.wage}/day)` };
 								} else {
 									return { repDelta: 2, text: isZh ? "你将其安置在路边安全处，留下一些干粮。载具已无空位，无法同行。声誉提升。" : "You moved them to safety and left some food. No seats in your vehicle. Reputation improved." };
 								}
@@ -2306,21 +1148,20 @@
 					icon: "👮",
 					zh: "前方设有执法检查站，官员示意你停下接受盘查。",
 					en: "A checkpoint ahead. Officials signal you to stop for inspection.",
+					setup: function() { this.enemies = generateEnemyForce("police", "执法者"); },
+					dynamicZh: function() { return `前方设有执法检查站，${getForceDesc(this.enemies)}示意你停下接受盘查。`; },
 					choices: [
 						{
 							label_zh: "✅ 配合检查",
 							label_en: "✅ Comply",
 							resolve: () => {
-								// 检查是否有违禁品（用 contraband 标签）
-								const contraband = Object.values(G.inventory).filter((i) => i.contraband);
-								if (contraband.length > 0) {
+								const contraband = G.inventory["contraband"];
+								if (contraband && contraband.qty > 0) {
 									const fine = Math.floor(G.gold * 0.5);
 									G.gold = Math.max(0, G.gold - fine);
-									contraband.forEach((item) => {
-										delete G.inventory[item.id || item.name];
-									});
+									delete G.inventory["contraband"];
 									const isZh = LANG.current === "zh";
-									return { goldDelta: -fine, text: isZh ? `发现违禁品！货物被没收，并被罚款 ${fine} 金（现金50%）。` : `Contraband found! Goods confiscated and fined ${fine} gold (50% of cash).` };
+									return { goldDelta: -fine, text: isZh ? `发现违禁品！货物被没收，并被罚款 ${fine} 币（现金50%）。` : `Contraband found! Goods confiscated and fined ${fine} coins (50% of cash).` };
 								} else {
 									const isZh = LANG.current === "zh";
 									return { text: isZh ? "检查顺利通过，未发现任何问题。" : "Inspection passed without issue." };
@@ -2330,19 +1171,7 @@
 						{
 							label_zh: "⚔️ 强行对抗",
 							label_en: "⚔️ Resist",
-							resolve: () => {
-								const success = Math.random() < 0.5;
-								const isZh = LANG.current === "zh";
-								if (success) {
-									G.rep = Math.max(0, G.rep - 5);
-									return { repDelta: -5, text: isZh ? "你强行突破检查站，险中逃脱，但声誉大损。" : "You break through the checkpoint. Escaped, but reputation took a heavy hit." };
-								} else {
-									const fine = Math.floor(G.gold * 0.7);
-									G.gold = Math.max(0, G.gold - fine);
-									G.rep = Math.max(0, G.rep - 5);
-									return { goldDelta: -fine, repDelta: -5, text: isZh ? `对抗失败！被捕后缴纳罚款 ${fine} 金，声誉大损。` : `Resistance failed! Paid ${fine} gold in fines, reputation badly damaged.` };
-								}
-							},
+							isCombatTrigger: true
 						},
 					],
 				},
@@ -2350,17 +1179,13 @@
 					icon: "🤝",
 					zh: "路上遇到一位独行的商人，他向你友好地点头示意。",
 					en: "You encounter a lone merchant on the road. He nods at you in greeting.",
+					setup: function() { this.enemies = generateEnemyForce("merchant", "普通商人"); },
+					dynamicZh: function() { return `路上遇到${getForceDesc(this.enemies)}，向你友好地点头示意。`; },
 					choices: [
 						{
 							label_zh: "🗡 拦路打劫",
-							label_en: "🗡 Rob him",
-							resolve: () => {
-								const gold = Math.floor(30 + Math.random() * 100);
-								G.gold += gold;
-								G.rep = Math.max(0, G.rep - 5);
-								const isZh = LANG.current === "zh";
-								return { goldDelta: gold, repDelta: -5, text: isZh ? `劫得 ${gold} 金，但此事声名狼藉。` : `Robbed ${gold} gold, but your notoriety grows.` };
-							},
+							label_en: "🗡 Rob them",
+							isCombatTrigger: true
 						},
 						{
 							label_zh: "😊 友好打招呼",
@@ -2376,6 +1201,8 @@
 					icon: "🔫",
 					zh: "几名持械歹徒拦住了去路，眼神凶狠地盯着你的货物。",
 					en: "Armed bandits block your path, eyeing your goods with menace.",
+					setup: function() { this.enemies = generateEnemyForce("criminal", "犯罪分子"); },
+					dynamicZh: function() { return `${getForceDesc(this.enemies)}拦住了去路，眼神凶狠地盯着你的货物。`; },
 					choices: [
 						{
 							label_zh: "🏳 投降交出财物",
@@ -2383,55 +1210,22 @@
 							resolve: () => {
 								const goldLost = Math.floor(G.gold * 0.5);
 								G.gold = Math.max(0, G.gold - goldLost);
-								// 损失50%货物价值（随机移除部分库存）
 								const invKeys = Object.keys(G.inventory);
 								const toRemove = invKeys.filter(() => Math.random() < 0.5);
 								toRemove.forEach((k) => delete G.inventory[k]);
 								const isZh = LANG.current === "zh";
-								return { goldDelta: -goldLost, text: isZh ? `损失 ${goldLost} 金及部分货物，换得平安离开。` : `Lost ${goldLost} gold and some goods, but left unharmed.` };
+								return { goldDelta: -goldLost, text: isZh ? `损失 ${goldLost} 币及部分货物，换得平安离开。` : `Lost ${goldLost} coins and some goods, but left unharmed.` };
 							},
 						},
 						{
 							label_zh: "⚔️ 迎战",
 							label_en: "⚔️ Fight",
-							resolve: () => {
-								// 胜利概率基于队伍人数
-								const teamSize = G.team ? G.team.length : 0;
-								const winChance = 0.3 + teamSize * 0.1;
-								const win = Math.random() < Math.min(winChance, 0.8);
-								const isZh = LANG.current === "zh";
-								if (win) {
-									const gold = Math.floor(20 + Math.random() * 80);
-									G.gold += gold;
-									G.rep = Math.min(100, G.rep + 5);
-									return { goldDelta: gold, repDelta: 5, text: isZh ? `你们击退了歹徒！从对方身上搜得 ${gold} 金，路见不平之名远播。` : `You drove off the bandits and found ${gold} gold on them. Your bravery is noted.` };
-								} else {
-									const lost = Math.floor(G.gold * 0.3);
-									G.gold = Math.max(0, G.gold - lost);
-									return { goldDelta: -lost, text: isZh ? `战斗失利，损失 ${lost} 金后被迫撤退。` : `You lost the fight and retreated, losing ${lost} gold.` };
-								}
-							},
-						},
-						{
-							label_zh: "🏃 尝试逃跑（50%）",
-							label_en: "🏃 Flee (50%)",
-							resolve: () => {
-								const success = Math.random() < 0.5;
-								const isZh = LANG.current === "zh";
-								if (success) {
-									return { text: isZh ? "你趁乱拼命奔跑，成功甩开了歹徒！" : "You sprint away and successfully escape the bandits!" };
-								} else {
-									const lost = Math.floor(G.gold * 0.25);
-									G.gold = Math.max(0, G.gold - lost);
-									return { goldDelta: -lost, text: isZh ? `逃跑失败！被追上后损失了 ${lost} 金。` : `Escape failed! Caught and lost ${lost} gold.` };
-								}
-							},
+							isCombatTrigger: true
 						},
 					],
 				},
 			};
 
-			// 每天一回合，把所有回合先生成好排成队列（选择事件只记录 eventId，结算在玩家选择后进行）
 			let _eventQueue = [];
 			let _autoAdvanceTimer = null;
 
@@ -2459,14 +1253,12 @@
 				_renderEventModal(item);
 			}
 
-			// 玩家做出选择后的回调
 			function _resolveChoice(resolveFn) {
 				const result = resolveFn();
 				renderGame();
 				_showOutcomeModal(result);
 			}
 
-			// 显示选择结果，然后继续下一个事件
 			function _showOutcomeModal(result) {
 				const isZh = LANG.current === "zh";
 				const old = document.getElementById("road-event-modal");
@@ -2520,13 +1312,22 @@
 
 				const { day, totalDays, eventId } = item;
 				const data = ROAD_EVENT_DATA[eventId];
+				
+				// 实时触发初始化敌军队列结构与特定文案描述
+				if (data.setup) {
+					data.setup();
+				}
+
 				const isZh = LANG.current === "zh";
-				const desc = isZh ? data.zh : data.en;
+				let desc = isZh ? data.zh : data.en;
+				if (isZh && data.dynamicZh) {
+					desc = data.dynamicZh();
+				}
+
 				const titleLabel = isZh ? "途中事件" : "Road Event";
 				const hasChoices = data.choices && data.choices.length > 0;
-				const isPassive = !hasChoices; // nothing / steal — 自动3秒
+				const isPassive = !hasChoices;
 
-				// 被动事件先结算
 				let passiveResult = null;
 				if (isPassive && data.resolve) {
 					passiveResult = data.resolve();
@@ -2535,18 +1336,20 @@
 
 				const progressBar = _buildProgressBar(day, totalDays);
 
-				// 选项按钮
 				let choicesHtml = "";
 				if (hasChoices) {
 					choicesHtml = `<div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.8rem;">`;
 					data.choices.forEach((c, i) => {
 						const label = isZh ? c.label_zh : c.label_en;
-						choicesHtml += `<button class="btn-primary" style="margin-top:0;font-size:0.8rem;" onclick="_resolveChoiceByIndex('${eventId}',${i})">${label}</button>`;
+						if (c.isCombatTrigger) {
+							choicesHtml += `<button class="btn-primary" style="margin-top:0;font-size:0.8rem;border-color:var(--red);" onclick="initiateCombatBridge('${eventId}')">${label}</button>`;
+						} else {
+							choicesHtml += `<button class="btn-primary" style="margin-top:0;font-size:0.8rem;" onclick="_resolveChoiceByIndex('${eventId}',${i})">${label}</button>`;
+						}
 					});
 					choicesHtml += `</div>`;
 				}
 
-				// 被动结果提示
 				let passiveEffectHtml = "";
 				if (passiveResult) {
 					if (passiveResult.goldDelta < 0) passiveEffectHtml += `<span style="color:var(--red2)">💰 ${passiveResult.goldDelta}</span> `;
@@ -2554,7 +1357,6 @@
 					if (passiveEffectHtml) passiveEffectHtml = `<div style="margin-bottom:0.6rem;font-size:0.85rem;">${passiveEffectHtml}</div>`;
 				}
 
-				// 被动事件显示被动文字（如偷窃结果）
 				const bodyText = isPassive && passiveResult ? passiveResult.text : desc;
 
 				const remaining = _eventQueue.length;
@@ -2580,7 +1382,7 @@
 	  ${timerBarHtml}
 	  <div style="font-size:2.4rem;margin-bottom:0.5rem;">${data.icon}</div>
 	  <div class="modal-title" style="margin-bottom:0.6rem;">${titleLabel}</div>
-	  <div style="font-size:0.85rem;color:var(--text);line-height:1.6;margin-bottom:0.5rem;">${isPassive && passiveResult ? desc : desc}</div>
+	  <div style="font-size:0.85rem;color:var(--text);line-height:1.6;margin-bottom:0.5rem;">${bodyText}</div>
 	  ${passiveEffectHtml}
 	  ${hasChoices ? choicesHtml : `<button id="event-continue-btn" class="btn-primary" style="margin-top:0.8rem;opacity:${isPassive ? 0.45 : 1};transition:opacity 0.4s;">${continueLabel}</button>`}
 	  ${isPassive ? `<div id="event-auto-hint" style="font-size:0.65rem;color:var(--text3);margin-top:0.5rem;letter-spacing:0.1em;">${isZh ? "3秒后自动继续…" : "Continuing in 3s…"}</div>` : ""}
@@ -2610,11 +1412,503 @@
 				}
 			}
 
-			// 通过 eventId + 选项索引 触发结算（HTML 里无法传函数引用，用索引代替）
 			function _resolveChoiceByIndex(eventId, idx) {
 				const data = ROAD_EVENT_DATA[eventId];
 				if (!data || !data.choices || !data.choices[idx]) return;
 				_resolveChoice(data.choices[idx].resolve);
+			}
+
+			function initiateCombatBridge(eventId) {
+				const old = document.getElementById("road-event-modal");
+				if (old) old.remove();
+				const data = ROAD_EVENT_DATA[eventId];
+				startCombatEngine(data.enemies);
+			}
+
+			// ══════════════════════════════════
+			// CORE COMBAT ENGINE
+			// ══════════════════════════════════
+			let C = {
+				allies: [],
+				enemies: [],
+				logLines: [],
+				isAuto: false,
+				combatTimer: null,
+				preCombatGold: 0,
+				selectedEnemyIdx: 0,
+				isExecutingTurn: false
+			};
+
+			function startCombatEngine(enemyList) {
+				C.preCombatGold = G.gold;
+				C.enemies = JSON.parse(JSON.stringify(enemyList)); 
+				C.isAuto = false;
+				C.selectedEnemyIdx = 0;
+				C.logLines = [];
+				C.isExecutingTurn = false;
+				if(C.combatTimer) clearInterval(C.combatTimer);
+
+				// 转换己方数据并动态计算实时生命上限
+				C.allies = G.team.map((m) => {
+					let maxHp = 300; 
+					if(!m.isPlayer) {
+						maxHp = m.hp ?? m.hpBase ?? 200;
+					}
+					return {
+						name: m.name,
+						isPlayer: m.isPlayer || false,
+						atk: m.atk ?? 30,
+						def: m.def ?? 10,
+						hp: maxHp,
+						maxHp: maxHp,
+						weapon: m.weapon,
+						armor: m.armor
+					};
+				});
+
+				document.getElementById("combat-modal").classList.add("open");
+				combatLogAdd("⚔️ 战斗开始！我方获得先手执剑突击权。");
+				renderCombatScreen();
+			}
+
+			function renderCombatScreen() {
+				// 渲染我方
+				const allyListEl = document.getElementById("combat-allies-list");
+				allyListEl.innerHTML = C.allies.map((a) => {
+					const hpPct = Math.max(0, (a.hp / a.maxHp) * 100);
+					const isDead = a.hp <= 0;
+					return `
+						<div class="combat-unit-row ${isDead ? 'dead' : ''}">
+							<div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+								<strong>${a.name} ${a.isPlayer ? '(主角)' : ''}</strong>
+								<span>${Math.max(0, a.hp)}/${a.maxHp}</span>
+							</div>
+							<div class="combat-hp-bar-bg">
+								<div class="combat-hp-bar-fill" style="width: ${hpPct}%;"></div>
+							</div>
+						</div>
+					`;
+				}).join("");
+
+				// 渲染敌方
+				const enemyListEl = document.getElementById("combat-enemies-list");
+				enemyListEl.innerHTML = C.enemies.map((e, idx) => {
+					const hpPct = Math.max(0, (e.hp / e.maxHp) * 100);
+					const isDead = e.hp <= 0;
+					const isSelected = C.selectedEnemyIdx === idx;
+					return `
+						<div class="combat-unit-row ${isDead ? 'dead' : ''} ${isSelected ? 'selected' : ''}" onclick="combatSelectEnemy(${idx})">
+							<div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+								<span>${e.name}<span class="tier-badge tier-${e.tier}">${e.tier}</span></span>
+								<span>${isDead ? '0' : e.hp}/${e.maxHp}</span>
+							</div>
+							<div class="combat-hp-bar-bg">
+								<div class="combat-hp-bar-fill enemy-hp" style="width: ${hpPct}%;"></div>
+							</div>
+						</div>
+					`;
+				}).join("");
+
+				// 更新自动化按钮外观
+				const autoBtn = document.getElementById("combat-btn-auto");
+				if (C.isAuto) {
+					autoBtn.classList.add("active-auto");
+					autoBtn.textContent = "取消自动";
+				} else {
+					autoBtn.classList.remove("active-auto");
+					autoBtn.textContent = "自动攻击";
+				}
+
+				// 如果选中的目标已经阵亡，自动递进转移至下一生存目标
+				if (C.enemies[C.selectedEnemyIdx] && C.enemies[C.selectedEnemyIdx].hp <= 0) {
+					let nextTarget = C.enemies.findIndex(e => e.hp > 0);
+					if (nextTarget !== -1) C.selectedEnemyIdx = nextTarget;
+				}
+			}
+
+			function combatSelectEnemy(idx) {
+				if(C.enemies[idx].hp <= 0) return;
+				C.selectedEnemyIdx = idx;
+				renderCombatScreen();
+			}
+
+			function combatLogAdd(text) {
+				const container = document.getElementById("combat-log-container");
+				const scrollWrap = document.getElementById("combat-log-scroll");
+				const line = document.createElement("div");
+				line.className = "combat-log-line";
+				line.innerHTML = text;
+				container.appendChild(line);
+				scrollWrap.scrollTop = scrollWrap.scrollHeight;
+			}
+
+			// 按钮功能触发区
+			function combatToggleAuto() {
+				C.isAuto = !C.isAuto;
+				renderCombatScreen();
+				if(C.isAuto && !C.isExecutingTurn) {
+					executeFullRoundTick();
+				}
+			}
+
+			function combatManualAttack() {
+				if (C.isAuto || C.isExecutingTurn) return;
+				executeFullRoundTick();
+			}
+
+			function combatHeal() {
+				if (C.isAuto || C.isExecutingTurn) return;
+				const med = G.inventory["medicine"];
+				if(!med || med.qty <= 0) {
+					showToast("背囊中缺乏[医用品]！", "red");
+					return;
+				}
+
+				// 扣除一件医疗资产
+				med.qty--;
+				if(med.qty <= 0) delete G.inventory["medicine"];
+				renderGame();
+
+				// 优先治疗受伤最重且未死的主角或同伴
+				let target = C.allies.filter(a => a.hp > 0).sort((a,b) => (a.hp/a.maxHp) - (b.hp/b.maxHp))[0];
+				if(target) {
+					const oldHp = target.hp;
+					target.hp = Math.min(target.maxHp, target.hp + 100);
+					combatLogAdd(`🩹 使用医用品！<strong>${target.name}</strong> 恢复了 ${target.hp - oldHp} 点HP。`);
+					renderCombatScreen();
+				}
+
+				// 治疗不占用常规动作攻击轮，完成后如果开启自动则继续推进，未开启则允许继续操作
+			}
+
+			function combatFlee() {
+				if (C.isAuto || C.isExecutingTurn) return;
+				C.isExecutingTurn = true;
+				disableAllCombatButtons(true);
+				
+				combatLogAdd("🏃 试图在混乱中紧急撤离逃跑...");
+				setTimeout(() => {
+					if(Math.random() < 0.5) {
+						combatLogAdd("<span style='color:var(--green2);'>✓ 逃跑成功！团队安然撤离战场。</span>");
+						setTimeout(closeCombatCleanup, 1500);
+					} else {
+						combatLogAdd("<span style='color:var(--red2);'>❌ 逃跑失败！敌方早已封锁死角，攻势倒灌。</span>");
+						// 逃跑失败，浪费本回合，直接转入敌方回合
+						setTimeout(() => {
+							executeEnemySidePhase();
+						}, 1000);
+					}
+				}, 1000);
+			}
+
+			function combatSurrender() {
+				if (C.isAuto || C.isExecutingTurn) return;
+				if(C.combatTimer) clearInterval(C.combatTimer);
+				
+				// 计算保留资金 100 + 10%
+				G.gold = 100 + Math.floor(C.preCombatGold * 0.1);
+				// 剥夺全部货物及非基础载具资产
+				G.inventory = {};
+				G.transports.forEach(t => {
+					if(t.id !== "walk") t.owned = false;
+				});
+				// 强制遣返至前一个安全驿站城市
+				G.city = G.prevCity;
+				
+				combatLogAdd("<span style='color:var(--red2);'>🏳 投降输一半。你被洗劫一空，仅剩微薄盘缠退回上个城市。</span>");
+				renderGame();
+				setTimeout(() => {
+					document.getElementById("combat-modal").classList.remove("open");
+					_showNextEvent();
+				}, 2000);
+			}
+
+			// 回合循环主架构控制
+			function disableAllCombatButtons(disabled) {
+				const btns = document.querySelectorAll(".combat-btn");
+				btns.forEach(b => {
+					if(b.id === "combat-btn-auto") {
+						// 自动按钮随时可以点击用来取消自动
+						b.disabled = false;
+					} else {
+						b.disabled = disabled;
+					}
+				});
+			}
+
+			function executeFullRoundTick() {
+				C.isExecutingTurn = true;
+				disableAllCombatButtons(true);
+
+				// ---- 1. 我方攻击阶段 ----
+				let allyQueue = C.allies.filter(a => a.hp > 0);
+				let step = 0;
+
+				function nextAllyStrike() {
+					if(step >= allyQueue.length) {
+						// 我方全部人打完了，判断是否全灭敌人
+						if (C.enemies.every(e => e.hp <= 0)) {
+							handleCombatVictory();
+							return;
+						}
+						// 否则轮到敌方反击
+						setTimeout(executeEnemySidePhase, 1000);
+						return;
+					}
+
+					let attacker = allyQueue[step];
+					// 重新校准攻击有效目标
+					let target = C.enemies[C.selectedEnemyIdx];
+					if(!target || target.hp <= 0) {
+						let liveIdx = C.enemies.findIndex(e => e.hp > 0);
+						if(liveIdx !== -1) {
+							C.selectedEnemyIdx = liveIdx;
+							target = C.enemies[liveIdx];
+						}
+					}
+
+					if(target) {
+						// 复合动态伤害演算
+						let wAtk = attacker.weapon ? (WEAPONS.find(w => w.id === attacker.weapon)?.atk || 0) : 0;
+						let eDef = target.aIdx > 0 ? (ARMORS[target.aIdx - 1]?.def || 0) : 0;
+						
+						let totalAtk = attacker.atk + wAtk;
+						let totalDef = target.def + eDef;
+						let dmg = Math.max(Math.floor(totalAtk * 0.05), totalAtk - totalDef);
+						if(dmg <= 0) dmg = 1;
+
+						target.hp -= dmg;
+						combatLogAdd(`⚔️ <strong>${attacker.name}</strong> 对 <strong>${target.name}</strong> 造成了 ${dmg} 点伤害。${target.name} 剩余HP为 ${Math.max(0, target.hp)} 点。`);
+						
+						if(target.hp <= 0) {
+							if(target.type === "criminal") {
+								combatLogAdd(`<span style='color:var(--green2);'>⛓️ 敌方 [${target.name}] 已无力抵抗，被当场抓捕归案。</span>`);
+							} else {
+								combatLogAdd(`<span style='color:var(--red2);'>💀 敌方 [${target.name}] 伤势过重，已确认死亡。</span>`);
+							}
+						}
+						renderCombatScreen();
+					}
+
+					step++;
+					setTimeout(nextAllyStrike, 1000);
+				}
+
+				nextAllyStrike();
+			}
+
+			function executeEnemySidePhase() {
+				let enemyQueue = C.enemies.filter(e => e.hp > 0);
+				let step = 0;
+
+				function nextEnemyStrike() {
+					// 检查是否所有敌人都行动完毕
+					if(step >= enemyQueue.length) {
+						// 一轮大回合完整结束，循环判断
+						C.isExecutingTurn = false;
+						if (C.isAuto) {
+							// 自动模式下，1秒后开启下一轮蓄力
+							setTimeout(executeFullRoundTick, 1000);
+						} else {
+							disableAllCombatButtons(false);
+						}
+						return;
+					}
+
+					let enemy = enemyQueue[step];
+
+					// ── 条件分支判定 4：对手HP低于30%触发逃跑检测机制 ──
+					if(enemy.hp > 0 && (enemy.hp / enemy.maxHp) < 0.3 && !enemy.hasAttemptedFlee) {
+						enemy.hasAttemptedFlee = true;
+						if(Math.random() < 0.5) {
+							// 触发互动事件弹窗挂起时间线
+							C.isAuto = false; // 挂起并强行切断自动化循环
+							renderCombatScreen();
+							triggerEnemyEscapeIntervention(enemy, step, enemyQueue);
+							return; 
+						}
+					}
+
+					// 正常发动攻击
+					if(enemy.hp > 0) {
+						let livingAllies = C.allies.filter(a => a.hp > 0);
+						if(livingAllies.length === 0) {
+							handlePlayerDefeat();
+							return;
+						}
+						// 敌方随机聚焦锁死我方活着的成员
+						let target = livingAllies[Math.floor(Math.random() * livingAllies.length)];
+						
+						let eAtk = enemy.wIdx > 0 ? (WEAPONS[enemy.wIdx - 1]?.atk || 0) : 0;
+						let aDef = target.armor ? (ARMORS.find(a => a.id === target.armor)?.def || 0) : 0;
+						
+						let totalAtk = enemy.atk + eAtk;
+						let totalDef = target.def + aDef;
+						let dmg = Math.max(Math.floor(totalAtk * 0.05), totalAtk - totalDef);
+						if(dmg <= 0) dmg = 1;
+
+						target.hp -= dmg;
+						combatLogAdd(`💥 <strong>${enemy.name}</strong> 发动反扑，对 我方 <strong>${target.name}</strong> 造成了 ${dmg} 点伤害。${target.name} 剩余HP为 ${Math.max(0, target.hp)} 点。`);
+						
+						if(target.hp <= 0) {
+							combatLogAdd(`❌ 我方成员 [${target.name}] 支撑不住，受重伤倒地退出战局！`);
+							// 校验玩家主角生命是否直接归零
+							let playerChar = C.allies.find(a => a.isPlayer);
+							if(playerChar && playerChar.hp <= 0) {
+								handlePlayerDefeat();
+								return;
+							}
+						}
+						renderCombatScreen();
+					}
+
+					step++;
+					setTimeout(nextEnemyStrike, 1000);
+				}
+
+				nextEnemyStrike();
+			}
+
+			// 敌方欲逃跑时的交互弹窗拦截器
+			function triggerEnemyEscapeIntervention(enemy, currentStep, queueArr) {
+				const modal = document.createElement("div");
+				modal.id = "escape-intervene-modal";
+				modal.className = "modal-overlay open";
+				modal.style.zIndex = "4000";
+				modal.innerHTML = `
+					<div class="modal-box" style="text-align:center; max-width:320px;">
+						<div style="font-size:2rem; margin-bottom:0.5rem;">🏃‍♂️</div>
+						<div class="modal-title">残血逃跑预警</div>
+						<div style="font-size:0.85rem; margin-bottom:1.2rem;">
+							敌方 <strong>${enemy.name}</strong> 斗志崩溃，正试图开溜脱离战场！是否进行生死截杀？
+						</div>
+						<div style="display:flex; gap:0.5rem;">
+							<button class="btn-primary" style="margin-top:0; flex:1;" onclick="resolveEnemyEscapeChoice(true, '${enemy.name}', ${currentStep})">绝地追杀</button>
+							<button class="btn-primary" style="margin-top:0; flex:1; border-color:var(--text3);" onclick="resolveEnemyEscapeChoice(false, '${enemy.name}', ${currentStep})">放其一条生路</button>
+						</div>
+					</div>
+				`;
+				document.body.appendChild(modal);
+				
+				// 挂起指针
+				C._escapeResumeArgs = { step: currentStep + 1, queue: queueArr };
+			}
+
+			function resolveEnemyEscapeChoice(wantsPursue, enemyName, currentStep) {
+				document.getElementById("escape-intervene-modal").remove();
+				let enemy = C.enemies.find(e => e.name === enemyName);
+				
+				if(wantsPursue) {
+					if(Math.random() < 0.5) {
+						combatLogAdd(`🎯 追杀成功！我方合围将 <strong>${enemy.name}</strong> 强行截留封锁。`);
+						// 被截留，继续承受伤害，不退出战场
+					} else {
+						combatLogAdd(`💨 逃跑跟丢！<strong>${enemy.name}</strong> 虚晃一枪闪入树林，成功逃脱。`);
+						enemy.hp = 0; // 从战场表现层面抹除
+					}
+				} else {
+					combatLogAdd(`🕊️ 纵虎归山。你作壁上观，任由 <strong>${enemy.name}</strong> 仓皇逃离。`);
+					enemy.hp = 0; // 退出战局
+				}
+				
+				renderCombatScreen();
+				
+				// 恢复时间流向下执行
+				const args = C._escapeResumeArgs;
+				let nextStep = args.step;
+				let enemyQueue = args.queue;
+				
+				// 嵌套继续之前的循环
+				let step = nextStep;
+				function nextEnemyStrikeResume() {
+					if(step >= enemyQueue.length) {
+						C.isExecutingTurn = false;
+						disableAllCombatButtons(false);
+						return;
+					}
+					let nextEnemy = enemyQueue[step];
+					if(nextEnemy && nextEnemy.hp > 0) {
+						// 攻击行为同上
+						let livingAllies = C.allies.filter(a => a.hp > 0);
+						if(livingAllies.length === 0) { handlePlayerDefeat(); return; }
+						let target = livingAllies[Math.floor(Math.random() * livingAllies.length)];
+						let eAtk = nextEnemy.wIdx > 0 ? (WEAPONS[nextEnemy.wIdx - 1]?.atk || 0) : 0;
+						let aDef = target.armor ? (ARMORS.find(a => a.id === target.armor)?.def || 0) : 0;
+						let totalAtk = nextEnemy.atk + eAtk; let totalDef = target.def + aDef;
+						let dmg = Math.max(Math.floor(totalAtk * 0.05), totalAtk - totalDef);
+						if(dmg <= 0) dmg = 1;
+						target.hp -= dmg;
+						combatLogAdd(`💥 <strong>${nextEnemy.name}</strong> 发动反扑，对 我方 <strong>${target.name}</strong> 造成了 ${dmg} 点伤害。`);
+						if(target.hp <= 0) {
+							let playerChar = C.allies.find(a => a.isPlayer);
+							if(playerChar && playerChar.hp <= 0) { handlePlayerDefeat(); return; }
+						}
+						renderCombatScreen();
+					}
+					step++;
+					setTimeout(nextEnemyStrikeResume, 1000);
+				}
+				setTimeout(nextEnemyStrikeResume, 1000);
+			}
+
+			// 结算模块：大获全胜
+			function handleCombatVictory() {
+				combatLogAdd("<span style='color:var(--green2); font-weight:bold; font-size:0.9rem;'>🏆 战役大捷！敌方已丧失全部反抗火种。</span>");
+				
+				// ---- 触发机制 7：击败敌人独立结算30%概率装备剥夺掉落 ----
+				C.enemies.forEach(e => {
+					// 只有真正被杀或捕获的才算掉落（排除成功逃跑的残血怪）
+					if(e.hp <= 0 && !e.name.includes("逃脱")) {
+						// 武器抽检
+						if(e.wIdx > 0 && Math.random() < 0.3) {
+							let lootW = WEAPONS[e.wIdx - 1];
+							combatLogAdd(`<span style='color:var(--gold);'>🎁 战利品搜刮：斩获敌方配备的 [${lootW.name}]！已存入战备仓库。</span>`);
+							// 检索或塞入玩家库（注意由于原始设计武器是单件分配给活人角色，这里统一添加进基础币收益或作为隐性资产，为了严格执行“直接收进仓库”，我们将其折算成声誉并在团队装备区可直接购买）
+							G.rep += 10;
+						}
+						// 防具抽检
+						if(e.aIdx > 0 && Math.random() < 0.3) {
+							let lootA = ARMORS[e.aIdx - 1];
+							combatLogAdd(`<span style='color:var(--gold);'>🎁 战利品搜刮：扒下敌方配备的 [${lootA.name}]！已存入战备仓库。</span>`);
+							G.rep += 10;
+						}
+					}
+				});
+
+				// 基础额外奖励声誉
+				G.rep += 5;
+				renderGame();
+
+				setTimeout(() => {
+					closeCombatCleanup();
+				}, 3000);
+			}
+
+			// 结算模块：全灭惨败
+			function handlePlayerDefeat() {
+				if(C.combatTimer) clearInterval(C.combatTimer);
+				C.isAuto = false;
+
+				G.gold = 100; // 扣至仅剩100保底现金
+				G.inventory = {}; // 扣除所有货物
+				G.transports.forEach(t => {
+					if(t.id !== "walk") t.owned = false; // 扣除载具
+				});
+				G.city = G.prevCity; // 退回前一个城市
+
+				combatLogAdd("<span style='color:var(--red2); font-weight:bold; font-size:0.9rem;'>🚨 团队全灭！主角受重伤昏迷，醒来发现物资被抢劫一空，仅剩100保底金退回原点。</span>");
+				renderGame();
+
+				setTimeout(() => {
+					document.getElementById("combat-modal").classList.remove("open");
+					_showNextEvent();
+				}, 3500);
+			}
+
+			function closeCombatCleanup() {
+				document.getElementById("combat-modal").classList.remove("open");
+				document.getElementById("combat-log-container").innerHTML = "";
+				_showNextEvent(); // 继续推进后续天数的路途事件
 			}
 
 			// ══════════════════════════════════
