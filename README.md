@@ -1,12 +1,4 @@
-1. 团队页面去掉头像
-2. 提供名字生成方式
-3. 薪资计算有问题：（攻击+防御）x天赋值
-4. 货币统一改成 币，英语是coins
-5. 人物面版改动，加入HP。
-# 人物面板
-- 工资：（攻击+防御+HP）x天赋值/10
-- 攻击和防御0-100随机，HP200-400随机
-- 天赋值（1-10）乘以攻击或防御或HP。天赋值的计算方法不变。
+
 
 
 # 战斗
@@ -138,7 +130,7 @@ tab：买/库存/武器/防具/交通工具/团队/任务
 | 文汉   | Frankensee    | Bowlington  |
 | 天律   | Freudental    | Poormond    |
 | 东安   | Friedheim     | Mochevue    |
-| 邓州   | Geisenfeld    | Seaturtle   |
+| 邓州   | Geisenfeld    | Polymouth   |
 | 办州   | Glückingen    | New City    |
 | 航州   | Großwald      | Califlora   |
 | 红岛   | Grünau        | Fallfield   |
