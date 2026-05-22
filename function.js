@@ -743,8 +743,11 @@
 				grid.innerHTML = G.transports.map((t) => {
 					const tName = LANG.current === "zh" ? t.name : t.nameEn;
 					const isActive = activeId === t.id;
-					const switchBtn = t.owned && !isActive ? `<button onclick="switchTransport('${t.id}')" style="margin-top:0.5rem;font-size:0.68rem;padding:0.25rem 0.7rem;background:none;border:1px solid var(--gold);color:var(--gold);cursor:pointer;font-family:inherit;letter-spacing:0.05em;">${T("btnSwitchTransport")}</button>` : "";
-					return `<div class="transport-card ${t.owned ? "owned" : ""}" onclick="${t.owned ? '' : `buyTransport('${t.id}')`}" style="${t.owned ? '' : 'cursor:pointer'}">
+					const switchBtn = t.owned && !isActive
+						? `<button data-switch-id="${t.id}" style="margin-top:0.5rem;font-size:0.68rem;padding:0.25rem 0.7rem;background:none;border:1px solid var(--gold);color:var(--gold);cursor:pointer;font-family:inherit;letter-spacing:0.05em;">${T("btnSwitchTransport")}</button>`
+						: "";
+					const buyAttr = !t.owned ? `data-buy-id="${t.id}"` : "";
+					return `<div class="transport-card ${t.owned ? "owned" : ""}" ${buyAttr} style="${t.owned ? "" : "cursor:pointer"}">
 						${t.owned ? `<div class="owned-badge">${isActive ? "▶ " : ""}${T("transportOwned")}</div>` : ""}
 						<span class="transport-icon">${t.icon}</span>
 						<div class="transport-name">${tName}</div>
@@ -756,6 +759,13 @@
 						${switchBtn}
 					</div>`;
 				}).join("");
+
+				grid.onclick = function(e) {
+					const switchEl = e.target.closest("[data-switch-id]");
+					if (switchEl) { e.stopPropagation(); switchTransport(switchEl.dataset.switchId); return; }
+					const buyEl = e.target.closest("[data-buy-id]");
+					if (buyEl) { buyTransport(buyEl.dataset.buyId); }
+				};
 			}
 
 			function switchTransport(id) {
