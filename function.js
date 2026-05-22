@@ -1019,12 +1019,11 @@
 			// ── ROAD EVENTS ──
 			function getRoadEvent(crimeRate) {
 				const events = [
-					{ id: "nothing",  weight: 180 - 2 * crimeRate },
+					{ id: "nothing",  weight: 205 - 2 * crimeRate },
 					{ id: "steal",    weight: 0.6 * crimeRate },
 					{ id: "police",   weight: 0.5 * crimeRate },
 					{ id: "criminal", weight: crimeRate },
 					{ id: "person",   weight: 25 },
-					{ id: "merchant", weight: 25 },
 				];
 				const total = events.reduce((s, e) => s + e.weight, 0);
 				let sum = 0, roll = Math.random() * total;
@@ -1384,6 +1383,15 @@
 				C.party  = { name: T("combatPartyName"), atk: totalAtk, def: totalDef, hp: totalHp, maxHp: totalHp };
 				C.allies = [];
 				document.getElementById("combat-modal").classList.add("open");
+				// combat-container flex 布局：让按钮始终可见
+				const _cc = document.querySelector("#combat-modal .combat-container");
+				if (_cc) Object.assign(_cc.style, { display:"flex", flexDirection:"column", height:"100%" });
+				const _arena = document.querySelector("#combat-modal .combat-arena");
+				if (_arena) Object.assign(_arena.style, { flexShrink:"1", overflowY:"auto", minHeight:"0" });
+				const _log = document.getElementById("combat-log-scroll");
+				if (_log) Object.assign(_log.style, { flexShrink:"1", overflowY:"auto", minHeight:"0", maxHeight:"" });
+				const _actions = document.querySelector("#combat-modal .combat-actions-grid");
+				if (_actions) Object.assign(_actions.style, { flexShrink:"0", marginTop:"auto" });
 				// 确保进入战斗时所有按钮均可点击
 				disableAllCombatButtons(false);
 				combatLogAdd(T("combatStart", totalAtk, totalDef, totalHp));
@@ -1419,12 +1427,6 @@
 					</div>`;
 				}).join("");
 
-				// 敌人较多时限制列表高度，防止挤掉按钮
-				const enemyListEl = document.getElementById("combat-enemies-list");
-				if (enemyListEl) {
-					enemyListEl.style.maxHeight = C.enemies.length > 4 ? "160px" : "";
-					enemyListEl.style.overflowY = C.enemies.length > 4 ? "auto" : "";
-				}
 
 				const autoBtn = document.getElementById("combat-btn-auto");
 				if (C.isAuto) { autoBtn.classList.add("active-auto"); autoBtn.textContent = T("combatBtnAutoOff"); }
