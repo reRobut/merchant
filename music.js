@@ -10,7 +10,7 @@ const MusicPlayer = (() => {
   let currentTrack = 0;
   let muted = false;
   let started = false;
-  const volume = 0.45;
+  const volume = 1;
 
   function createAudio(i) {
     if (audio) { audio.pause(); audio.src = ''; }
