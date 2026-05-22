@@ -46,7 +46,7 @@
 				{ id: "car", name: "小轿车", nameEn: "Car", icon: "🚗", passengers: 3, cap: 250, spd: 5, fuelCost: 3, price: 2000, owned: false },
 				{ id: "van", name: "小货车", nameEn: "Van", icon: "🚐", passengers: 2, cap: 500, spd: 4, fuelCost: 5, price: 1500, owned: false },
 				{ id: "truck", name: "大货车", nameEn: "Truck", icon: "🚚", passengers: 2, cap: 1000, spd: 4, fuelCost: 15, price: 3000, owned: false },
-				{ id: "truck", name: "大巴车", nameEn: "Bus", icon: "🚌​", passengers: 10, cap: 500, spd: 4, fuelCost: 10, price: 10000, owned: false },
+				{ id: "bus", name: "大巴车", nameEn: "Bus", icon: "🚌", passengers: 10, cap: 500, spd: 4, fuelCost: 10, price: 10000, owned: false },
 			];
 
 			// ── NPC 生成 ──
