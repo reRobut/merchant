@@ -10,13 +10,13 @@
 	<body>
 		<div id="screen-title" class="screen active">
 			<div class="title-deco">
-				<div class="game-title-cn" id="t-title-cn">游商模拟器</div>
+				<div class="game-title-cn" id="t-title-cn"></div>
 				<div class="game-title-en">MERCHANT</div>
 			</div>
-			<div class="title-ornament" id="t-ornament">— 行商四海，富甲天下 —</div>
+			<div class="title-ornament" id="t-ornament"></div>
 			<div class="menu-list">
-				<button class="menu-btn" onclick="showNewGame()" id="t-new-game">开始新游戏</button>
-				<button class="menu-btn" onclick="document.getElementById('save-file-input').click()" id="t-load-game">继续游戏</button>
+				<button class="menu-btn" onclick="showNewGame()" id="t-new-game"></button>
+				<button class="menu-btn" onclick="document.getElementById('save-file-input').click()" id="t-load-game"></button>
 				<div class="lang-inline-row">
 					<button class="lang-inline-btn active" id="lang-btn-zh" onclick="chooseLang('zh')">中文</button>
 					<span class="lang-divider">·</span>
@@ -24,22 +24,23 @@
 				</div>
 			</div>
 			<input type="file" id="save-file-input" accept=".json" onchange="loadSaveFile(event)" />
-			<div class="version-tag">DEMO v0.1 · by 纯一星鸣</div>
+			<div class="version-tag">DEMO v1.0 · by 纯一星鸣</div>
+			<div class="version-tag">QQ群：212272061</div>
 		</div>
 
 		<div id="screen-newgame" class="screen">
-			<button class="btn-back" id="btn-back-newgame" onclick="showScreen('title')">← 返回</button>
+			<button class="btn-back" id="btn-back-newgame" onclick="showScreen('title')"></button>
 			<div class="panel">
-				<div class="panel-title" id="ng-title">创建角色</div>
+				<div class="panel-title" id="ng-title"></div>
 				<div class="field-group">
-					<label class="field-label" id="ng-name-label">角色名称</label>
+					<label class="field-label" id="ng-name-label"></label>
 					<input type="text" class="game-input" id="char-name" placeholder="请输入角色名..." maxlength="12" />
 				</div>
 				<div class="field-group">
-					<label class="field-label" id="ng-country-label">选择国家</label>
+					<label class="field-label" id="ng-country-label"></label>
 					<div class="country-grid" id="country-grid"></div>
 				</div>
-				<button class="btn-primary" onclick="startGame()" id="ng-start">踏上旅途</button>
+				<button class="btn-primary" onclick="startGame()" id="ng-start"></button>
 			</div>
 		</div>
 
@@ -52,65 +53,66 @@
 					<div class="stat-item"><span class="stat-val" id="stat-rep">声誉: 0</span></div>
 				</div>
 				<div class="topbar-right">
-					<button class="btn-sm" id="btn-travel" onclick="openTravel()">前往城市 ▸</button>
-					<button class="btn-sm" id="btn-save" onclick="saveGame()">保存存档</button>
+					<button class="btn-sm" id="btn-travel" onclick="openTravel()"></button>
+					<button class="btn-sm" id="btn-save" onclick="saveGame()"></button>
 				</div>
 			</div>
 
 			<div class="tabs">
-				<button class="tab active" onclick="switchTab('buy')" id="tab-buy">买入</button>
-				<button class="tab" onclick="switchTab('inventory')" id="tab-inv">库存</button>
-				<button class="tab" onclick="switchTab('weapon')" id="tab-weapon">武器</button>
-				<button class="tab" onclick="switchTab('armor')" id="tab-armor">防具</button>
-				<button class="tab" onclick="switchTab('transport')" id="tab-transport">交通</button>
-				<button class="tab" onclick="switchTab('team')" id="tab-team">团队</button>
-				<button class="tab" onclick="switchTab('quest')" id="tab-quest">任务</button>
+				<button class="tab active" onclick="switchTab('buy')" id="tab-buy"></button>
+				<button class="tab" onclick="switchTab('inventory')" id="tab-inv"></button>
+				<button class="tab" onclick="switchTab('weapon')" id="tab-weapon"></button>
+				<button class="tab" onclick="switchTab('armor')" id="tab-armor"></button>
+				<button class="tab" onclick="switchTab('transport')" id="tab-transport"></button>
+				<button class="tab" onclick="switchTab('team')" id="tab-team"></button>
+				<button class="tab" onclick="switchTab('quest')" id="tab-quest"></button>
 			</div>
 
 			<div id="tab-content-buy" class="tab-content active">
-				<div class="section-label" id="sl-market">市场商品</div>
+				<div class="section-label" id="sl-market"></div>
+				<div id="news-bulletin-box" style="display:none;background:rgba(30,24,12,0.85);border:1px solid var(--gold);border-radius:4px;margin-bottom:0.6rem;overflow:hidden;"></div>
 				<div class="trade-table-wrap">
 					<table class="trade-table">
 						<thead><tr>
-							<th id="th-goods">商品</th><th id="th-price">单价</th><th id="th-stock">库存</th>
-							<th id="th-owned">已拥有</th><th id="th-buyqty">购买数量</th><th id="th-subtotal">计价</th>
+							<th id="th-goods"></th><th id="th-price"></th><th id="th-stock"></th>
+							<th id="th-owned"></th><th id="th-buyqty"></th><th id="th-subtotal"></th>
 						</tr></thead>
 						<tbody id="buy-table-body"></tbody>
 					</table>
 				</div>
 				<div class="table-footer">
-					<div class="total-price" id="buy-total-label">总价：<span id="buy-total">0</span> 币</div>
-					<button class="btn-trade" onclick="executeBuy()" id="btn-confirm-buy">确认购买</button>
+					<div class="total-price" id="buy-total-label"><span id="buy-total-label-text"></span><span id="buy-total">0</span></div>
+					<button class="btn-trade" onclick="executeBuy()" id="btn-confirm-buy"></button>
 				</div>
 			</div>
 
 			<div id="tab-content-inventory" class="tab-content">
-				<div class="section-label" id="sl-inventory">我的库存</div>
+				<div class="section-label" id="sl-inventory"></div>
 				<div class="trade-table-wrap">
 					<table class="trade-table">
 						<thead><tr>
-							<th id="th-goods2">商品</th><th id="th-costprice">进价</th><th id="th-mktprice">市价</th>
-							<th id="th-qty">数量</th><th id="th-sellqty">售出数量</th><th id="th-subtotal2">计价</th>
+							<th id="th-goods2"></th><th id="th-costprice"></th><th id="th-mktprice"></th>
+							<th id="th-qty"></th><th id="th-sellqty"></th><th id="th-subtotal2"></th>
 						</tr></thead>
 						<tbody id="inv-table-body"></tbody>
 					</table>
 				</div>
 				<div class="table-footer">
-					<div class="total-price" id="sell-total-label">售出总额：<span id="sell-total">0</span> 币</div>
-					<button class="btn-trade sell" onclick="executeSell()" id="btn-confirm-sell">确认售出</button>
+					<div class="total-price" id="sell-total-label"><span id="sell-total-label-text"></span><span id="sell-total">0</span></div>
+					<button class="btn-trade sell" onclick="executeSell()" id="btn-confirm-sell"></button>
 				</div>
 			</div>
 
 			<div id="tab-content-weapon" class="tab-content">
 				<div class="equip-layout">
 					<div>
-						<div class="equip-section-title" id="es-team-weapon">团队武器装备</div>
+						<div class="equip-section-title" id="es-team-weapon"></div>
 						<div id="weapon-member-list"></div>
 					</div>
 					<div>
-						<div class="equip-section-title" id="es-weapon-shop">武器商店</div>
+						<div class="equip-section-title" id="es-weapon-shop"></div>
 						<div class="shop-items-grid" id="weapon-shop"></div>
-						<div class="equip-section-title" id="es-weapon-wh" style="margin-top:1rem;">武器仓库</div>
+						<div class="equip-section-title" id="es-weapon-wh" style="margin-top:1rem;"></div>
 						<div id="weapon-warehouse-section"></div>
 					</div>
 				</div>
@@ -119,30 +121,30 @@
 			<div id="tab-content-armor" class="tab-content">
 				<div class="equip-layout">
 					<div>
-						<div class="equip-section-title" id="es-team-armor">团队防具装备</div>
+						<div class="equip-section-title" id="es-team-armor"></div>
 						<div id="armor-member-list"></div>
 					</div>
 					<div>
-						<div class="equip-section-title" id="es-armor-shop">防具商店</div>
+						<div class="equip-section-title" id="es-armor-shop"></div>
 						<div class="shop-items-grid" id="armor-shop"></div>
-						<div class="equip-section-title" id="es-armor-wh" style="margin-top:1rem;">防具仓库</div>
+						<div class="equip-section-title" id="es-armor-wh" style="margin-top:1rem;"></div>
 						<div id="armor-warehouse-section"></div>
 					</div>
 				</div>
 			</div>
 
 			<div id="tab-content-transport" class="tab-content">
-				<div class="section-label" id="sl-transport">可用交通工具</div>
+				<div class="section-label" id="sl-transport"></div>
 				<div class="transport-grid" id="transport-grid"></div>
 			</div>
 
 			<div id="tab-content-team" class="tab-content">
-				<div class="section-label" id="sl-team">团队成员</div>
+				<div class="section-label" id="sl-team"></div>
 				<div class="team-grid" id="team-grid"></div>
 			</div>
 
 			<div id="tab-content-quest" class="tab-content">
-				<div class="section-label" id="sl-quest">可接任务</div>
+				<div class="section-label" id="sl-quest"></div>
 				<div class="quest-list" id="quest-list"></div>
 			</div>
 		</div>
@@ -150,10 +152,10 @@
 		<div class="modal-overlay" id="travel-modal">
 			<div class="modal-box">
 				<button class="btn-close-modal" onclick="closeTravel()">✕</button>
-				<div class="modal-title" id="travel-modal-title">选择目的地</div>
+				<div class="modal-title" id="travel-modal-title"></div>
 				<div id="travel-active-transport" style="font-size: 0.72rem; color: var(--gold); margin-bottom: 0.8rem; letter-spacing: 0.08em"></div>
 				<div class="city-choose-grid" id="city-grid" style="grid-template-columns: 1fr 1fr"></div>
-				<div id="travel-modal-hint" style="font-size: 0.7rem; color: var(--text3); margin-top: 0.6rem">旅行消耗时间与汽油，注意携带量</div>
+				<div id="travel-modal-hint" style="font-size: 0.7rem; color: var(--text3); margin-top: 0.6rem"></div>
 			</div>
 		</div>
 
@@ -161,16 +163,16 @@
 			<div class="modal-box" style="max-width: 600px; width: 90%; height: 85vh; padding: 1.2rem;">
 				<div class="combat-container">
 					<div class="combat-header">
-						<div class="modal-title" id="combat-title" style="font-size: 1.2rem; margin-bottom: 0.2rem;">⚔️ 遭遇战斗 ⚔️</div>
-						<div id="combat-subtitle" style="font-size: 0.75rem; color: var(--text3);">回合制策略交锋</div>
+						<div class="modal-title" id="combat-title" style="font-size: 1.2rem; margin-bottom: 0.2rem;"></div>
+						<div id="combat-subtitle" style="font-size: 0.75rem; color: var(--text3);"></div>
 					</div>
 					<div class="combat-arena">
 						<div class="combat-side">
-							<div class="combat-side-title" id="combat-ally-title">我的团队</div>
+							<div class="combat-side-title" id="combat-ally-title"></div>
 							<div id="combat-allies-list"></div>
 						</div>
 						<div class="combat-side">
-							<div class="combat-side-title" id="combat-enemy-title">敌方队列</div>
+							<div class="combat-side-title" id="combat-enemy-title"></div>
 							<div id="combat-enemies-list"></div>
 						</div>
 					</div>
@@ -178,10 +180,10 @@
 						<div id="combat-log-container"></div>
 					</div>
 					<div class="combat-actions-grid">
-						<button class="combat-btn" id="combat-btn-auto" onclick="combatToggleAuto()">自动攻击</button>
-						<button class="combat-btn" id="combat-btn-attack" onclick="combatManualAttack()">攻击</button>
-						<button class="combat-btn" id="combat-btn-flee" onclick="combatFlee()">逃跑</button>
-						<button class="combat-btn" id="combat-btn-surrender" onclick="combatSurrender()">投降</button>
+						<button class="combat-btn" id="combat-btn-auto" onclick="combatToggleAuto()"></button>
+						<button class="combat-btn" id="combat-btn-attack" onclick="combatManualAttack()"></button>
+						<button class="combat-btn" id="combat-btn-flee" onclick="combatFlee()"></button>
+						<button class="combat-btn" id="combat-btn-surrender" onclick="combatSurrender()"></button>
 					</div>
 				</div>
 			</div>
@@ -240,22 +242,127 @@
 				return Math.max(0, (transport.passengers || 0) - occupied);
 			}
 
-			const QUESTS = [
-				{
-					id: "q1", title: "丝绸之路", urgent: false,
-					desc: "开发中...Coming soon",
-					reward: "Haha", deadline: "today", accepted: false,
-				},
-			];
+			// 通缉令 / 绑架委托系统
+			function generateWantedName() {
+				const surnames = ["李","王","张","刘","陈","赵","孙","周","吴","郑","冯","蒋","谢","韩","唐","曹","许","邓","叶","傅"];
+				const names    = ["明","伟","芳","洋","磊","颖","涛","静","博","浩","婷","杰","鑫","俊","雷","莹","峰","超","琳","坤"];
+				const sur  = surnames[Math.floor(Math.random() * surnames.length)];
+				const name = names[Math.floor(Math.random() * names.length)];
+				return { surname: sur, givenName: name, fullName: sur + name };
+			}
+
+			function generateWantedQuest(id) {
+				const isWanted = Math.random() < 0.5;
+				const target   = generateWantedName();
+				return {
+					id,
+					type: isWanted ? "wanted" : "kidnap",
+					title: isWanted ? T("wantedTitle", target.fullName) : T("kidnapTitle", target.fullName),
+					target,
+					reward: 50000,
+					accepted: false,
+					submitted: false,
+					torn: false,
+					generatedDay: G.day,
+				};
+			}
+
+			function checkAndRefreshWantedQuests() {
+				if (!G.wantedQuests) G.wantedQuests = [];
+				// 每50天生成一张
+				const expectedCount = Math.floor(G.day / 50) + 1;
+				while (G.wantedQuests.filter(q => !q.torn).length < expectedCount && G.wantedQuests.length < expectedCount) {
+					const id = "wanted_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+					G.wantedQuests.push(generateWantedQuest(id));
+				}
+			}
+
+			function renderQuestList() {
+				checkAndRefreshWantedQuests();
+				const list = document.getElementById("quest-list");
+				const activeWanted = (G.wantedQuests || []).filter(q => !q.torn);
+				if (activeWanted.length === 0) {
+					list.innerHTML = `<div style="color:var(--text3);text-align:center;padding:2rem;font-size:0.85rem;">${T("noQuest")}</div>`;
+					return;
+				}
+				list.innerHTML = activeWanted.map(q => {
+					const typeIcon = q.type === "wanted" ? "🔴" : "🔵";
+					const typeLabel = q.type === "wanted" ? T("questTypeWanted") : T("questTypeKidnap");
+					const hintHtml = `<div style="font-size:0.72rem;color:var(--text3);margin:0.4rem 0;line-height:1.7;">${T("questHint")}</div>`;
+					const memberOptions = G.team.map((m, i) =>
+						`<option value="${i}">${m.icon || "🧑"} ${m.name}</option>`
+					).join("");
+					const submitSection = q.submitted
+						? `<div style="color:var(--green2);font-size:0.8rem;margin-top:0.5rem;">${T("questSubmitted")}</div>`
+						: `<div style="display:flex;gap:0.4rem;align-items:center;margin-top:0.6rem;flex-wrap:wrap;">
+							<select class="qty-input" id="submit-member-${q.id}" style="flex:1;font-size:0.72rem;min-width:80px;">${memberOptions}</select>
+							<button class="btn-accept" style="flex:none;" onclick="submitWantedQuest('${q.id}')">${T("btnSubmit")}</button>
+							<button class="btn-accept" style="flex:none;border-color:var(--red);color:var(--red2);" onclick="tearWantedQuest('${q.id}')">${T("btnTear")}</button>
+						</div>`;
+					return `<div class="quest-card" style="border-color:${q.type==='wanted'?'var(--red)':'#3a6ad4'};">
+						<div class="quest-title">${typeIcon} ${typeLabel}</div>
+						<div style="font-size:0.82rem;color:var(--text);line-height:1.8;margin:0.3rem 0;">
+							<span style="color:var(--text3)">${T("questTargetLabel")}</span><strong>${q.target.fullName}</strong>
+							&nbsp;·&nbsp;<span style="color:var(--text3)">${T("questSurnameLabel")}</span>${q.target.surname}
+							&nbsp;·&nbsp;<span style="color:var(--text3)">${T("questGivenLabel")}</span>${q.target.givenName}
+						</div>
+						<div class="quest-reward"><span class="reward-item">${T("questRewardLabel", q.reward)}</span></div>
+						${hintHtml}
+						${submitSection}
+					</div>`;
+				}).join("");
+			}
+
+			function submitWantedQuest(qid) {
+				const q = (G.wantedQuests || []).find(x => x.id === qid);
+				if (!q || q.submitted || q.torn) return;
+				const sel = document.getElementById("submit-member-" + qid);
+				if (!sel) return;
+				const memberIdx = parseInt(sel.value);
+				const member = G.team[memberIdx];
+				if (!member) { showToast(T("errSelectMember"), "red"); return; }
+
+				// 比对姓名
+				const mName = member.name || "";
+				const surnameMatch  = mName.includes(q.target.surname);
+				const givenMatch    = mName.includes(q.target.givenName);
+				const fullMatch     = mName === q.target.fullName || mName.includes(q.target.fullName);
+
+				let payout = 0, msg = "";
+				if (fullMatch) {
+					payout = q.reward;
+					msg = T("toastSubmitFull", payout);
+				} else if (surnameMatch || givenMatch) {
+					payout = Math.floor(q.reward * 0.1);
+					msg = T("toastSubmitPart", payout);
+				} else {
+					msg = T("toastSubmitFail");
+				}
+
+				G.gold += payout;
+				q.submitted = true;
+				showToast(msg, payout > 0 ? "gold" : "");
+				renderGame();
+			}
+
+			function tearWantedQuest(qid) {
+				const q = (G.wantedQuests || []).find(x => x.id === qid);
+				if (!q) return;
+				q.torn = true;
+				showToast(T("toastTear"), "");
+				renderQuestList();
+			}
+
+			const QUESTS = [];
 
 			// ══════════════════════════════════
 			// GAME STATE
 			// ══════════════════════════════════
 			let G = {
 				lang: "zh", charName: "", country: "", city: "", prevCity: "",
-				gold: 1000, day: 1, rep: 0,
+				gold: 100, day: 1, rep: 0,
 				inventory: {}, cityPrices: {}, cityStock: {},
-				team: [], transports: [], quests: [],
+				team: [], transports: [], quests: [], wantedQuests: [], activeNews: [],
 				equipWarehouse: [],
 			};
 
@@ -298,14 +405,94 @@
 				const cities = CITIES[selectedCountry];
 				G.city     = cities[Math.floor(Math.random() * cities.length)];
 				G.prevCity = G.city;
-				G.gold = 1000; G.day = 1; G.rep = 0; G.inventory = {};
+				G.gold = 100; G.day = 1; G.rep = 0; G.inventory = {}; G.wantedQuests = []; G.activeNews = [];
 				G.team = TEAM_TEMPLATES.map((t) => { const m = {...t}; if (m.name === "__PLAYER__") m.name = name; return m; });
 				G.transports = TRANSPORTS.map((t) => ({...t}));
+			
 				G.quests = QUESTS.map((q) => ({...q}));
 				generateCityPrices();
 				renderGame();
 				showScreen("game");
 				showToast(T("toastWelcome", name, G.city), "gold");
+			}
+
+			// ══════════════════════════════════
+			// 时事新闻系统
+			// ══════════════════════════════════
+			const NEWS_EVENTS = [
+				{
+					id: "plague",
+					get startMsg() { return T("newsPlague_start"); },
+					get endMsg()   { return T("newsPlague_end"); },
+					effect: (prices) => {
+						// 医疗用品：medicine
+						if (prices["medicine"] !== undefined) prices["medicine"] = Math.floor(500 + Math.random() * 301);
+					},
+				},
+				{
+					id: "mideast",
+					get startMsg() { return T("newsMideast_start"); },
+					get endMsg()   { return T("newsMideast_end"); },
+					effect: (prices) => {
+						// 黄金：gold_ingot / 汽油：fuel
+						if (prices["gold_ingot"] !== undefined) prices["gold_ingot"] = Math.floor(5000 + Math.random() * 2001);
+						if (prices["fuel"]       !== undefined) prices["fuel"]       = Math.floor(50   + Math.random() * 31);
+					},
+				},
+			];
+
+			function tickNews() {
+				if (!G.activeNews) G.activeNews = [];
+				// 到期检查
+				G.activeNews = G.activeNews.filter(n => {
+					if (G.day >= n.endDay) {
+						const def = NEWS_EVENTS.find(x => x.id === n.id);
+						if (def) showNewsToast(def.endMsg, "end");
+						return false;
+					}
+					return true;
+				});
+			}
+
+			function tryTriggerNews() {
+				if (!G.activeNews) G.activeNews = [];
+				if (Math.random() > 0.10) return; // 10% 概率
+				// 不重复触发同类新闻
+				const available = NEWS_EVENTS.filter(n => !G.activeNews.find(a => a.id === n.id));
+				if (available.length === 0) return;
+				const chosen = available[Math.floor(Math.random() * available.length)];
+				const duration = Math.floor(10 + Math.random() * 191); // 10-200天
+				G.activeNews.push({ id: chosen.id, startDay: G.day, endDay: G.day + duration });
+				showNewsToast(chosen.startMsg, "start");
+			}
+
+			function showNewsToast(msg, type) {
+				const old = document.getElementById("news-banner");
+				if (old) old.remove();
+				const el = document.createElement("div");
+				el.id = "news-banner";
+				el.style.cssText = `position:fixed;top:0;left:0;right:0;z-index:9999;background:${type==="end"?"var(--bg4)":"var(--bg3)"};border-bottom:1px solid ${type==="end"?"var(--border2)":"var(--gold)"};color:${type==="end"?"var(--text3)":"var(--gold)"};font-size:0.78rem;padding:0.5rem 1rem;text-align:center;letter-spacing:0.05em;cursor:pointer;`;
+				el.textContent = msg;
+				el.onclick = () => el.remove();
+				document.body.appendChild(el);
+				setTimeout(() => { if (el.parentNode) el.remove(); }, 6000);
+			}
+
+			function applyNewsEffects(prices) {
+				if (!G.activeNews) return;
+				G.activeNews.forEach(n => {
+					const def = NEWS_EVENTS.find(x => x.id === n.id);
+					if (def) def.effect(prices);
+				});
+			}
+
+			function getActiveNewsBulletins() {
+				if (!G.activeNews || G.activeNews.length === 0) return [];
+				return G.activeNews.map(n => {
+					const def = NEWS_EVENTS.find(x => x.id === n.id);
+					const daysLeft = n.endDay - G.day;
+					return def ? { msg: def.startMsg, daysLeft } : null;
+				}).filter(Boolean);
 			}
 
 			function generateCityPrices() {
@@ -314,6 +501,7 @@
 					G.cityPrices[g.id] = Math.round(g.priceMin + Math.random() * (g.priceMax - g.priceMin));
 					G.cityStock[g.id]  = Math.floor(5 + Math.random() * 40);
 				});
+				applyNewsEffects(G.cityPrices);
 			}
 
 			function priceLevel(goodId) {
@@ -349,7 +537,7 @@
 			function updateTopbar() {
 				document.getElementById("city-name").textContent = `📍 ${G.city}`;
 				document.getElementById("stat-gold").textContent = G.gold.toLocaleString() + " " + T("gold");
-				document.getElementById("stat-day").textContent  = LANG.current === "zh" ? `第 ${G.day} 天` : `Day ${G.day}`;
+				document.getElementById("stat-day").textContent  = T("statDay", G.day);
 				document.getElementById("stat-rep").textContent  = T("repLabel") + ": " + G.rep;
 			}
 
@@ -362,7 +550,22 @@
 				return Math.max(0, cap - used);
 			}
 
+			function renderNewsBulletin() {
+				const bulletins = getActiveNewsBulletins();
+				const el = document.getElementById("news-bulletin-box");
+				if (!el) return;
+				if (bulletins.length === 0) { el.innerHTML = ""; el.style.display = "none"; return; }
+				el.style.display = "block";
+				el.innerHTML = bulletins.map(b =>
+					`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0.6rem;border-bottom:1px solid var(--border2);font-size:0.75rem;">
+						<span style="color:var(--gold)">${b.msg}</span>
+						<span style="color:var(--text3);font-size:0.68rem;white-space:nowrap;margin-left:0.5rem;">${T("newsRemaining", b.daysLeft)}</span>
+					</div>`
+				).join("");
+			}
+
 			function renderBuyTable() {
+				renderNewsBulletin();
 				const tbody = document.getElementById("buy-table-body");
 				const freeSlots = getCargoCapacity();
 				tbody.innerHTML = GOODS.map((g) => {
@@ -392,7 +595,7 @@
 
 			function setBuyQtyWithCapCheck(id, maxQty, freeSlots) {
 				if (freeSlots <= 0) {
-					showToast(LANG.current === "zh" ? "超出载具容量，请升级载具" : "Cargo full! Upgrade your transport.", "red");
+					showToast(T("errCargoFull"), "red");
 					return;
 				}
 				// 检查当前其他商品已选数量，进一步收紧容量
@@ -404,7 +607,7 @@
 				const remaining = Math.max(0, freeSlots - otherSelected);
 				const finalQty = Math.min(maxQty, remaining);
 				if (finalQty <= 0) {
-					showToast(LANG.current === "zh" ? "超出载具容量，请升级载具" : "Cargo full! Upgrade your transport.", "red");
+					showToast(T("errCargoFull"), "red");
 					return;
 				}
 				setBuyQty(id, finalQty);
@@ -700,14 +903,14 @@
 				grid.innerHTML = G.transports.map((t) => {
 					const tName = LANG.current === "zh" ? t.name : t.nameEn;
 					const isActive = activeId === t.id;
-					const switchBtn = t.owned && !isActive ? `<button onclick="switchTransport('${t.id}')" style="margin-top:0.5rem;font-size:0.68rem;padding:0.25rem 0.7rem;background:none;border:1px solid var(--gold);color:var(--gold);cursor:pointer;font-family:inherit;letter-spacing:0.05em;">切换使用</button>` : "";
+					const switchBtn = t.owned && !isActive ? `<button onclick="switchTransport('${t.id}')" style="margin-top:0.5rem;font-size:0.68rem;padding:0.25rem 0.7rem;background:none;border:1px solid var(--gold);color:var(--gold);cursor:pointer;font-family:inherit;letter-spacing:0.05em;">${T("btnSwitchTransport")}</button>` : "";
 					return `<div class="transport-card ${t.owned ? "owned" : ""}" onclick="${t.owned ? '' : `buyTransport('${t.id}')`}" style="${t.owned ? '' : 'cursor:pointer'}">
 						${t.owned ? `<div class="owned-badge">${isActive ? "▶ " : ""}${T("transportOwned")}</div>` : ""}
 						<span class="transport-icon">${t.icon}</span>
 						<div class="transport-name">${tName}</div>
 						<div class="transport-stats" style="line-height:1.7">
 							<div>📦 ${t.cap} &nbsp; 🚀 ${t.spd}</div>
-							<div>👥 +${t.passengers} &nbsp; ⛽ ${t.fuelCost}/天</div>
+							<div>👥 +${t.passengers} &nbsp; ⛽ ${t.fuelCost}/${T("travelDays")}</div>
 						</div>
 						<div class="transport-price">${t.owned ? "—" : t.price + " " + T("gold")}</div>
 						${switchBtn}
@@ -834,14 +1037,8 @@
 					</div>`).join("");
 			}
 
-			function acceptQuest(id) {
-				const q = G.quests.find((x) => x.id === id);
-				if (q && !q.accepted) {
-					q.accepted = true;
-					showToast(T("toastQuestAccept", q.title), "gold");
-					renderQuestList();
-				}
-			}
+			// acceptQuest kept for compatibility (no longer used in new wanted system)
+			function acceptQuest(id) {}
 
 			// ══════════════════════════════════
 			// TRAVEL
@@ -856,18 +1053,27 @@
 				return owned.reduce((best, t) => (t.spd > best.spd ? t : best), owned[0]);
 			}
 
-			function openTravel() {
+			function generateTravelOptions() {
 				const allCities = (CITIES[G.country] || []).filter((c) => c !== G.city);
 				const shuffled  = allCities.sort(() => Math.random() - 0.5).slice(0, 2);
 				const transport = getActiveTransport();
-				const fuelOwned = G.inventory["fuel"]?.qty || 0;
-
 				const options = shuffled.map((city) => {
 					const dist = Math.floor(1 + Math.random() * 20);
 					const days = Math.ceil(dist / transport.spd);
 					return { city, dist, days, fuelNeeded: days * transport.fuelCost, crimeRate: Math.floor(15 + Math.random() * 66) };
 				});
 				G._travelOptions = options;
+				G._travelOptionsCity = G.city;
+			}
+
+			function openTravel() {
+				// 只有在城市变更时才重新生成目的地
+				if (!G._travelOptions || G._travelOptionsCity !== G.city) {
+					generateTravelOptions();
+				}
+				const options = G._travelOptions;
+				const transport = getActiveTransport();
+				const fuelOwned = G.inventory["fuel"]?.qty || 0;
 
 				const grid = document.getElementById("city-grid");
 				grid.innerHTML = options.map((o, i) => {
@@ -904,6 +1110,8 @@
 				G.prevCity = G.city;
 				G.city  = o.city;
 				G.day  += o.days;
+				tickNews();       // 检查到期新闻
+				tryTriggerNews(); // 10%概率触发新事件
 				generateCityPrices();
 				const wage = G.team.reduce((s, m) => s + m.wage, 0);
 				G.gold -= wage * o.days;
@@ -928,28 +1136,106 @@
 				return "nothing";
 			}
 
+			function getPlayerCombatPower() {
+				let totalAtk = 0, totalDef = 0;
+				G.team.forEach(m => {
+					totalAtk += (m.atk || 30) + (m.weapon ? (WEAPONS.find(w => w.id === m.weapon)?.atk || 0) : 0);
+					totalDef += (m.def || 10) + (m.armor  ? (ARMORS.find(a => a.id === m.armor)?.def  || 0) : 0);
+				});
+				return { totalAtk, totalDef };
+			}
+
+			function generateEnemyWithTalent(typeStr, idx) {
+				const atkBase = Math.floor(Math.random() * 101);
+				const defBase = Math.floor(Math.random() * 101);
+				const hpBase  = Math.floor(200 + Math.random() * 201);
+				const factor  = Math.random() * Math.random() * Math.random();
+				const talent  = Math.round((1.0 + 9.0 * factor) * 10) / 10;
+				const roll    = Math.random();
+				const talentOn = roll < 0.33 ? "atk" : roll < 0.66 ? "def" : "hp";
+				const atkTotal = talentOn === "atk" ? Math.round(atkBase * talent) : atkBase;
+				const defTotal = talentOn === "def" ? Math.round(defBase * talent) : defBase;
+				const hpTotal  = talentOn === "hp"  ? Math.round(hpBase  * talent) : hpBase;
+				const wIdx = Math.floor(Math.random() * 7);
+				const aIdx = Math.floor(Math.random() * 7);
+				const avg  = (wIdx + aIdx) / 2;
+				const tier = avg <= 1 ? "E" : avg <= 2 ? "D" : avg <= 3 ? "C" : avg <= 4 ? "B" : avg <= 5 ? "A" : "S";
+				const e = {
+					name: `${typeStr}#${idx+1}`, type: typeStr,
+					atk: atkTotal, def: defTotal, hp: hpTotal, maxHp: hpTotal,
+					wIdx, aIdx, tier, hasAttemptedFlee: false,
+					talent, talentOn,
+				};
+				return e;
+			}
+
+			function generateEliteSquad(typeStr, offset) {
+				const eliteTiers = ["B", "A", "S"];
+				const size = Math.random() < 0.5 ? 4 : 5;
+				const party = [];
+				for (let i = 0; i < size; i++) {
+					const tier = eliteTiers[Math.floor(Math.random() * eliteTiers.length)];
+					// 根据tier决定装备档次
+					const tierWMin = tier === "B" ? 3 : tier === "A" ? 4 : 5;
+					const wIdx = tierWMin + Math.floor(Math.random() * (7 - tierWMin));
+					const aIdx = tierWMin + Math.floor(Math.random() * (7 - tierWMin));
+					const atkBase = Math.floor(60 + Math.random() * 41); // 60-100
+					const defBase = Math.floor(60 + Math.random() * 41);
+					const hpBase  = Math.floor(300 + Math.random() * 201);
+					const factor  = Math.random() * Math.random() * Math.random();
+					const talent  = Math.round((1.0 + 9.0 * factor) * 10) / 10;
+					const roll    = Math.random();
+					const talentOn = roll < 0.33 ? "atk" : roll < 0.66 ? "def" : "hp";
+					const atkTotal = talentOn === "atk" ? Math.round(atkBase * talent) : atkBase;
+					const defTotal = talentOn === "def" ? Math.round(defBase * talent) : defBase;
+					const hpTotal  = talentOn === "hp"  ? Math.round(hpBase  * talent) : hpBase;
+					party.push({
+						name: `${T('eliteMark')}${typeStr}#${offset+i+1}`, type: typeStr,
+						atk: atkTotal, def: defTotal, hp: hpTotal, maxHp: hpTotal,
+						wIdx, aIdx, tier, hasAttemptedFlee: false,
+						talent, talentOn, isElite: true,
+					});
+				}
+				return party;
+			}
+
 			function generateEnemyForce(typeStr, cnType) {
+				const { totalAtk, totalDef } = getPlayerCombatPower();
+				const isStrong = (totalAtk + totalDef) > 400;
+
 				const size = Math.floor(Math.random() * 3) + 1;
 				const party = [];
 				for (let i = 0; i < size; i++) {
-					const wIdx = Math.floor(Math.random() * 7);
-					const aIdx = Math.floor(Math.random() * 7);
-					const avg  = (wIdx + aIdx) / 2;
-					const tier = avg <= 1 ? "E" : avg <= 2 ? "D" : avg <= 3 ? "C" : avg <= 4 ? "B" : avg <= 5 ? "A" : "S";
-					party.push({
-						name: `${typeStr}#${i+1}`, type: typeStr,
-						atk: Math.floor(Math.random() * 101), def: Math.floor(Math.random() * 101),
-						hp: Math.floor(200 + Math.random() * 201), maxHp: 0,
-						wIdx, aIdx, tier, hasAttemptedFlee: false,
-					});
-					party[i].maxHp = party[i].hp;
+					if (isStrong) {
+						party.push(generateEnemyWithTalent(typeStr, i));
+					} else {
+						const wIdx = Math.floor(Math.random() * 7);
+						const aIdx = Math.floor(Math.random() * 7);
+						const avg  = (wIdx + aIdx) / 2;
+						const tier = avg <= 1 ? "E" : avg <= 2 ? "D" : avg <= 3 ? "C" : avg <= 4 ? "B" : avg <= 5 ? "A" : "S";
+						const e = {
+							name: `${typeStr}#${i+1}`, type: typeStr,
+							atk: Math.floor(Math.random() * 101), def: Math.floor(Math.random() * 101),
+							hp: Math.floor(200 + Math.random() * 201), maxHp: 0,
+							wIdx, aIdx, tier, hasAttemptedFlee: false,
+						};
+						e.maxHp = e.hp;
+						party.push(e);
+					}
 				}
+
+				// 玩家战力超过400时，额外加入精英小队
+				if (isStrong) {
+					const elites = generateEliteSquad(typeStr, size);
+					elites.forEach(e => party.push(e));
+				}
+
 				return party;
 			}
 
 			function getForceDesc(force) {
 				const typeName = T("enemyType" + force[0].type.charAt(0).toUpperCase() + force[0].type.slice(1));
-				const tiers = force.map(f => f.tier + T("tierSuffix")).join(LANG.current === "zh" ? "，" : ", ");
+				const tiers = force.map(f => (f.isElite ? "★" : "") + f.tier + T("tierSuffix")).join(LANG.current === "zh" ? "，" : ", ");
 				return T("forceDesc", force.length, typeName, tiers);
 			}
 
@@ -997,8 +1283,8 @@
 				},
 				police: { icon: "👮",
 					setup: function() { this.enemies = generateEnemyForce("police"); },
-					zh: function() { return `前方设有执法检查站，${getForceDesc(this.enemies)}示意你停下接受盘查。`; },
-					en: function() { return T("roadPolice"); },
+					zh: function() { return T("policeEventDesc", getForceDesc(this.enemies)); },
+					en: function() { return T("policeEventDesc", getForceDesc(this.enemies)); },
 					choices: [
 						{ label: () => T("choiceComply_zh"),
 							resolve: () => {
@@ -1017,18 +1303,18 @@
 				},
 				merchant: { icon: "🤝",
 					setup: function() { this.enemies = generateEnemyForce("merchant"); },
-					zh: function() { return `路上遇到${getForceDesc(this.enemies)}，向你友好地点头示意。`; },
-					en: function() { return T("roadMerchant"); },
+					zh: function() { return T("merchantEventDesc", getForceDesc(this.enemies)); },
+					en: function() { return T("merchantEventDesc", getForceDesc(this.enemies)); },
 					choices: [
 						{ label: () => T("choiceRobMerchant_zh"), isCombatTrigger: true },
 						{ label: () => T("choiceGreet_zh"),
-							resolve: () => ({ text: T("roadMerchantGreet") }) },
+							resolve: () => ({ text: T("roadMerchantGreet"), _autoAdvance: true }) },
 					],
 				},
 				criminal: { icon: "🔫",
 					setup: function() { this.enemies = generateEnemyForce("criminal"); },
-					zh: function() { return `${getForceDesc(this.enemies)}拦住了去路，眼神凶狠地盯着你的货物。`; },
-					en: function() { return T("roadCriminal"); },
+					zh: function() { return T("criminalEventDesc", getForceDesc(this.enemies)); },
+					en: function() { return T("criminalEventDesc", getForceDesc(this.enemies)); },
 					choices: [
 						{ label: () => T("choiceSurrender_zh"),
 							resolve: () => {
@@ -1073,16 +1359,26 @@
 				if (result.repDelta   > 0) effects += `<span style="color:var(--green2)">⭐ +${result.repDelta}</span>`;
 				if (result.repDelta   < 0) effects += `<span style="color:var(--red2)">⭐ ${result.repDelta}</span>`;
 				const closeLabel = _eventQueue.length === 0 ? T("eventArrive") : T("eventContinue");
+				const autoAdvance = !!result._autoAdvance;
+				const timerBarHtml = autoAdvance ? `<div id="event-timer-track" style="width:100%;height:3px;background:var(--bg5);border-radius:2px;margin-bottom:1rem;overflow:hidden;"><div id="event-timer-fill" style="height:100%;width:0%;background:var(--gold);transition:width 2s linear;"></div></div>` : "";
 				const modal = document.createElement("div");
 				modal.id = "road-event-modal"; modal.className = "modal-overlay open";
 				modal.innerHTML = `<div class="modal-box" style="text-align:center;max-width:340px;padding-bottom:1.4rem;">
 					<div style="font-size:1.6rem;margin-bottom:0.5rem;">📜</div>
 					<div class="modal-title" style="margin-bottom:0.7rem;">${T("eventOutcomeTitle")}</div>
+					${timerBarHtml}
 					<div style="font-size:0.88rem;color:var(--text);line-height:1.7;margin-bottom:0.9rem;">${result.text}</div>
 					${effects ? `<div style="display:flex;gap:0.8rem;justify-content:center;font-size:0.85rem;margin-bottom:1rem;">${effects}</div>` : ""}
-					<button class="btn-primary" style="margin-top:0;" onclick="document.getElementById('road-event-modal').remove();_showNextEvent();">${closeLabel}</button>
+					<button id="outcome-continue-btn" class="btn-primary" style="margin-top:0;opacity:${autoAdvance ? 0.45 : 1};transition:opacity 0.4s;" onclick="document.getElementById('road-event-modal').remove();_showNextEvent();">${closeLabel}</button>
+					${autoAdvance ? `<div style="font-size:0.65rem;color:var(--text3);margin-top:0.5rem;letter-spacing:0.1em;">${T("eventAutoHint")}</div>` : ""}
 				</div>`;
 				document.body.appendChild(modal);
+				if (autoAdvance) {
+					requestAnimationFrame(() => requestAnimationFrame(() => { const fill = document.getElementById("event-timer-fill"); if (fill) fill.style.width = "100%"; }));
+					_autoAdvanceTimer = setTimeout(() => { const m = document.getElementById("road-event-modal"); if (m) m.remove(); _showNextEvent(); }, 2000);
+					const btn = document.getElementById("outcome-continue-btn");
+					if (btn) btn.onclick = () => { if (_autoAdvanceTimer) { clearTimeout(_autoAdvanceTimer); _autoAdvanceTimer = null; } const m = document.getElementById("road-event-modal"); if (m) m.remove(); _showNextEvent(); };
+				}
 			}
 
 			function _buildProgressBar(day, totalDays) {
@@ -1220,9 +1516,11 @@
 
 				document.getElementById("combat-enemies-list").innerHTML = C.enemies.map((e, idx) => {
 					const hpPct = Math.max(0, (e.hp / e.maxHp) * 100);
+					const eliteMark = e.isElite ? `<span style="color:var(--red2);font-size:0.6rem;margin-left:2px;">${T("eliteMark")}</span>` : "";
+					const talentMark = e.talent ? `<span style="color:var(--gold);font-size:0.6rem;margin-left:2px;">${T("talentMark", e.talent)}</span>` : "";
 					return `<div class="combat-unit-row ${e.hp <= 0 ? 'dead' : ''} ${C.selectedEnemyIdx === idx ? 'selected' : ''}" onclick="combatSelectEnemy(${idx})">
 						<div style="display:flex; justify-content:space-between; font-size:0.75rem;">
-							<span>${e.name}<span class="tier-badge tier-${e.tier}">${e.tier}</span></span>
+							<span>${e.name}<span class="tier-badge tier-${e.tier}">${e.tier}</span>${eliteMark}${talentMark}</span>
 							<span>${e.hp <= 0 ? '0' : e.hp}/${e.maxHp}</span>
 						</div>
 						<div class="combat-hp-bar-bg"><div class="combat-hp-bar-fill enemy-hp" style="width: ${hpPct}%;"></div></div>
@@ -1306,7 +1604,7 @@
 				}
 				if (target) {
 					const eDef = target.aIdx > 0 ? (ARMORS[target.aIdx - 1]?.def || 0) : 0;
-					const dmg  = Math.max(Math.floor(C.party.atk * 0.05), C.party.atk - (target.def + eDef)) || 1;
+					const dmg  = Math.max(1, Math.floor(C.party.atk * 0.05) + Math.max(0, C.party.atk - (target.def + eDef)));
 					target.hp -= dmg;
 					combatLogAdd(T("combatPartyHit", target.name, dmg, Math.max(0, target.hp)));
 					if (target.hp <= 0) combatLogAdd(target.type === "criminal" ? T("combatEnemyCapture", target.name) : T("combatEnemyDead", target.name));
@@ -1335,7 +1633,7 @@
 					if (enemy.hp > 0) {
 						if (C.party.hp <= 0) { handlePlayerDefeat(); return; }
 						const eAtk = enemy.wIdx > 0 ? (WEAPONS[enemy.wIdx - 1]?.atk || 0) : 0;
-						const dmg  = Math.max(Math.floor((enemy.atk + eAtk) * 0.05), (enemy.atk + eAtk) - C.party.def) || 1;
+						const dmg  = Math.max(1, Math.floor((enemy.atk + eAtk) * 0.05) + Math.max(0, (enemy.atk + eAtk) - C.party.def));
 						C.party.hp -= dmg;
 						combatLogAdd(T("combatEnemyHit", enemy.name, dmg, Math.max(0, C.party.hp)));
 						if (C.party.hp <= 0) { handlePlayerDefeat(); return; }
@@ -1348,27 +1646,50 @@
 			}
 
 			function triggerEnemyEscapeIntervention(enemy, currentStep, queueArr) {
+				C._escapeResumeArgs = { step: currentStep + 1, queue: queueArr };
+				const freeSeats = getTransportFreeSeats();
+				const recruitBtn = freeSeats > 0
+					? `<button class="btn-primary" style="margin-top:0; flex:1; border-color:var(--green2); color:var(--green2);" onclick="resolveEnemyEscapeChoice('recruit', '${enemy.name}', ${currentStep})">${T("recruitBtn")}</button>`
+					: `<button class="btn-primary" style="margin-top:0; flex:1; border-color:var(--border2); color:var(--text3); cursor:not-allowed;" title="${T('transportFullBtn')}" disabled>${T("transportFullBtn")}</button>`;
 				const modal = document.createElement("div");
 				modal.id = "escape-intervene-modal"; modal.className = "modal-overlay open"; modal.style.zIndex = "4000";
-				modal.innerHTML = `<div class="modal-box" style="text-align:center; max-width:320px;">
+				modal.innerHTML = `<div class="modal-box" style="text-align:center; max-width:340px;">
 					<div style="font-size:2rem; margin-bottom:0.5rem;">🏃‍♂️</div>
 					<div class="modal-title">${T("enemyFleeTitle")}</div>
 					<div style="font-size:0.85rem; margin-bottom:1.2rem;">${T("enemyFleeBody", enemy.name)}</div>
-					<div style="display:flex; gap:0.5rem;">
-						<button class="btn-primary" style="margin-top:0; flex:1;" onclick="resolveEnemyEscapeChoice(true, '${enemy.name}', ${currentStep})">${T("btnPursue")}</button>
-						<button class="btn-primary" style="margin-top:0; flex:1; border-color:var(--text3);" onclick="resolveEnemyEscapeChoice(false, '${enemy.name}', ${currentStep})">${T("btnLetGo")}</button>
+					<div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+						<button class="btn-primary" style="margin-top:0; flex:1;" onclick="resolveEnemyEscapeChoice('pursue', '${enemy.name}', ${currentStep})">${T("btnPursue")}</button>
+						${recruitBtn}
+						<button class="btn-primary" style="margin-top:0; flex:1; border-color:var(--text3);" onclick="resolveEnemyEscapeChoice('letgo', '${enemy.name}', ${currentStep})">${T("btnLetGo")}</button>
 					</div>
 				</div>`;
 				document.body.appendChild(modal);
-				C._escapeResumeArgs = { step: currentStep + 1, queue: queueArr };
 			}
 
-				function resolveEnemyEscapeChoice(wantsPursue, enemyName, currentStep) {
+				function resolveEnemyEscapeChoice(choice, enemyName, currentStep) {
 				document.getElementById("escape-intervene-modal").remove();
 				let enemy = C.enemies.find(e => e.name === enemyName);
-				if (wantsPursue) {
+				if (choice === 'pursue') {
 					if (Math.random() < 0.5) combatLogAdd(T("combatPursueOk", enemy.name));
 					else { combatLogAdd(T("combatPursueFail", enemy.name)); enemy.hp = 0; }
+				} else if (choice === 'recruit') {
+					// 把敌人转化为 NPC 加入队伍
+					const wData = enemy.wIdx > 0 ? WEAPONS[enemy.wIdx - 1] : null;
+					const aData = enemy.aIdx > 0 ? ARMORS[enemy.aIdx - 1] : null;
+					const newMember = {
+						name: enemy.name.replace(/#\d+$/, "").trim() || enemy.name,
+						icon: "😤", role: T("enemyRoleSuffix", enemy.tier),
+						atk: enemy.atk, def: enemy.def, hp: enemy.hp || 100, hpBase: enemy.hp || 100,
+						talent: enemy.talent || 1, talentOn: enemy.talentOn || "atk",
+						weapon: wData ? wData.id : null,
+						armor: aData ? aData.id : null,
+						wage: Math.max(1, Math.round((enemy.atk + enemy.def) / 10)),
+						rescued: false,
+					};
+					G.team.push(newMember);
+					enemy.hp = 0;
+					combatLogAdd(T("combatRecruitLog", enemy.name));
+					renderGame();
 				} else {
 					combatLogAdd(T("combatLetGo", enemy.name)); enemy.hp = 0;
 				}
@@ -1383,7 +1704,7 @@
 					if (nextEnemy && nextEnemy.hp > 0) {
 						if (C.party.hp <= 0) { handlePlayerDefeat(); return; }
 						const eAtk = nextEnemy.wIdx > 0 ? (WEAPONS[nextEnemy.wIdx - 1]?.atk || 0) : 0;
-						const dmg  = Math.max(Math.floor((nextEnemy.atk + eAtk) * 0.05), (nextEnemy.atk + eAtk) - C.party.def) || 1;
+						const dmg  = Math.max(1, Math.floor((nextEnemy.atk + eAtk) * 0.05) + Math.max(0, (nextEnemy.atk + eAtk) - C.party.def));
 						C.party.hp -= dmg;
 						combatLogAdd(T("combatEnemyHitResume", nextEnemy.name, dmg, Math.max(0, C.party.hp)));
 						if (C.party.hp <= 0) { handlePlayerDefeat(); return; }
@@ -1413,9 +1734,21 @@
 							G.rep = Math.max(0, G.rep - 10);
 							combatLogAdd(`<span style='color:var(--red2);font-size:0.75rem;'>⭐ ${T("repLossPolice")}</span>`);
 						}
-						// 战利品
-						if (e.wIdx > 0 && Math.random() < 0.3) { const lootW = WEAPONS[e.wIdx - 1]; combatLogAdd(T("combatLootW", lootW.name)); G.equipWarehouse.push({ type: 'weapon', id: lootW.id, name: lootW.name, icon: lootW.icon, stat: lootW.atk, buyPrice: lootW.price }); }
-						if (e.aIdx > 0 && Math.random() < 0.3) { const lootA = ARMORS[e.aIdx - 1];  combatLogAdd(T("combatLootA", lootA.name)); G.equipWarehouse.push({ type: 'armor',  id: lootA.id, name: lootA.name, icon: lootA.icon, stat: lootA.def, buyPrice: lootA.price }); }
+						// 战利品（按装备类型区分掉落概率：圣剑/防暴盔甲10%，斧头/防弹衣20%，其余30%）
+						if (e.wIdx > 0) {
+							const lootW = WEAPONS[e.wIdx - 1];
+							const wDropRate = (lootW.id === "holy_sword" || (lootW.name||"").includes("圣剑")) ? 0.1
+								: (lootW.id === "axe" || (lootW.name||"").includes("斧头") || (lootW.name||"").includes("斧")) ? 0.2
+								: 0.3;
+							if (Math.random() < wDropRate) { combatLogAdd(T("combatLootW", lootW.name)); G.equipWarehouse.push({ type: 'weapon', id: lootW.id, name: lootW.name, icon: lootW.icon, stat: lootW.atk, buyPrice: lootW.price }); }
+						}
+						if (e.aIdx > 0) {
+							const lootA = ARMORS[e.aIdx - 1];
+							const aDropRate = (lootA.id === "riot_armor" || (lootA.name||"").includes("防暴")) ? 0.1
+								: (lootA.id === "bulletproof" || (lootA.name||"").includes("防弹衣")) ? 0.2
+								: 0.3;
+							if (Math.random() < aDropRate) { combatLogAdd(T("combatLootA", lootA.name)); G.equipWarehouse.push({ type: 'armor', id: lootA.id, name: lootA.name, icon: lootA.icon, stat: lootA.def, buyPrice: lootA.price }); }
+						}
 					}
 				});
 				renderGame();

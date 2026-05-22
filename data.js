@@ -5,7 +5,7 @@
 			];
 
 			const CITIES = {
-				china: ["董庆", "土海", "白京", "咸都", "厂州", "探圳", "文汉", "天律", "东安", "邓州", "办州", "航州", "红岛", "右家庄", "长汐", "台巴", "昆朋", "南晶", "高阳", "金川"],
+				china: ["董庆", "土海", "白京", "咸都", "厂州", "探圳", "文汉", "天律", "东安", "邓州", "办州", "航州", "红岛", "右家庄", "长汐", "台巴", "昆朋", "南晶", "高阳", "金川", "李家口", "恒水", "大原", "太同", "小连", "安山", "长夏", "吉森", "鸡岗", "汤州", "真江", "无溪", "常生", "招兴", "丁波", "文乌", "无湖", "珠港", "秋门", "蜜庄", "井封", "各阳", "商兵", "黑冈", "青壁", "山头", "东馆", "二亚", "海田", "理江", "梅朵林", "贡嘎错", "克孜苏"],
 				germany: ["Altendorf", "Freibach", "Bergstadt", "Bernberg", "Ebersburg", "Falkenstein", "Frankensee", "Freudental", "Friedheim", "Geisenfeld", "Glückingen", "Großwald", "Grünau", "Hagenhausen", "Herzhafen", "Heilenkirchen", "Kirchmar", "Laufzig", "Lichtenfurt", "Lessen"],
 				usa: ["Derbyson", "Middlewood", "Oakford", "Forestland", "Rockester", "Laketown", "Bowlington", "Poormond", "Mochevue", "Polymouth", "New City", "Califlora", "Fallfield", "St. Taylor", "Dryington", "Redville", "Loud Hills", "Las Vacas", "San Donaldo", "Philosophia"],
 			};
@@ -46,6 +46,7 @@
 				{ id: "car", name: "小轿车", nameEn: "Car", icon: "🚗", passengers: 3, cap: 250, spd: 5, fuelCost: 3, price: 2000, owned: false },
 				{ id: "van", name: "小货车", nameEn: "Van", icon: "🚐", passengers: 2, cap: 500, spd: 4, fuelCost: 5, price: 1500, owned: false },
 				{ id: "truck", name: "大货车", nameEn: "Truck", icon: "🚚", passengers: 2, cap: 1000, spd: 4, fuelCost: 15, price: 3000, owned: false },
+				{ id: "truck", name: "大巴车", nameEn: "Bus", icon: "🚌​", passengers: 10, cap: 500, spd: 4, fuelCost: 10, price: 10000, owned: false },
 			];
 
 			// ── NPC 生成 ──
@@ -53,7 +54,7 @@
 
 			// 中国：姓 + 名
 			const NPC_SURNAMES_ZH = ["王","李","张","刘","陈","杨","黄","赵","吴","周","徐","孙","马","朱","胡","郭","何","林","罗","高"];
-			const NPC_GIVEN_ZH    = ["泽","宇","涵","晨","艺","嘉","雨","欣","佳","浩","轩","语","诺","思","博","文","熙","俊","然","彤","芳","明","伟","静","磊","燕","洋","涛","霞","勇","娜","峰","梅","超","丽","辉","欣","杰","远","颖"];
+			const NPC_GIVEN_ZH    = ["泽","宇","晨","艺","嘉","雨","欣","佳","浩","轩","豆","迷糊","博","文","司机","俊","然","伞","芳","明","伟","静","磊","燕","洋","涛","霞","勇","娜","峰","梅","超","丽","辉","欣","杰"];
 
 			// 德国：Vorname + Nachname
 			const NPC_FIRST_DE = ["Sabine","Michael","Susanne","Thomas","Petra","Andreas","Monika","Peter","Claudia","Stefan","Stefanie","Christian","Andrea","Hans","Birgit","Jan","Wolfgang","Klaus","Karin","Julia"];

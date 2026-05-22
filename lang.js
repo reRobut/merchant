@@ -20,11 +20,13 @@ const TEXTS = {
     travelBtn: '前往城市 ▸', saveBtn: '保存存档',
     repLabel: '声誉',
     gold: '币', coins: '币',
+    statDay: (day) => `第 ${day} 天`,
     // 买入表格
     sectionMarket: '市场商品',
     thGoods: '商品', thPrice: '单价', thStock: '库存', thOwned: '已拥有', thBuyQty: '购买数量', thSubtotal: '计价',
     buyTotal: '总价：', buyCurrency: '币',
     btnBuy: '确认购买',
+    newsRemaining: (days) => `剩余 ${days} 天`,
     // 库存表格
     sectionInventory: '我的库存',
     thCostPrice: '进价', thMarketPrice: '市价', thQty: '数量', thSellQty: '售出数量',
@@ -41,6 +43,8 @@ const TEXTS = {
     // 交通标签
     sectionTransport: '可用交通工具',
     transportOwned: '已拥有',
+    btnSwitchTransport: '切换使用',
+    errCargoFull: '超出载具容量，请升级载具',
     // 团队标签
     sectionTeam: '团队成员',
     playerTag: '（玩家角色）',
@@ -48,6 +52,8 @@ const TEXTS = {
     noWeapon: '无武器', noArmor: '无甲',
     wageLabel: '日薪：', wageSuffix: '币',
     btnDismiss: '开除',
+    eliteMark: '★精英',
+    talentMark: (t) => `天赋×${t}`,
     // 开除确认弹窗
     confirmDismissTitle: '确认开除',
     confirmDismissBody: (name) => `确定要开除 <strong style="color:var(--gold2)">${name}</strong> 吗？<br><span style="color:var(--red2);font-size:0.78rem;">一旦开除将永远无法恢复。</span>`,
@@ -55,7 +61,28 @@ const TEXTS = {
     toastDismissed: (name) => `${name} 已离队。`,
     // 任务标签
     sectionQuest: '可接任务',
+    noQuest: '暂无任务',
     btnAcceptQuest: '接受任务', btnQuestAccepted: '✓ 已接受',
+    // 通缉任务
+    questTypeWanted: '通缉令', questTypeKidnap: '绑架委托',
+    questTargetLabel: '目标：', questSurnameLabel: '姓：', questGivenLabel: '名：',
+    questRewardLabel: (r) => `💰 奖励 ${r.toLocaleString()} 币`,
+    questHint: '💡 提示：姓或名能对上 → 奖励 <span style="color:var(--gold)">×0.1</span>；姓名完全匹配 → <span style="color:var(--gold)">全额奖励</span>',
+    questSubmitted: '✅ 已提交',
+    btnSubmit: '提交', btnTear: '撕毁',
+    errSelectMember: '请选择团队成员',
+    toastTear: '已撕毁任务委托',
+    toastSubmitFull: (amt) => `✅ 姓名完全匹配！获得全额奖励 ${amt.toLocaleString()} 币！`,
+    toastSubmitPart: (amt) => `🔍 姓名部分匹配，获得 1/10 奖励 ${amt.toLocaleString()} 币。`,
+    toastSubmitFail: '❌ 姓名不符，未获得奖励。',
+    // 通缉令生成
+    wantedTitle: (name) => `🔴 通缉令：${name}`,
+    kidnapTitle: (name) => `🔵 绑架委托：${name}`,
+    // 敌方招募
+    recruitBtn: '收入队伍',
+    transportFullBtn: '载具已满',
+    combatRecruitLog: (name) => `<span style='color:var(--green2)'>✅ ${name} 投降加入了队伍！</span>`,
+    enemyRoleSuffix: (tier) => `${tier}级降兵`,
     // 旅行模态框
     travelTitle: '选择目的地',
     travelHint: '旅行消耗时间与汽油，注意携带量',
@@ -78,6 +105,15 @@ const TEXTS = {
     enemyFleeTitle: '残血逃跑预警',
     enemyFleeBody: (name) => `敌方 <strong>${name}</strong> 斗志崩溃，正试图开溜脱离战场！是否进行生死截杀？`,
     btnPursue: '绝地追杀', btnLetGo: '放其一条生路',
+    // 警察事件描述（含兵力）
+    policeEventDesc: (force) => `前方设有执法检查站，${force}示意你停下接受盘查。`,
+    merchantEventDesc: (force) => `路上遇到${force}，向你友好地点头示意。`,
+    criminalEventDesc: (force) => `${force}拦住了去路，眼神凶狠地盯着你的货物。`,
+    // 新闻系统
+    newsPlague_start: '📰 时事新闻：疫情爆发！医疗用品价格暴涨。',
+    newsPlague_end:   '📰 时事新闻：疫情结束，局势逐渐平稳。',
+    newsMideast_start: '📰 时事新闻：中东地区发生摩擦！黄金与石油价格飙升。',
+    newsMideast_end:   '📰 时事新闻：地缘政治关系缓和，市场恢复正常。',
     // 错误提示
     errName: '请输入角色名称', errCountry: '请选择国家',
     errGold: '金币不足', errFuel: '汽油不足，无法出发',
@@ -166,10 +202,12 @@ const TEXTS = {
     travelBtn: 'Travel ▸', saveBtn: 'Save Game',
     repLabel: 'Rep',
     gold: 'coins', coins: 'coins',
+    statDay: (day) => `Day ${day}`,
     sectionMarket: 'Market',
     thGoods: 'Goods', thPrice: 'Price', thStock: 'Stock', thOwned: 'Owned', thBuyQty: 'Qty', thSubtotal: 'Subtotal',
     buyTotal: 'Total:', buyCurrency: 'coins',
     btnBuy: 'Confirm Purchase',
+    newsRemaining: (days) => `${days}d left`,
     sectionInventory: 'Inventory',
     thCostPrice: 'Cost', thMarketPrice: 'Market', thQty: 'Qty', thSellQty: 'Sell Qty',
     sellTotal: 'Sell Total:',
@@ -183,18 +221,40 @@ const TEXTS = {
     whEmpty: 'Storage empty',
     sectionTransport: 'Available Transport',
     transportOwned: 'Owned',
+    btnSwitchTransport: 'Switch',
+    errCargoFull: 'Cargo full! Upgrade your transport.',
     sectionTeam: 'Team Members',
     playerTag: '(Player character)',
     labelATK: 'ATK', labelDEF: 'DEF',
     noWeapon: 'No weapon', noArmor: 'No armor',
     wageLabel: 'Wage: ', wageSuffix: ' coins',
     btnDismiss: 'Dismiss',
+    eliteMark: '★Elite',
+    talentMark: (t) => `Talent×${t}`,
     confirmDismissTitle: 'Confirm Dismiss',
     confirmDismissBody: (name) => `Dismiss <strong style="color:var(--gold2)">${name}</strong>?<br><span style="color:var(--red2);font-size:0.78rem;">This cannot be undone.</span>`,
     btnCancel: 'Cancel', btnConfirmDismiss: 'Confirm',
     toastDismissed: (name) => `${name} has left the party.`,
     sectionQuest: 'Available Quests',
+    noQuest: 'No quests available',
     btnAcceptQuest: 'Accept', btnQuestAccepted: '✓ Accepted',
+    questTypeWanted: 'Wanted', questTypeKidnap: 'Kidnap Contract',
+    questTargetLabel: 'Target:', questSurnameLabel: 'Surname:', questGivenLabel: 'Given:',
+    questRewardLabel: (r) => `💰 Reward: ${r.toLocaleString()} coins`,
+    questHint: '💡 Tip: Surname or given name match → reward <span style="color:var(--gold)">×0.1</span>; Full name match → <span style="color:var(--gold)">full reward</span>',
+    questSubmitted: '✅ Submitted',
+    btnSubmit: 'Submit', btnTear: 'Discard',
+    errSelectMember: 'Please select a team member',
+    toastTear: 'Quest discarded',
+    toastSubmitFull: (amt) => `✅ Full name match! Full reward: ${amt.toLocaleString()} coins!`,
+    toastSubmitPart: (amt) => `🔍 Partial match, received 1/10 reward: ${amt.toLocaleString()} coins.`,
+    toastSubmitFail: '❌ Name mismatch, no reward.',
+    wantedTitle: (name) => `🔴 Wanted: ${name}`,
+    kidnapTitle: (name) => `🔵 Kidnap Contract: ${name}`,
+    recruitBtn: 'Recruit',
+    transportFullBtn: 'No seats',
+    combatRecruitLog: (name) => `<span style='color:var(--green2)'>✅ ${name} surrendered and joined your party!</span>`,
+    enemyRoleSuffix: (tier) => `Tier ${tier} Defector`,
     travelTitle: 'Choose Destination',
     travelHint: 'Travel costs time and fuel — watch your supplies',
     travelDays: 'd', travelDist: 'km', travelFuel: 'fuel',
@@ -213,6 +273,13 @@ const TEXTS = {
     enemyFleeTitle: 'Enemy Fleeing',
     enemyFleeBody: (name) => `<strong>${name}</strong> is trying to escape! Pursue?`,
     btnPursue: 'Pursue', btnLetGo: 'Let them go',
+    policeEventDesc: (force) => `A checkpoint ahead. ${force} signals you to stop for inspection.`,
+    merchantEventDesc: (force) => `You encounter ${force} on the road. They nod at you in greeting.`,
+    criminalEventDesc: (force) => `${force} blocks your path, eyeing your goods with menace.`,
+    newsPlague_start: '📰 News: Epidemic outbreak! Medical supply prices surge.',
+    newsPlague_end:   '📰 News: Epidemic over, situation stabilizing.',
+    newsMideast_start: '📰 News: Middle East tensions rise! Gold and oil prices spike.',
+    newsMideast_end:   '📰 News: Geopolitical relations ease, markets return to normal.',
     errName: 'Enter a character name', errCountry: 'Choose a country',
     errGold: 'Not enough gold', errFuel: 'Not enough fuel to travel',
     errNoGoods: 'No goods selected', errNoSell: 'No goods selected to sell',
@@ -269,18 +336,13 @@ const TEXTS = {
     choiceRobMerchant_zh: '🗡 Rob them', choiceGreet_zh: '😊 Greet him',
     choiceSurrender_zh: '🏳 Surrender', choiceFight_zh: '⚔️ Fight',
     priceLow: 'Low', priceMid: 'Normal', priceHigh: 'High', pricePeak: 'Peak',
-    // Transport switch
     toastSwitchTransport: (icon, name) => `Switched to ${icon} ${name}`,
-    // Combat screen
     combatMemberCount: (n) => `${n} member${n !== 1 ? 's' : ''}`,
-    // Enemy force description
     forceDesc: (count, typeName, tiers) => `${count} ${typeName} (${tiers})`,
     tierSuffix: '',
     enemyTypePolice: 'Officers', enemyTypeMerchant: 'Merchants', enemyTypeCriminal: 'Criminals',
-    // Road events - special outcomes
     roadStealBroke: 'The thief rummaged through your purse, only to find you poorer than them — they shook their head and slunk away.',
     roadCriminalBroke: 'The bandits searched you thoroughly, then realized you were worse off than them — they exchanged glances and left in disappointment.',
-    // Reputation changes
     repGainCriminal: (tier, delta) => `Killed tier-${tier} criminal, REP +${delta}`,
     repLossMerchant: 'Attacked a merchant, REP -5',
     repLossPolice: 'Fought law enforcement, REP -10',
@@ -296,17 +358,24 @@ function T(key, ...args) {
 
 function applyLang() {
   const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  const setHTML = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
   const setAttr = (id, attr, val) => { const el = document.getElementById(id); if (el) el.setAttribute(attr, val); };
+
+  // 标题屏
   setText('t-title-cn', T('titleCn'));
   setText('t-ornament', T('ornament'));
   setText('t-new-game', T('newGame'));
   setText('t-load-game', T('loadGame'));
+
+  // 新游戏屏
   setText('ng-title', T('createChar'));
   setText('ng-name-label', T('nameLabel'));
   setText('ng-country-label', T('countryLabel'));
   setAttr('char-name', 'placeholder', T('namePlaceholder'));
   setText('ng-start', T('start'));
   setText('btn-back-newgame', T('back'));
+
+  // 游戏标签
   setText('tab-buy', T('tabBuy'));
   setText('tab-inv', T('tabInv'));
   setText('tab-weapon', T('tabWeapon'));
@@ -314,10 +383,49 @@ function applyLang() {
   setText('tab-transport', T('tabTransport'));
   setText('tab-team', T('tabTeam'));
   setText('tab-quest', T('tabQuest'));
-  setText('travel-modal-title', T('travelTitle'));
-  setText('travel-modal-hint', T('travelHint'));
+
+  // Topbar 按钮
   setText('btn-travel', T('travelBtn'));
   setText('btn-save', T('saveBtn'));
+
+  // 买入表格
+  setText('sl-market', T('sectionMarket'));
+  setText('th-goods', T('thGoods'));
+  setText('th-price', T('thPrice'));
+  setText('th-stock', T('thStock'));
+  setText('th-owned', T('thOwned'));
+  setText('th-buyqty', T('thBuyQty'));
+  setText('th-subtotal', T('thSubtotal'));
+  setText('buy-total-label-text', T('buyTotal'));
+  setText('btn-confirm-buy', T('btnBuy'));
+
+  // 库存表格
+  setText('sl-inventory', T('sectionInventory'));
+  setText('th-goods2', T('thGoods'));
+  setText('th-costprice', T('thCostPrice'));
+  setText('th-mktprice', T('thMarketPrice'));
+  setText('th-qty', T('thQty'));
+  setText('th-sellqty', T('thSellQty'));
+  setText('th-subtotal2', T('thSubtotal'));
+  setText('sell-total-label-text', T('sellTotal'));
+  setText('btn-confirm-sell', T('btnSell'));
+
+  // 武器/防具
+  setText('es-team-weapon', T('sectionTeamWeapon'));
+  setText('es-weapon-shop', T('sectionWeaponShop'));
+  setText('es-weapon-wh', T('sectionWeaponWH'));
+  setText('es-team-armor', T('sectionTeamArmor'));
+  setText('es-armor-shop', T('sectionArmorShop'));
+  setText('es-armor-wh', T('sectionArmorWH'));
+
+  // 交通/团队/任务
+  setText('sl-transport', T('sectionTransport'));
+  setText('sl-team', T('sectionTeam'));
+  setText('sl-quest', T('sectionQuest'));
+
+  // 旅行/战斗模态框
+  setText('travel-modal-title', T('travelTitle'));
+  setText('travel-modal-hint', T('travelHint'));
   setText('combat-title', T('combatTitle'));
   setText('combat-subtitle', T('combatSubtitle'));
   setText('combat-ally-title', T('combatAllyTitle'));
