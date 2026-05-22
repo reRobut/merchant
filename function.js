@@ -115,36 +115,89 @@
 			function renderQuestList() {
 				checkAndRefreshWantedQuests();
 				const list = document.getElementById("quest-list");
-				const activeWanted = (G.wantedQuests || []).filter(q => !q.torn);
-				if (activeWanted.length === 0) {
-					list.innerHTML = `<div style="color:var(--text3);text-align:center;padding:2rem;font-size:0.85rem;">${T("noQuest")}</div>`;
-					return;
-				}
-				list.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.7rem;padding:0.2rem 0;">` + activeWanted.map(q => {
-					const typeLabel = LANG.current === "en" ? "WANTED" : "通缉令";
-					const accentColor = "var(--gold)";
-					const memberOptions = G.team.map((m, i) =>
-						`<option value="${i}">${m.name}</option>`
-					).join("");
-					const submitSection = q.submitted
-						? `<div style="color:var(--green2);font-size:0.7rem;margin-top:0.4rem;text-align:center;">✅ ${T("questSubmitted")}</div>`
-						: `<div style="display:flex;flex-direction:column;gap:0.3rem;margin-top:0.5rem;">
-							<select class="qty-input" id="submit-member-${q.id}" style="width:100%;font-size:0.68rem;">${memberOptions}</select>
-							<div style="display:flex;gap:0.3rem;">
-								<button class="btn-accept" style="flex:1;font-size:0.65rem;padding:0.2rem 0;" onclick="submitWantedQuest('${q.id}')">${T("btnSubmit")}</button>
-								<button class="btn-accept" style="flex:1;font-size:0.65rem;padding:0.2rem 0;border-color:var(--red);color:var(--red2);" onclick="tearWantedQuest('${q.id}')">${T("btnTear")}</button>
-							</div>
-						</div>`;
-					return `<div class="transport-card" style="border-color:${accentColor};cursor:default;text-align:center;">
+
+				// 分类：available = 未提交且未撕；submitted = 已提交（不管torn）
+				const available = (G.wantedQuests || []).filter(q => !q.torn && !q.submitted).slice(0, 10);
+				const submitted = (G.wantedQuests || []).filter(q => q.submitted);
+
+				const typeLabel = LANG.current === "en" ? "WANTED" : "通缉令";
+
+				// ── Available 卡片 ──
+				function renderAvailableCard(q) {
+					// 过滤：排除玩家自己，只保留姓或名至少匹配一个的成员
+					const matchingMembers = G.team
+						.map((m, i) => ({ m, i }))
+						.filter(({ m }) => {
+							if (m.isPlayer) return false;
+							const mName = m.name || "";
+							return mName.includes(q.target.surname) || mName.includes(q.target.givenName);
+						});
+					const noMatch = matchingMembers.length === 0;
+					const memberOptions = noMatch
+						? `<option value="" disabled>${LANG.current === "en" ? "No matching member" : "无匹配成员"}</option>`
+						: matchingMembers.map(({ m, i }) => `<option value="${i}">${m.name}</option>`).join("");
+					return `<div class="transport-card" style="border-color:var(--gold);cursor:default;text-align:center;">
 						<div class="transport-name" style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;">${typeLabel}</div>
 						<div class="transport-stats" style="line-height:1.9;margin:0.3rem 0;">
 							<div><span style="color:var(--text3);font-size:0.68rem;">${T("questTargetLabel")}</span> <strong>${q.target.fullName}</strong></div>
 							<div><span style="color:var(--text3);font-size:0.68rem;">${T("questSurnameLabel")}</span>${q.target.surname} &nbsp; <span style="color:var(--text3);font-size:0.68rem;">${T("questGivenLabel")}</span>${q.target.givenName}</div>
 						</div>
 						<div class="transport-price" style="color:var(--gold);font-size:0.75rem;">${T("questRewardLabel", q.reward)}</div>
-						${submitSection}
+						<div style="display:flex;flex-direction:column;gap:0.3rem;margin-top:0.5rem;">
+							<select class="qty-input" id="submit-member-${q.id}" style="width:100%;font-size:0.68rem;"${noMatch ? " disabled" : ""}>${memberOptions}</select>
+							<div style="display:flex;gap:0.3rem;">
+								<button class="btn-accept" style="flex:1;font-size:0.65rem;padding:0.2rem 0;${noMatch ? "opacity:0.4;pointer-events:none;" : ""}" onclick="submitWantedQuest('${q.id}')">${T("btnSubmit")}</button>
+								<button class="btn-accept" style="flex:1;font-size:0.65rem;padding:0.2rem 0;border-color:var(--red);color:var(--red2);" onclick="tearWantedQuest('${q.id}')">${T("btnTear")}</button>
+							</div>
+						</div>
 					</div>`;
-				}).join("") + `</div>`;
+				}
+
+				// ── Submitted 卡片：判断是完美还是部分 ──
+				function renderSubmittedCard(q) {
+					// 用 submitResult 字段区分完美/部分（在 submitWantedQuest 写入）
+					const isPerfect = q.submitResult === "full";
+					const borderColor = isPerfect ? "var(--green2)" : "var(--text3)";
+					const titleColor  = isPerfect ? "var(--green2)" : "var(--text3)";
+					const nameStyle   = isPerfect ? "color:var(--green2);font-weight:700;" : "color:var(--text3);";
+					const badge       = isPerfect
+						? `<div style="color:var(--green2);font-size:0.72rem;margin-top:0.3rem;">✅ ${T("questSubmitted")}</div>`
+						: `<div style="color:var(--text3);font-size:0.72rem;margin-top:0.3rem;">◑ ${LANG.current === "en" ? "Partial" : "部分匹配"}</div>`;
+					const opacity     = isPerfect ? "1" : "0.5";
+					return `<div class="transport-card" style="border-color:${borderColor};cursor:default;text-align:center;opacity:${opacity};">
+						<div class="transport-name" style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;color:${titleColor};">${typeLabel}</div>
+						<div class="transport-stats" style="line-height:1.9;margin:0.3rem 0;">
+							<div><span style="color:var(--text3);font-size:0.68rem;">${T("questTargetLabel")}</span> <strong style="${nameStyle}">${q.target.fullName}</strong></div>
+						</div>
+						<div style="color:var(--text3);font-size:0.72rem;">${T("questRewardLabel", q.payout || 0)}</div>
+						${badge}
+						<button class="btn-accept" style="width:100%;font-size:0.62rem;padding:0.15rem 0;margin-top:0.4rem;border-color:var(--text3);color:var(--text3);" onclick="dismissSubmittedQuest('${q.id}')">${LANG.current === "en" ? "Dismiss" : "移除"}</button>
+					</div>`;
+				}
+
+				// ── 拼装 HTML ──
+				const sectionLabel = (text) =>
+					`<div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;padding:0.3rem 0 0.2rem;">${text}</div>`;
+
+				let html = "";
+
+				// Available 栏
+				html += sectionLabel(LANG.current === "en" ? `Available (${available.length}/10)` : `可接受任务 (${available.length}/10)`);
+				if (available.length === 0) {
+					html += `<div style="color:var(--text3);text-align:center;padding:1rem;font-size:0.82rem;">${T("noQuest")}</div>`;
+				} else {
+					html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.7rem;padding:0.2rem 0 0.6rem;">` +
+						available.map(renderAvailableCard).join("") + `</div>`;
+				}
+
+				// Submitted 栏（只在有内容时显示）
+				if (submitted.length > 0) {
+					html += sectionLabel(LANG.current === "en" ? `Submitted (${submitted.length})` : `已提交任务 (${submitted.length})`);
+					html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.7rem;padding:0.2rem 0;">` +
+						submitted.map(renderSubmittedCard).join("") + `</div>`;
+				}
+
+				list.innerHTML = html;
 			}
 
 			function submitWantedQuest(qid) {
@@ -155,6 +208,7 @@
 				const memberIdx = parseInt(sel.value);
 				const member = G.team[memberIdx];
 				if (!member) { showToast(T("errSelectMember"), "red"); return; }
+				if (member.isPlayer) { showToast(LANG.current === "en" ? "You cannot submit yourself!" : "不能提交玩家自己！", "red"); return; }
 
 				// 比对姓名
 				const mName = member.name || "";
@@ -175,6 +229,10 @@
 
 				G.gold += payout;
 				q.submitted = true;
+				q.payout = payout;
+				q.submitResult = fullMatch ? "full" : (surnameMatch || givenMatch) ? "partial" : "fail";
+				// 提交即从队伍移除该成员
+				G.team.splice(memberIdx, 1);
 				showToast(msg, payout > 0 ? "gold" : "");
 				renderGame();
 			}
@@ -184,6 +242,12 @@
 				if (!q) return;
 				q.torn = true;
 				showToast(T("toastTear"), "");
+				renderQuestList();
+			}
+
+			function dismissSubmittedQuest(qid) {
+				if (!G.wantedQuests) return;
+				G.wantedQuests = G.wantedQuests.filter(q => q.id !== qid);
 				renderQuestList();
 			}
 
