@@ -64,4 +64,15 @@
 			const NPC_FIRST_US = ["Michael","John","James","David","Robert","William","Mary","Maria","Daniel","Joseph","Richard","Thomas","Christopher","Jennifer","Matthew","Jose","Charles","Elizabeth","Patricia","Linda"];
 			const NPC_LAST_US  = ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Gonzalez","Wilson","Anderson","Thomas","Moore","Jackson","Martin","Lee"];
 
+			function generateNpcName(country) {
+				if (country === "germany") {
+					return NPC_FIRST_DE[Math.floor(Math.random()*NPC_FIRST_DE.length)] + " " + NPC_LAST_DE[Math.floor(Math.random()*NPC_LAST_DE.length)];
+				}
+				if (country === "usa") {
+					return NPC_FIRST_US[Math.floor(Math.random()*NPC_FIRST_US.length)] + " " + NPC_LAST_US[Math.floor(Math.random()*NPC_LAST_US.length)];
+				}
+				// 默认中文（china 或其他）
+				return NPC_SURNAMES_ZH[Math.floor(Math.random()*NPC_SURNAMES_ZH.length)] + NPC_GIVEN_ZH[Math.floor(Math.random()*NPC_GIVEN_ZH.length)];
+			}
+
 			
