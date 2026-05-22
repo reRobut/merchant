@@ -39,7 +39,7 @@
 				const hpTotal  = talentOn === "hp"  ? Math.round(hpBase  * talent) : hpBase;
 				const wage = Math.max(1, Math.round((atkTotal + defTotal + hpTotal) * talent / 10));
 				return {
-					name: genName(), icon: "🧑", role: "",
+					name: genName(), role: "",
 					atkBase, defBase, hpBase, talent, talentOn,
 					atk: atkTotal, def: defTotal, hp: hpTotal, wage,
 					weapon: null, armor: null, rescued: true,
@@ -121,11 +121,10 @@
 					return;
 				}
 				list.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.7rem;padding:0.2rem 0;">` + activeWanted.map(q => {
-					const typeIcon = q.type === "wanted" ? "🔴" : "🔵";
-					const typeLabel = q.type === "wanted" ? T("questTypeWanted") : T("questTypeKidnap");
-					const accentColor = q.type === "wanted" ? "var(--red)" : "#3a6ad4";
+					const typeLabel = LANG.current === "en" ? "WANTED" : "通缉令";
+					const accentColor = "var(--gold)";
 					const memberOptions = G.team.map((m, i) =>
-						`<option value="${i}">${m.icon || "🧑"} ${m.name}</option>`
+						`<option value="${i}">${m.name}</option>`
 					).join("");
 					const submitSection = q.submitted
 						? `<div style="color:var(--green2);font-size:0.7rem;margin-top:0.4rem;text-align:center;">✅ ${T("questSubmitted")}</div>`
@@ -137,8 +136,7 @@
 							</div>
 						</div>`;
 					return `<div class="transport-card" style="border-color:${accentColor};cursor:default;text-align:center;">
-						<span class="transport-icon">${typeIcon}</span>
-						<div class="transport-name" style="font-size:0.75rem;">${typeLabel}</div>
+						<div class="transport-name" style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;">${typeLabel}</div>
 						<div class="transport-stats" style="line-height:1.9;margin:0.3rem 0;">
 							<div><span style="color:var(--text3);font-size:0.68rem;">${T("questTargetLabel")}</span> <strong>${q.target.fullName}</strong></div>
 							<div><span style="color:var(--text3);font-size:0.68rem;">${T("questSurnameLabel")}</span>${q.target.surname} &nbsp; <span style="color:var(--text3);font-size:0.68rem;">${T("questGivenLabel")}</span>${q.target.givenName}</div>
@@ -577,7 +575,7 @@
 				list.innerHTML = G.team.map((m, i) => {
 					const wData = m.weapon ? WEAPONS.find((w) => w.id === m.weapon) : null;
 					return `<div class="member-equip-card">
-						<div class="member-equip-name">${m.icon} ${m.name}<span class="member-role-badge">${m.role}</span></div>
+						<div class="member-equip-name">${m.name}<span class="member-role-badge">${m.role}</span></div>
 						<div class="equip-slots"><div>
 							<span class="equip-slot-label">${T("slotWeapon")}</span>
 							<div class="equip-slot filled" onclick="unequipWeapon(${i})">
@@ -632,7 +630,7 @@
 				list.innerHTML = G.team.map((m, i) => {
 					const aData = m.armor ? ARMORS.find((a) => a.id === m.armor) : null;
 					return `<div class="member-equip-card">
-						<div class="member-equip-name">${m.icon} ${m.name}<span class="member-role-badge">${m.role}</span></div>
+						<div class="member-equip-name">${m.name}<span class="member-role-badge">${m.role}</span></div>
 						<div class="equip-slots"><div>
 							<span class="equip-slot-label">${T("slotArmor")}</span>
 							<div class="equip-slot filled" onclick="unequipArmor(${i})">
@@ -1027,6 +1025,11 @@
 				const { totalAtk, totalDef } = getPlayerCombatPower();
 				const isStrong = (totalAtk + totalDef) > 400;
 
+				// 玩家战力超过400时，有15%概率遭遇精英小队（4-5人），否则生成普通敌人
+				if (isStrong && Math.random() < 0.15) {
+					return generateEliteSquad(typeStr, 0);
+				}
+
 				const size = Math.floor(Math.random() * 3) + 1;
 				const party = [];
 				for (let i = 0; i < size; i++) {
@@ -1046,12 +1049,6 @@
 						e.maxHp = e.hp;
 						party.push(e);
 					}
-				}
-
-				// 玩家战力超过400时，额外加入精英小队
-				if (isStrong) {
-					const elites = generateEliteSquad(typeStr, size);
-					elites.forEach(e => party.push(e));
 				}
 
 				return party;
@@ -1348,6 +1345,13 @@
 					</div>`;
 				}).join("");
 
+				// 敌人较多时限制列表高度，防止挤掉按钮
+				const enemyListEl = document.getElementById("combat-enemies-list");
+				if (enemyListEl) {
+					enemyListEl.style.maxHeight = C.enemies.length > 4 ? "160px" : "";
+					enemyListEl.style.overflowY = C.enemies.length > 4 ? "auto" : "";
+				}
+
 				const autoBtn = document.getElementById("combat-btn-auto");
 				if (C.isAuto) { autoBtn.classList.add("active-auto"); autoBtn.textContent = T("combatBtnAutoOff"); }
 				else          { autoBtn.classList.remove("active-auto"); autoBtn.textContent = T("combatBtnAuto"); }
@@ -1538,7 +1542,7 @@
 					const aData = enemy.aIdx > 0 ? ARMORS[enemy.aIdx - 1] : null;
 					const newMember = {
 						name: enemy.name.replace(/#\d+$/, "").trim() || enemy.name,
-						icon: "😤", role: T("enemyRoleSuffix", enemy.tier),
+						role: T("enemyRoleSuffix", enemy.tier),
 						atk: enemy.atk, def: enemy.def, hp: enemy.hp || 100, hpBase: enemy.hp || 100,
 						talent: enemy.talent || 1, talentOn: enemy.talentOn || "atk",
 						weapon: wData ? wData.id : null,
