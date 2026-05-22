@@ -61,11 +61,28 @@
 
 			// 通缉令 / 绑架委托系统
 			function generateWantedName() {
-				const surnames = ["李","王","张","刘","陈","赵","孙","周","吴","郑","冯","蒋","谢","韩","唐","曹","许","邓","叶","傅"];
-				const names    = ["明","伟","芳","洋","磊","颖","涛","静","博","浩","婷","杰","鑫","俊","雷","莹","峰","超","琳","坤"];
-				const sur  = surnames[Math.floor(Math.random() * surnames.length)];
-				const name = names[Math.floor(Math.random() * names.length)];
-				return { surname: sur, givenName: name, fullName: sur + name };
+				const country = G.country || "china";
+				let surname, givenName, fullName;
+				if (country === "germany") {
+					const first = typeof NPC_FIRST_DE !== "undefined" ? NPC_FIRST_DE : ["Anna","Clara","Emma","Hanna","Julia","Laura","Lena","Lisa","Maria","Mia","Nina","Sara","Sophie","Katrin","Petra","Hans","Karl","Klaus","Lukas","Markus","Michael","Peter","Stefan","Thomas","Tobias"];
+					const last  = typeof NPC_LAST_DE  !== "undefined" ? NPC_LAST_DE  : ["Bauer","Beck","Braun","Fischer","Franke","Friedrich","Hoffmann","Kaiser","Klein","Koch","Krause","Lehmann","Meyer","Müller","Neumann","Peters","Richter","Schmidt","Schneider","Schröder","Schulz","Schwarz","Wagner","Weber"];
+					givenName = first[Math.floor(Math.random() * first.length)];
+					surname   = last[Math.floor(Math.random() * last.length)];
+					fullName  = givenName + " " + surname;
+				} else if (country === "usa") {
+					const first = typeof NPC_FIRST_US !== "undefined" ? NPC_FIRST_US : ["Alex","Blake","Casey","Dana","Ellis","Fran","Gray","Harper","Jamie","Jordan","Kendall","Logan","Morgan","Parker","Quinn","Riley","Skyler","Taylor","Tyler","Avery"];
+					const last  = typeof NPC_LAST_US  !== "undefined" ? NPC_LAST_US  : ["Anderson","Brown","Davis","Garcia","Johnson","Jones","Martinez","Miller","Moore","Rodriguez","Smith","Taylor","Thomas","White","Williams","Wilson","Jackson","Lee","Harris","Clark"];
+					givenName = first[Math.floor(Math.random() * first.length)];
+					surname   = last[Math.floor(Math.random() * last.length)];
+					fullName  = givenName + " " + surname;
+				} else {
+					const sur   = typeof NPC_SURNAMES_ZH !== "undefined" ? NPC_SURNAMES_ZH : ["李","王","张","刘","陈","赵","孙","周","吴","郑","冯","蒋","谢","韩","唐","曹","许","邓","叶","傅"];
+					const given = typeof NPC_GIVEN_ZH   !== "undefined" ? NPC_GIVEN_ZH   : ["明","伟","芳","洋","磊","颖","涛","静","博","浩","婷","杰","鑫","俊","雷","莹","峰","超","琳","坤"];
+					surname   = sur[Math.floor(Math.random() * sur.length)];
+					givenName = given[Math.floor(Math.random() * given.length)];
+					fullName  = surname + givenName;
+				}
+				return { surname, givenName, fullName };
 			}
 
 			function generateWantedQuest(id) {
@@ -103,32 +120,33 @@
 					list.innerHTML = `<div style="color:var(--text3);text-align:center;padding:2rem;font-size:0.85rem;">${T("noQuest")}</div>`;
 					return;
 				}
-				list.innerHTML = activeWanted.map(q => {
+				list.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.7rem;padding:0.2rem 0;">` + activeWanted.map(q => {
 					const typeIcon = q.type === "wanted" ? "🔴" : "🔵";
 					const typeLabel = q.type === "wanted" ? T("questTypeWanted") : T("questTypeKidnap");
-					const hintHtml = `<div style="font-size:0.72rem;color:var(--text3);margin:0.4rem 0;line-height:1.7;">${T("questHint")}</div>`;
+					const accentColor = q.type === "wanted" ? "var(--red)" : "#3a6ad4";
 					const memberOptions = G.team.map((m, i) =>
 						`<option value="${i}">${m.icon || "🧑"} ${m.name}</option>`
 					).join("");
 					const submitSection = q.submitted
-						? `<div style="color:var(--green2);font-size:0.8rem;margin-top:0.5rem;">${T("questSubmitted")}</div>`
-						: `<div style="display:flex;gap:0.4rem;align-items:center;margin-top:0.6rem;flex-wrap:wrap;">
-							<select class="qty-input" id="submit-member-${q.id}" style="flex:1;font-size:0.72rem;min-width:80px;">${memberOptions}</select>
-							<button class="btn-accept" style="flex:none;" onclick="submitWantedQuest('${q.id}')">${T("btnSubmit")}</button>
-							<button class="btn-accept" style="flex:none;border-color:var(--red);color:var(--red2);" onclick="tearWantedQuest('${q.id}')">${T("btnTear")}</button>
+						? `<div style="color:var(--green2);font-size:0.7rem;margin-top:0.4rem;text-align:center;">✅ ${T("questSubmitted")}</div>`
+						: `<div style="display:flex;flex-direction:column;gap:0.3rem;margin-top:0.5rem;">
+							<select class="qty-input" id="submit-member-${q.id}" style="width:100%;font-size:0.68rem;">${memberOptions}</select>
+							<div style="display:flex;gap:0.3rem;">
+								<button class="btn-accept" style="flex:1;font-size:0.65rem;padding:0.2rem 0;" onclick="submitWantedQuest('${q.id}')">${T("btnSubmit")}</button>
+								<button class="btn-accept" style="flex:1;font-size:0.65rem;padding:0.2rem 0;border-color:var(--red);color:var(--red2);" onclick="tearWantedQuest('${q.id}')">${T("btnTear")}</button>
+							</div>
 						</div>`;
-					return `<div class="quest-card" style="border-color:${q.type==='wanted'?'var(--red)':'#3a6ad4'};">
-						<div class="quest-title">${typeIcon} ${typeLabel}</div>
-						<div style="font-size:0.82rem;color:var(--text);line-height:1.8;margin:0.3rem 0;">
-							<span style="color:var(--text3)">${T("questTargetLabel")}</span><strong>${q.target.fullName}</strong>
-							&nbsp;·&nbsp;<span style="color:var(--text3)">${T("questSurnameLabel")}</span>${q.target.surname}
-							&nbsp;·&nbsp;<span style="color:var(--text3)">${T("questGivenLabel")}</span>${q.target.givenName}
+					return `<div class="transport-card" style="border-color:${accentColor};cursor:default;text-align:center;">
+						<span class="transport-icon">${typeIcon}</span>
+						<div class="transport-name" style="font-size:0.75rem;">${typeLabel}</div>
+						<div class="transport-stats" style="line-height:1.9;margin:0.3rem 0;">
+							<div><span style="color:var(--text3);font-size:0.68rem;">${T("questTargetLabel")}</span> <strong>${q.target.fullName}</strong></div>
+							<div><span style="color:var(--text3);font-size:0.68rem;">${T("questSurnameLabel")}</span>${q.target.surname} &nbsp; <span style="color:var(--text3);font-size:0.68rem;">${T("questGivenLabel")}</span>${q.target.givenName}</div>
 						</div>
-						<div class="quest-reward"><span class="reward-item">${T("questRewardLabel", q.reward)}</span></div>
-						${hintHtml}
+						<div class="transport-price" style="color:var(--gold);font-size:0.75rem;">${T("questRewardLabel", q.reward)}</div>
 						${submitSection}
 					</div>`;
-				}).join("");
+				}).join("") + `</div>`;
 			}
 
 			function submitWantedQuest(qid) {
