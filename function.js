@@ -88,7 +88,8 @@
 				if (!G.wantedQuests) G.wantedQuests = [];
 				// 每50天生成一张
 				const expectedCount = Math.floor(G.day / 50) + 1;
-				while (G.wantedQuests.filter(q => !q.torn).length < expectedCount && G.wantedQuests.length < expectedCount) {
+				const MAX_ACTIVE_QUESTS = 10;
+				while (G.wantedQuests.filter(q => !q.torn).length < expectedCount && G.wantedQuests.filter(q => !q.torn).length < MAX_ACTIVE_QUESTS) {
 					const id = "wanted_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
 					G.wantedQuests.push(generateWantedQuest(id));
 				}
@@ -843,25 +844,7 @@
 				</div>`;
 			}
 
-			// ── QUESTS ──
-			function renderQuestList() {
-				const list = document.getElementById("quest-list");
-				list.innerHTML = G.quests.map((q) => `
-					<div class="quest-card ${q.accepted ? "active-quest" : ""} ${q.urgent ? "urgent" : ""}">
-						<div class="quest-title">${q.urgent ? "🔴 " : ""}${q.title}</div>
-						<div class="quest-desc">${q.desc}</div>
-						<div class="quest-reward">
-							<span class="reward-item">🏆 ${q.reward}</span>
-							<span class="quest-deadline">⏱ ${q.deadline}</span>
-						</div>
-						<button class="btn-accept ${q.accepted ? "accepted" : ""}" onclick="acceptQuest('${q.id}')">
-							${q.accepted ? T("btnQuestAccepted") : T("btnAcceptQuest")}
-						</button>
-					</div>`).join("");
-			}
 
-			// acceptQuest kept for compatibility (no longer used in new wanted system)
-			function acceptQuest(id) {}
 
 			// ══════════════════════════════════
 			// TRAVEL
