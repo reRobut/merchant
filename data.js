@@ -17,7 +17,7 @@
 				{ id: "medicine", name: "医用品", nameEn: "Medicine", icon: "💊", cat: "医疗", priceMin: 200, priceMax: 400 },
 				{ id: "gems", name: "宝石", nameEn: "Gems", icon: "💎", cat: "奢侈", priceMin: 1000, priceMax: 2000 },
 				{ id: "gold_bar", name: "黄金", nameEn: "Gold", icon: "🥇", cat: "贵金属", priceMin: 3000, priceMax: 5000 },
-				{ id: "contraband", name: "违禁品", nameEn: "Contraband", icon: "📦", cat: "违禁", priceMin: 5, priceMax: 5000 },
+				{ id: "contraband", name: "违禁品", nameEn: "Illegal stuff", icon: "🔞", cat: "违禁", priceMin: 5, priceMax: 5000 },
 			];
 
 			const WEAPONS = [

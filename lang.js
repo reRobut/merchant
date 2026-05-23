@@ -7,7 +7,7 @@ const LANG = { current: 'zh' };
 const TEXTS = {
   zh: {
     // 标题屏
-    titleCn: '游商模拟器', ornament: '— 行商四海，富甲天下 —',
+    titleCn: '刀尖行商', ornament: '— 武行四海，富甲天下 —',
     newGame: '开始新游戏', loadGame: '继续游戏',
     // 新游戏屏
     createChar: '创建角色', nameLabel: '角色名称', countryLabel: '选择国家',
@@ -192,7 +192,7 @@ const TEXTS = {
     repLossPolice: '对抗执法者，声誉 -10',
   },
   en: {
-    titleCn: '游商模拟器', ornament: '— Trade the World, Rule the Market —',
+    titleCn: '刀尖行商', ornament: '— Hunt Through the Wild, Trade Across the World —',
     newGame: 'New Game', loadGame: 'Load Game',
     createChar: 'Create Character', nameLabel: 'Character Name', countryLabel: 'Choose Country',
     namePlaceholder: 'Enter name...',
@@ -324,7 +324,7 @@ const TEXTS = {
     roadCriminal: 'Armed bandits block your path, eyeing your goods with menace.',
     roadStealResult: (lost, pct) => `A thief stole ${lost} coins from you.`,
     roadPolicePass: 'Inspection passed without issue.',
-    roadPoliceFine: (fine) => `Contraband found! Goods confiscated and fined ${fine} coins (50% of cash).`,
+    roadPoliceFine: (fine) => `Illegal stuff found! Goods confiscated and fined ${fine} coins (50% of cash).`,
     roadPersonRob: (gold) => `Found ${gold} coins, but your reputation suffers.`,
     roadPersonHelpFull: (icon, name, atk, def, talent, wage) => `You revived them. ${icon} ${name} is grateful and joins your group to the next city. (ATK ${atk} · DEF ${def} · Talent ${talent} · Wage ${wage}/day)`,
     roadPersonHelpNoSeat: 'You moved them to safety and left some food. No seats in your vehicle. Reputation improved.',
