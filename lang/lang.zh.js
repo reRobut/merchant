@@ -34,7 +34,7 @@ TEXTS.zh = {
   sectionTeamWeapon: '团队武器装备', sectionWeaponShop: '武器商店', sectionWeaponWH: '武器仓库',
   sectionTeamArmor: '团队防具装备', sectionArmorShop: '防具商店', sectionArmorWH: '防具仓库',
   slotWeapon: '武器', slotArmor: '身甲', slotEmpty: '空',
-  statAtk: '攻击', statAtk_s: '攻击 +', statDef: '防御', statDef_s: '+', statDef_e: ' 防御',
+  statAtk: '攻击', statAtk_s: '攻击 +', statDef: '防御', statDef_s: '防御 +', statDef_e: '',
   btnBuyToWH: '购买入库', btnEquip: '装备', btnSellWH: '卖出',
   whEmpty: '仓库为空',
   // 交通标签

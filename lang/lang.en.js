@@ -27,7 +27,7 @@ TEXTS.en = {
   sectionTeamWeapon: 'Team Weapons', sectionWeaponShop: 'Weapon Shop', sectionWeaponWH: 'Weapon Storage',
   sectionTeamArmor: 'Team Armor', sectionArmorShop: 'Armor Shop', sectionArmorWH: 'Armor Storage',
   slotWeapon: 'Weapon', slotArmor: 'Armor', slotEmpty: 'Empty',
-  statAtk: 'ATK', statAtk_s: 'ATK +', statDef: 'DEF', statDef_s: '+', statDef_e: ' DEF',
+  statAtk: 'ATK', statAtk_s: 'ATK +', statDef: 'DEF', statDef_s: 'DEF +', statDef_e: '',
   btnBuyToWH: 'Buy', btnEquip: 'Equip', btnSellWH: 'Sell',
   whEmpty: 'Storage empty',
   sectionTransport: 'Available Transport',

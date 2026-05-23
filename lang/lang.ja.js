@@ -34,7 +34,7 @@ TEXTS.ja = {
   sectionTeamWeapon: 'チーム武器装備', sectionWeaponShop: '武器屋', sectionWeaponWH: '武器倉庫',
   sectionTeamArmor: 'チーム防具装備', sectionArmorShop: '防具屋', sectionArmorWH: '防具倉庫',
   slotWeapon: '武器', slotArmor: '防具', slotEmpty: '空',
-  statAtk: '攻撃', statAtk_s: '攻撃+', statDef: '防御', statDef_s: '+', statDef_e: '防御',
+  statAtk: '攻撃', statAtk_s: '攻撃+', statDef: '防御', statDef_s: '防御+', statDef_e: '',
   btnBuyToWH: '購入入庫', btnEquip: '装備', btnSellWH: '売却',
   whEmpty: '倉庫は空です',
   // 移動タブ

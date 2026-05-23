@@ -1140,7 +1140,7 @@
 
 			function getForceDesc(force) {
 				const typeName = T("enemyType" + force[0].type.charAt(0).toUpperCase() + force[0].type.slice(1));
-				const tiers = force.map(f => (f.isElite ? "★" : "") + f.tier + T("tierSuffix")).join(LANG.current === "zh" ? "，" : ", ");
+				const tiers = force.map(f => (f.isElite ? "★" : "") + f.tier).join(LANG.current === "zh" ? "，" : ", ");
 				return T("forceDesc", force.length, typeName, tiers);
 			}
 

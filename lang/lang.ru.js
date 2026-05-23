@@ -34,7 +34,7 @@ TEXTS.ru = {
   sectionTeamWeapon: 'Оружие команды', sectionWeaponShop: 'Оружейная лавка', sectionWeaponWH: 'Склад оружия',
   sectionTeamArmor: 'Броня команды', sectionArmorShop: 'Бронелавка', sectionArmorWH: 'Склад брони',
   slotWeapon: 'Оружие', slotArmor: 'Броня', slotEmpty: 'Пусто',
-  statAtk: 'Атака', statAtk_s: 'Атака+', statDef: 'Защита', statDef_s: '+', statDef_e: 'защиты',
+  statAtk: 'Атака', statAtk_s: 'Атака+', statDef: 'Защита', statDef_s: 'Защита+', statDef_e: '',
   btnBuyToWH: 'Купить на склад', btnEquip: 'Надеть', btnSellWH: 'Продать',
   whEmpty: 'Склад пуст',
   // Транспорт

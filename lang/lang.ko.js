@@ -34,7 +34,7 @@ TEXTS.ko = {
   sectionTeamWeapon: '팀 무기 장비', sectionWeaponShop: '무기 상점', sectionWeaponWH: '무기 창고',
   sectionTeamArmor: '팀 방어구 장비', sectionArmorShop: '방어구 상점', sectionArmorWH: '방어구 창고',
   slotWeapon: '무기', slotArmor: '방어구', slotEmpty: '없음',
-  statAtk: '공격', statAtk_s: '공격+', statDef: '방어', statDef_s: '+', statDef_e: '방어',
+  statAtk: '공격', statAtk_s: '공격+', statDef: '방어', statDef_s: '방어+', statDef_e: '',
   btnBuyToWH: '구매 입고', btnEquip: '장착', btnSellWH: '판매',
   whEmpty: '창고가 비어 있습니다',
   // 이동수단 탭

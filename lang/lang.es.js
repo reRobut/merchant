@@ -34,7 +34,7 @@ TEXTS.es = {
   sectionTeamWeapon: 'Armas del equipo', sectionWeaponShop: 'Armería', sectionWeaponWH: 'Almacén de armas',
   sectionTeamArmor: 'Armadura del equipo', sectionArmorShop: 'Tienda de armadura', sectionArmorWH: 'Almacén de armadura',
   slotWeapon: 'Arma', slotArmor: 'Armadura', slotEmpty: 'Vacío',
-  statAtk: 'ATQ', statAtk_s: 'ATQ+', statDef: 'DEF', statDef_s: '+', statDef_e: 'DEF',
+  statAtk: 'ATQ', statAtk_s: 'ATQ+', statDef: 'DEF', statDef_s: 'DEF+', statDef_e: '',
   btnBuyToWH: 'Comprar al almacén', btnEquip: 'Equipar', btnSellWH: 'Vender',
   whEmpty: 'Almacén vacío',
   // Transporte
