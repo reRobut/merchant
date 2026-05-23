@@ -1,39 +1,73 @@
+const GOODS = [
+  { id: "grain",      icon: "🌾", cat: "粮食",
+    name: "谷物",     nameEn: "Grain",        nameJa: "穀物",       nameKo: "곡물",     nameRu: "Зерно",        nameEs: "Grano",       namePt: "Grãos",
+    priceMin: 5,   priceMax: 10 },
+  { id: "fuel",       icon: "⛽", cat: "能源",
+    name: "汽油",     nameEn: "Fuel",         nameJa: "燃料",       nameKo: "연료",     nameRu: "Топливо",      nameEs: "Combustible", namePt: "Combustível",
+    priceMin: 30,  priceMax: 50 },
+  { id: "textile",    icon: "🧵", cat: "纺织",
+    name: "纺织品",   nameEn: "Textiles",     nameJa: "織物",       nameKo: "직물",     nameRu: "Ткани",        nameEs: "Textiles",    namePt: "Têxteis",
+    priceMin: 50,  priceMax: 100 },
+  { id: "medicine",   icon: "💊", cat: "医疗",
+    name: "医用品",   nameEn: "Medicine",     nameJa: "医薬品",     nameKo: "의약품",   nameRu: "Медикаменты",  nameEs: "Medicamentos",namePt: "Medicamentos",
+    priceMin: 200, priceMax: 400 },
+  { id: "gems",       icon: "💎", cat: "奢侈",
+    name: "宝石",     nameEn: "Gems",         nameJa: "宝石",       nameKo: "보석",     nameRu: "Драгоценности",nameEs: "Gemas",       namePt: "Gemas",
+    priceMin: 1000,priceMax: 2000 },
+  { id: "gold_bar",   icon: "🥇", cat: "贵金属",
+    name: "黄金",     nameEn: "Gold",         nameJa: "金",         nameKo: "금",       nameRu: "Золото",       nameEs: "Oro",         namePt: "Ouro",
+    priceMin: 3000,priceMax: 5000 },
+  { id: "contraband", icon: "🔞", cat: "违禁",
+    name: "违禁品",   nameEn: "Illegal stuff",nameJa: "違禁品",     nameKo: "금지품",   nameRu: "Запрещёнка",   nameEs: "Contrabando", namePt: "Contrabando",
+    priceMin: 5,   priceMax: 5000 },
+];
 
-			const GOODS = [
-				{ id: "grain", name: "谷物", nameEn: "Grain", icon: "🌾", cat: "粮食", priceMin: 5, priceMax: 10 },
-				{ id: "fuel", name: "汽油", nameEn: "Fuel", icon: "⛽", cat: "能源", priceMin: 30, priceMax: 50 },
-				{ id: "textile", name: "纺织品", nameEn: "Textiles", icon: "🧵", cat: "纺织", priceMin: 50, priceMax: 100 },
-				{ id: "medicine", name: "医用品", nameEn: "Medicine", icon: "💊", cat: "医疗", priceMin: 200, priceMax: 400 },
-				{ id: "gems", name: "宝石", nameEn: "Gems", icon: "💎", cat: "奢侈", priceMin: 1000, priceMax: 2000 },
-				{ id: "gold_bar", name: "黄金", nameEn: "Gold", icon: "🥇", cat: "贵金属", priceMin: 3000, priceMax: 5000 },
-				{ id: "contraband", name: "违禁品", nameEn: "Illegal stuff", icon: "🔞", cat: "违禁", priceMin: 5, priceMax: 5000 },
-			];
+const WEAPONS = [
+  { id: "branch",   icon: "🪵", atk: 3,   price: 10,
+    name: "树枝",   nameEn: "Branch",     nameJa: "木の枝",     nameKo: "나뭇가지", nameRu: "Ветка",        nameEs: "Rama",        namePt: "Galho" },
+  { id: "ironrod",  icon: "🔩", atk: 10,  price: 50,
+    name: "铁棍",   nameEn: "Iron Rod",   nameJa: "鉄の棒",     nameKo: "쇠막대",   nameRu: "Железный прут",nameEs: "Barra de hierro", namePt: "Barra de ferro" },
+  { id: "knife",    icon: "🔪", atk: 25,  price: 200,
+    name: "小刀",   nameEn: "Knife",      nameJa: "ナイフ",     nameKo: "칼",       nameRu: "Нож",          nameEs: "Cuchillo",    namePt: "Faca" },
+  { id: "machete",  icon: "⚔️", atk: 50,  price: 500,
+    name: "砍刀",   nameEn: "Machete",    nameJa: "マチェーテ", nameKo: "정글도",   nameRu: "Мачете",       nameEs: "Machete",     namePt: "Facão" },
+  { id: "axe",      icon: "🪓", atk: 70,  price: 1500,
+    name: "斧头",   nameEn: "Axe",        nameJa: "斧",         nameKo: "도끼",     nameRu: "Топор",        nameEs: "Hacha",       namePt: "Machado" },
+  { id: "holysword",icon: "✨", atk: 100, price: 6000,
+    name: "圣剑",   nameEn: "Holy Sword", nameJa: "聖剣",       nameKo: "성검",     nameRu: "Святой меч",   nameEs: "Espada sagrada", namePt: "Espada sagrada" },
+];
 
-			const WEAPONS = [
-				{ id: "branch", name: "树枝", nameEn: "Branch", icon: "🪵", atk: 3, price: 10 },
-				{ id: "ironrod", name: "铁棍", nameEn: "Iron Rod", icon: "🔩", atk: 10, price: 50 },
-				{ id: "knife", name: "小刀", nameEn: "Knife", icon: "🔪", atk: 25, price: 200 },
-				{ id: "machete", name: "砍刀", nameEn: "Machete", icon: "⚔️", atk: 50, price: 500 },
-				{ id: "axe", name: "斧头", nameEn: "Axe", icon: "🪓", atk: 70, price: 1500 },
-				{ id: "holysword", name: "圣剑", nameEn: "Holy Sword", icon: "✨", atk: 100, price: 6000 },
-			];
+const ARMORS = [
+  { id: "tshirt",  icon: "👕", def: 3,   price: 10,
+    name: "T恤",   nameEn: "T-Shirt",       nameJa: "Tシャツ",    nameKo: "티셔츠",   nameRu: "Футболка",     nameEs: "Camiseta",    namePt: "Camiseta" },
+  { id: "hoodie",  icon: "🧥", def: 10,  price: 50,
+    name: "卫衣",  nameEn: "Hoodie",         nameJa: "パーカー",   nameKo: "후드티",   nameRu: "Толстовка",    nameEs: "Sudadera",    namePt: "Moletom" },
+  { id: "jacket",  icon: "🥋", def: 25,  price: 200,
+    name: "皮夹克",nameEn: "Leather Jacket", nameJa: "レザージャケット", nameKo: "가죽재킷", nameRu: "Кожаная куртка", nameEs: "Chaqueta de cuero", namePt: "Jaqueta de couro" },
+  { id: "vest",    icon: "🦺", def: 50,  price: 500,
+    name: "战术马甲", nameEn: "Tactical Vest", nameJa: "タクティカルベスト", nameKo: "전술 조끼", nameRu: "Тактический жилет", nameEs: "Chaleco táctico", namePt: "Colete tático" },
+  { id: "kevlar",  icon: "🛡️", def: 70,  price: 1500,
+    name: "防弹衣",nameEn: "Kevlar Vest",    nameJa: "防弾ベスト", nameKo: "방탄복",   nameRu: "Бронежилет",   nameEs: "Chaleco antibalas", namePt: "Colete à prova de balas" },
+  { id: "riot",    icon: "🦾", def: 100, price: 6000,
+    name: "防暴盔甲",nameEn: "Riot Armor",   nameJa: "暴徒鎮圧装甲", nameKo: "방폭 갑옷", nameRu: "Противоударная броня", nameEs: "Armadura antidisturbios", namePt: "Armadura antiameaças" },
+];
 
-			const ARMORS = [
-				{ id: "tshirt", name: "T恤", nameEn: "T-Shirt", icon: "👕", def: 3, price: 10 },
-				{ id: "hoodie", name: "卫衣", nameEn: "Hoodie", icon: "🧥", def: 10, price: 50 },
-				{ id: "jacket", name: "皮夹克", nameEn: "Leather Jacket", icon: "🥋", def: 25, price: 200 },
-				{ id: "vest", name: "战术马甲", nameEn: "Tactical Vest", icon: "🦺", def: 50, price: 500 },
-				{ id: "kevlar", name: "防弹衣", nameEn: "Kevlar Vest", icon: "🛡️", def: 70, price: 1500 },
-				{ id: "riot", name: "防暴盔甲", nameEn: "Riot Armor", icon: "🦾", def: 100, price: 6000 },
-			];
+const TRANSPORTS = [
+  { id: "walk",  icon: "🚶", passengers: 0,  cap: 10,   spd: 1, fuelCost: 0,  price: 0,     owned: true,
+    name: "步行",    nameEn: "Walking",  nameJa: "徒歩",     nameKo: "도보",   nameRu: "Пешком",     nameEs: "A pie",      namePt: "A pé" },
+  { id: "bike",  icon: "🚲", passengers: 0,  cap: 30,   spd: 2, fuelCost: 0,  price: 200,   owned: false,
+    name: "自行车",  nameEn: "Bicycle",  nameJa: "自転車",   nameKo: "자전거", nameRu: "Велосипед",  nameEs: "Bicicleta",  namePt: "Bicicleta" },
+  { id: "moto",  icon: "🏍️", passengers: 1,  cap: 30,   spd: 3, fuelCost: 1,  price: 600,   owned: false,
+    name: "摩托车",  nameEn: "Motorbike",nameJa: "バイク",   nameKo: "오토바이",nameRu: "Мотоцикл",  nameEs: "Moto",       namePt: "Moto" },
+  { id: "trike", icon: "🛺", passengers: 1,  cap: 100,  spd: 2, fuelCost: 0,  price: 400,   owned: false,
+    name: "三轮车",  nameEn: "Tricycle", nameJa: "三輪車",   nameKo: "삼륜차", nameRu: "Трёхколёска",nameEs: "Triciclo",   namePt: "Triciclo" },
+  { id: "car",   icon: "🚗", passengers: 3,  cap: 250,  spd: 5, fuelCost: 3,  price: 2000,  owned: false,
+    name: "小轿车",  nameEn: "Car",      nameJa: "乗用車",   nameKo: "승용차", nameRu: "Легковушка", nameEs: "Coche",      namePt: "Carro" },
+  { id: "van",   icon: "🚐", passengers: 2,  cap: 500,  spd: 4, fuelCost: 5,  price: 1500,  owned: false,
+    name: "小货车",  nameEn: "Van",      nameJa: "バン",     nameKo: "밴",     nameRu: "Фургон",     nameEs: "Furgoneta",  namePt: "Furgão" },
+  { id: "truck", icon: "🚚", passengers: 2,  cap: 1000, spd: 4, fuelCost: 15, price: 3000,  owned: false,
+    name: "大货车",  nameEn: "Truck",    nameJa: "トラック", nameKo: "트럭",   nameRu: "Грузовик",   nameEs: "Camión",     namePt: "Caminhão" },
+  { id: "bus",   icon: "🚌", passengers: 10, cap: 500,  spd: 4, fuelCost: 10, price: 10000, owned: false,
+    name: "大巴车",  nameEn: "Bus",      nameJa: "バス",     nameKo: "버스",   nameRu: "Автобус",    nameEs: "Autobús",    namePt: "Ônibus" },
+];
 
-			const TRANSPORTS = [
-				{ id: "walk", name: "步行", nameEn: "Walking", icon: "🚶", passengers: 0, cap: 10, spd: 1, fuelCost: 0, price: 0, owned: true },
-				{ id: "bike", name: "自行车", nameEn: "Bicycle", icon: "🚲", passengers: 0, cap: 30, spd: 2, fuelCost: 0, price: 200, owned: false },
-				{ id: "moto", name: "摩托车", nameEn: "Motorbike", icon: "🏍️", passengers: 1, cap: 30, spd: 3, fuelCost: 1, price: 600, owned: false },
-				{ id: "trike", name: "三轮车", nameEn: "Tricycle", icon: "🛺", passengers: 1, cap: 100, spd: 2, fuelCost: 0, price: 400, owned: false },
-				{ id: "car", name: "小轿车", nameEn: "Car", icon: "🚗", passengers: 3, cap: 250, spd: 5, fuelCost: 3, price: 2000, owned: false },
-				{ id: "van", name: "小货车", nameEn: "Van", icon: "🚐", passengers: 2, cap: 500, spd: 4, fuelCost: 5, price: 1500, owned: false },
-				{ id: "truck", name: "大货车", nameEn: "Truck", icon: "🚚", passengers: 2, cap: 1000, spd: 4, fuelCost: 15, price: 3000, owned: false },
-				{ id: "bus", name: "大巴车", nameEn: "Bus", icon: "🚌", passengers: 10, cap: 500, spd: 4, fuelCost: 10, price: 10000, owned: false },
-			];

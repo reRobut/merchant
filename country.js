@@ -1,12 +1,12 @@
 
 						const COUNTRIES = [
-				{ id: "china", name: "中国", nameEn: "China" },
-				{ id: "germany", name: "德国", nameEn: "Germany" },
-				{ id: "usa", name: "美国", nameEn: "USA" },
-				{ id: "japan", name: "日本", nameEn: "Japan" },
-				{ id: "korea", name: "韩国", nameEn: "Korea" },
-                { id: "russia", name: "俄罗斯", nameEn: "Russia" },
-                { id: "lm", name: "拉美", nameEn: "Latin America" },
+				{ id: "china",   name: "中国",   nameEn: "China",         nameJa: "中国",           nameKo: "중국",         nameRu: "Китай",             nameEs: "China",         namePt: "China" },
+				{ id: "germany", name: "德国",   nameEn: "Germany",       nameJa: "ドイツ",         nameKo: "독일",         nameRu: "Германия",          nameEs: "Alemania",      namePt: "Alemanha" },
+				{ id: "usa",     name: "美国",   nameEn: "USA",           nameJa: "アメリカ",       nameKo: "미국",         nameRu: "США",               nameEs: "EE.UU.",        namePt: "EUA" },
+				{ id: "japan",   name: "日本",   nameEn: "Japan",         nameJa: "日本",           nameKo: "일본",         nameRu: "Япония",            nameEs: "Japón",         namePt: "Japão" },
+				{ id: "korea",   name: "韩国",   nameEn: "Korea",         nameJa: "韓国",           nameKo: "한국",         nameRu: "Корея",             nameEs: "Corea",         namePt: "Coreia" },
+				{ id: "russia",  name: "俄罗斯", nameEn: "Russia",        nameJa: "ロシア",         nameKo: "러시아",       nameRu: "Россия",            nameEs: "Rusia",         namePt: "Rússia" },
+				{ id: "lm",      name: "拉美",   nameEn: "Latin America", nameJa: "ラテンアメリカ", nameKo: "라틴아메리카", nameRu: "Латинская Америка", nameEs: "Latinoamérica", namePt: "América Latina" },
 			];
 
 			const CITIES = {
@@ -59,6 +59,18 @@
 				}
 				if (country === "usa") {
 					return NPC_FIRST_US[Math.floor(Math.random()*NPC_FIRST_US.length)] + " " + NPC_LAST_US[Math.floor(Math.random()*NPC_LAST_US.length)];
+				}
+				if (country === "japan") {
+					return NPC_LAST_JP[Math.floor(Math.random()*NPC_LAST_JP.length)] + NPC_FIRST_JP[Math.floor(Math.random()*NPC_FIRST_JP.length)];
+				}
+				if (country === "korea") {
+					return NPC_LAST_KR[Math.floor(Math.random()*NPC_LAST_KR.length)] + " " + NPC_FIRST_KR[Math.floor(Math.random()*NPC_FIRST_KR.length)];
+				}
+				if (country === "russia") {
+					return NPC_FIRST_RU[Math.floor(Math.random()*NPC_FIRST_RU.length)] + " " + NPC_LAST_RU[Math.floor(Math.random()*NPC_LAST_RU.length)];
+				}
+				if (country === "lm") {
+					return NPC_FIRST_LM[Math.floor(Math.random()*NPC_FIRST_LM.length)] + " " + NPC_LAST_LM[Math.floor(Math.random()*NPC_LAST_LM.length)];
 				}
 				// 默认中文（china 或其他）
 				return NPC_SURNAMES_ZH[Math.floor(Math.random()*NPC_SURNAMES_ZH.length)] + NPC_GIVEN_ZH[Math.floor(Math.random()*NPC_GIVEN_ZH.length)];

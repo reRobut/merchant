@@ -4,22 +4,7 @@
 			// ── 名字生成（改用 data.js 中的 generateNpcName，按国家区分；如未加载则降级）──
 			function genName() {
 				if (typeof generateNpcName === "function") return generateNpcName(G.country || LANG.current);
-				// 降级：按国家区分名字，直接使用 data.js 中的数组（若已加载）
-				const country = G.country || "";
-				if (country === "germany") {
-					const first = typeof NPC_FIRST_DE !== "undefined" ? NPC_FIRST_DE : ["Anna","Clara","Emma","Hanna","Julia","Laura","Lena","Lisa","Maria","Mia","Nina","Sara","Sophie","Katrin","Petra","Hans","Karl","Klaus","Lukas","Markus","Michael","Peter","Stefan","Thomas","Tobias","Wolfgang","Erik","Felix","Georg","Heinz"];
-					const last  = typeof NPC_LAST_DE  !== "undefined" ? NPC_LAST_DE  : ["Bauer","Beck","Braun","Fischer","Franke","Friedrich","Hoffmann","Kaiser","Klein","Koch","Krause","Lehmann","Meyer","Müller","Neumann","Peters","Richter","Schmidt","Schneider","Schröder","Schulz","Schwarz","Wagner","Weber","Werner","Wolf","Zimmermann","Becker","Huber","König"];
-					return first[Math.floor(Math.random()*first.length)] + " " + last[Math.floor(Math.random()*last.length)];
-				}
-				if (country === "usa") {
-					const first = typeof NPC_FIRST_US !== "undefined" ? NPC_FIRST_US : ["Alex","Blake","Casey","Dana","Ellis","Fran","Gray","Harper","Jamie","Jordan","Kendall","Logan","Morgan","Parker","Quinn","Riley","Skyler","Taylor","Tyler","Avery"];
-					const last  = typeof NPC_LAST_US  !== "undefined" ? NPC_LAST_US  : ["Anderson","Brown","Davis","Garcia","Johnson","Jones","Martinez","Miller","Moore","Rodriguez","Smith","Taylor","Thomas","White","Williams","Wilson","Jackson","Lee","Harris","Clark"];
-					return first[Math.floor(Math.random()*first.length)] + " " + last[Math.floor(Math.random()*last.length)];
-				}
-				// 默认中文（china 或其他）
-				const sur  = typeof NPC_SURNAMES_ZH !== "undefined" ? NPC_SURNAMES_ZH : ["李","王","张","刘","陈","赵","孙","周","吴","郑","冯","蒋","谢","韩","唐","曹","许","邓","叶","傅"];
-				const given = typeof NPC_GIVEN_ZH   !== "undefined" ? NPC_GIVEN_ZH   : ["明","伟","芳","洋","磊","颖","涛","静","博","浩","婷","杰","鑫","俊","雷","莹","峰","超","琳","坤"];
-				return sur[Math.floor(Math.random()*sur.length)] + given[Math.floor(Math.random()*given.length)];
+				return generateNpcName(G.country || "china");
 			}
 
 			function genTalent() {
@@ -64,22 +49,32 @@
 				const country = G.country || "china";
 				let surname, givenName, fullName;
 				if (country === "germany") {
-					const first = typeof NPC_FIRST_DE !== "undefined" ? NPC_FIRST_DE : ["Anna","Clara","Emma","Hanna","Julia","Laura","Lena","Lisa","Maria","Mia","Nina","Sara","Sophie","Katrin","Petra","Hans","Karl","Klaus","Lukas","Markus","Michael","Peter","Stefan","Thomas","Tobias"];
-					const last  = typeof NPC_LAST_DE  !== "undefined" ? NPC_LAST_DE  : ["Bauer","Beck","Braun","Fischer","Franke","Friedrich","Hoffmann","Kaiser","Klein","Koch","Krause","Lehmann","Meyer","Müller","Neumann","Peters","Richter","Schmidt","Schneider","Schröder","Schulz","Schwarz","Wagner","Weber"];
-					givenName = first[Math.floor(Math.random() * first.length)];
-					surname   = last[Math.floor(Math.random() * last.length)];
+					givenName = NPC_FIRST_DE[Math.floor(Math.random() * NPC_FIRST_DE.length)];
+					surname   = NPC_LAST_DE[Math.floor(Math.random() * NPC_LAST_DE.length)];
 					fullName  = givenName + " " + surname;
 				} else if (country === "usa") {
-					const first = typeof NPC_FIRST_US !== "undefined" ? NPC_FIRST_US : ["Alex","Blake","Casey","Dana","Ellis","Fran","Gray","Harper","Jamie","Jordan","Kendall","Logan","Morgan","Parker","Quinn","Riley","Skyler","Taylor","Tyler","Avery"];
-					const last  = typeof NPC_LAST_US  !== "undefined" ? NPC_LAST_US  : ["Anderson","Brown","Davis","Garcia","Johnson","Jones","Martinez","Miller","Moore","Rodriguez","Smith","Taylor","Thomas","White","Williams","Wilson","Jackson","Lee","Harris","Clark"];
-					givenName = first[Math.floor(Math.random() * first.length)];
-					surname   = last[Math.floor(Math.random() * last.length)];
+					givenName = NPC_FIRST_US[Math.floor(Math.random() * NPC_FIRST_US.length)];
+					surname   = NPC_LAST_US[Math.floor(Math.random() * NPC_LAST_US.length)];
+					fullName  = givenName + " " + surname;
+				} else if (country === "japan") {
+					surname   = NPC_LAST_JP[Math.floor(Math.random() * NPC_LAST_JP.length)];
+					givenName = NPC_FIRST_JP[Math.floor(Math.random() * NPC_FIRST_JP.length)];
+					fullName  = surname + givenName;
+				} else if (country === "korea") {
+					surname   = NPC_LAST_KR[Math.floor(Math.random() * NPC_LAST_KR.length)];
+					givenName = NPC_FIRST_KR[Math.floor(Math.random() * NPC_FIRST_KR.length)];
+					fullName  = surname + " " + givenName;
+				} else if (country === "russia") {
+					givenName = NPC_FIRST_RU[Math.floor(Math.random() * NPC_FIRST_RU.length)];
+					surname   = NPC_LAST_RU[Math.floor(Math.random() * NPC_LAST_RU.length)];
+					fullName  = givenName + " " + surname;
+				} else if (country === "lm") {
+					givenName = NPC_FIRST_LM[Math.floor(Math.random() * NPC_FIRST_LM.length)];
+					surname   = NPC_LAST_LM[Math.floor(Math.random() * NPC_LAST_LM.length)];
 					fullName  = givenName + " " + surname;
 				} else {
-					const sur   = typeof NPC_SURNAMES_ZH !== "undefined" ? NPC_SURNAMES_ZH : ["李","王","张","刘","陈","赵","孙","周","吴","郑","冯","蒋","谢","韩","唐","曹","许","邓","叶","傅"];
-					const given = typeof NPC_GIVEN_ZH   !== "undefined" ? NPC_GIVEN_ZH   : ["明","伟","芳","洋","磊","颖","涛","静","博","浩","婷","杰","鑫","俊","雷","莹","峰","超","琳","坤"];
-					surname   = sur[Math.floor(Math.random() * sur.length)];
-					givenName = given[Math.floor(Math.random() * given.length)];
+					surname   = NPC_SURNAMES_ZH[Math.floor(Math.random() * NPC_SURNAMES_ZH.length)];
+					givenName = NPC_GIVEN_ZH[Math.floor(Math.random() * NPC_GIVEN_ZH.length)];
 					fullName  = surname + givenName;
 				}
 				return { surname, givenName, fullName };
@@ -120,7 +115,7 @@
 				const available = (G.wantedQuests || []).filter(q => !q.torn && !q.submitted).slice(0, 10);
 				const submitted = (G.wantedQuests || []).filter(q => q.submitted);
 
-				const typeLabel = LANG.current === "en" ? "WANTED" : "通缉令";
+				const typeLabel = T("wantedLabel");
 
 				// ── Available 卡片 ──
 				function renderAvailableCard(q) {
@@ -134,7 +129,7 @@
 						});
 					const noMatch = matchingMembers.length === 0;
 					const memberOptions = noMatch
-						? `<option value="" disabled>${LANG.current === "en" ? "No matching member" : "无匹配成员"}</option>`
+						? `<option value="" disabled>${T("questNoMember")}</option>`
 						: matchingMembers.map(({ m, i }) => `<option value="${i}">${m.name}</option>`).join("");
 					return `<div class="transport-card" style="border-color:var(--gold);cursor:default;text-align:center;">
 						<div class="transport-name" style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;">${typeLabel}</div>
@@ -162,7 +157,7 @@
 					const nameStyle   = isPerfect ? "color:var(--green2);font-weight:700;" : "color:var(--text3);";
 					const badge       = isPerfect
 						? `<div style="color:var(--green2);font-size:0.72rem;margin-top:0.3rem;">✅ ${T("questSubmitted")}</div>`
-						: `<div style="color:var(--text3);font-size:0.72rem;margin-top:0.3rem;">◑ ${LANG.current === "en" ? "Partial" : "部分匹配"}</div>`;
+						: `<div style="color:var(--text3);font-size:0.72rem;margin-top:0.3rem;">◑ ${T("questPartial")}</div>`;
 					const opacity     = isPerfect ? "1" : "0.5";
 					return `<div class="transport-card" style="border-color:${borderColor};cursor:default;text-align:center;opacity:${opacity};">
 						<div class="transport-name" style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;color:${titleColor};">${typeLabel}</div>
@@ -171,7 +166,7 @@
 						</div>
 						<div style="color:var(--text3);font-size:0.72rem;">${T("questRewardLabel", q.payout || 0)}</div>
 						${badge}
-						<button class="btn-accept" style="width:100%;font-size:0.62rem;padding:0.15rem 0;margin-top:0.4rem;border-color:var(--text3);color:var(--text3);" onclick="dismissSubmittedQuest('${q.id}')">${LANG.current === "en" ? "Dismiss" : "移除"}</button>
+						<button class="btn-accept" style="width:100%;font-size:0.62rem;padding:0.15rem 0;margin-top:0.4rem;border-color:var(--text3);color:var(--text3);" onclick="dismissSubmittedQuest('${q.id}')">${T("questDismiss")}</button>
 					</div>`;
 				}
 
@@ -183,11 +178,9 @@
 
 				// ── 顶部提示 ──
 				html += `<div style="font-size:0.72rem;color:var(--text3);text-align:center;padding:0.4rem 0.6rem 0.5rem;border-bottom:1px solid var(--border2);margin-bottom:0.5rem;line-height:1.5;">
-					${LANG.current === "en"
-						? "💡 Submitting a member whose name matches only the first or last name earns <strong style='color:var(--gold)'>1/10</strong> of the reward."
-						: "💡 提交仅匹配姓或名的成员，可获得赏金的 <strong style='color:var(--gold)'>1/10</strong>"}
+					💡 ${T("questHint")}
 				</div>`;
-				html += sectionLabel(LANG.current === "en" ? `Available (${available.length}/10)` : `可接受任务 (${available.length}/10)`);
+				html += sectionLabel(T("questSectionAvailable", available.length));
 				if (available.length === 0) {
 					html += `<div style="color:var(--text3);text-align:center;padding:1rem;font-size:0.82rem;">${T("noQuest")}</div>`;
 				} else {
@@ -197,7 +190,7 @@
 
 				// Submitted 栏（只在有内容时显示）
 				if (submitted.length > 0) {
-					html += sectionLabel(LANG.current === "en" ? `Submitted (${submitted.length})` : `已提交任务 (${submitted.length})`);
+					html += sectionLabel(T("questSectionSubmitted", submitted.length));
 					html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.7rem;padding:0.2rem 0;">` +
 						submitted.map(renderSubmittedCard).join("") + `</div>`;
 				}
@@ -213,7 +206,7 @@
 				const memberIdx = parseInt(sel.value);
 				const member = G.team[memberIdx];
 				if (!member) { showToast(T("errSelectMember"), "red"); return; }
-				if (member.isPlayer) { showToast(LANG.current === "en" ? "You cannot submit yourself!" : "不能提交玩家自己！", "red"); return; }
+				if (member.isPlayer) { showToast(T("errSubmitSelf"), "red"); return; }
 
 				// 比对姓名
 				const mName = member.name || "";
@@ -295,7 +288,7 @@
 				const grid = document.getElementById("country-grid");
 				grid.innerHTML = COUNTRIES.map((c) =>
 					`<div class="country-card ${selectedCountry === c.id ? "selected" : ""}" onclick="selectCountry('${c.id}',this)">
-						${LANG.current === "zh" ? c.name : c.nameEn}
+						${countryName(c)}
 					</div>`
 				).join("");
 			}
@@ -457,7 +450,7 @@
 				const cap = transport ? (transport.cap || 0) : 0;
 				const used = Object.values(G.inventory).reduce((s, d) => s + (d.qty || 0), 0);
 				const cargoEl = document.getElementById("stat-cargo");
-				if (cargoEl) cargoEl.textContent = (LANG.current === "en" ? "Cargo" : "货物") + ": " + used + "/" + cap;
+				if (cargoEl) cargoEl.textContent = T("cargoLabel") + ": " + used + "/" + cap;
 			}
 
 			// ── BUY TABLE ──
@@ -493,7 +486,7 @@
 					// MAX 受三重限制：市场库存、现金可买量、载具剩余容量
 					const affordableQty = price > 0 ? Math.floor(G.gold / price) : stock;
 					const maxQty = Math.min(stock, affordableQty, freeSlots);
-					const goodName = LANG.current === "zh" ? g.name : g.nameEn;
+					const goodName = itemName(g);
 					return `<tr>
 						<td><span class="item-name">${g.icon} ${goodName}</span></td>
 						<td style="font-weight:500">${price.toLocaleString()}</td>
@@ -583,7 +576,7 @@
 				tbody.innerHTML = items.map(([id, data]) => {
 					const g = GOODS.find((x) => x.id === id);
 					if (!g) return "";
-					const goodName = LANG.current === "zh" ? g.name : g.nameEn;
+					const goodName = itemName(g);
 					const mktPrice = G.cityPrices[g.id] || g.priceMin;
 					const profit = mktPrice - data.avgPrice;
 					const profitPct = data.avgPrice > 0 ? Math.round((profit / data.avgPrice) * 100) : 0;
@@ -654,11 +647,11 @@
 				list.innerHTML = G.team.map((m, i) => {
 					const wData = m.weapon ? WEAPONS.find((w) => w.id === m.weapon) : null;
 					return `<div class="member-equip-card">
-						<div class="member-equip-name">${m.name}<span class="member-role-badge">${m.role}</span></div>
+						<div class="member-equip-name">${m.name}${m.role ? `<span class="member-role-badge">${m.role}</span>` : ""}</div>
 						<div class="equip-slots"><div>
 							<span class="equip-slot-label">${T("slotWeapon")}</span>
 							<div class="equip-slot filled" onclick="unequipWeapon(${i})">
-								${wData ? wData.icon + " " + (LANG.current === "en" && wData.nameEn ? wData.nameEn : wData.name) : T("slotEmpty")}
+								${wData ? wData.icon + " " + itemName(wData) : T("slotEmpty")}
 							</div>
 						</div></div>
 					</div>`;
@@ -666,7 +659,7 @@
 
 				const shop = document.getElementById("weapon-shop");
 				shop.innerHTML = WEAPONS.map((w) => {
-					const wName = LANG.current === "zh" ? w.name : w.nameEn;
+					const wName = itemName(w);
 					return `<div class="shop-item-row">
 						<div>
 							<div class="shop-item-name">${w.icon} ${wName}</div>
@@ -709,11 +702,11 @@
 				list.innerHTML = G.team.map((m, i) => {
 					const aData = m.armor ? ARMORS.find((a) => a.id === m.armor) : null;
 					return `<div class="member-equip-card">
-						<div class="member-equip-name">${m.name}<span class="member-role-badge">${m.role}</span></div>
+						<div class="member-equip-name">${m.name}${m.role ? `<span class="member-role-badge">${m.role}</span>` : ""}</div>
 						<div class="equip-slots"><div>
 							<span class="equip-slot-label">${T("slotArmor")}</span>
 							<div class="equip-slot filled" onclick="unequipArmor(${i})">
-								${aData ? aData.icon + " " + (LANG.current === "en" && aData.nameEn ? aData.nameEn : aData.name) : T("slotEmpty")}
+								${aData ? aData.icon + " " + itemName(aData) : T("slotEmpty")}
 							</div>
 						</div></div>
 					</div>`;
@@ -721,7 +714,7 @@
 
 				const shop = document.getElementById("armor-shop");
 				shop.innerHTML = ARMORS.map((a) => {
-					const aName = LANG.current === "zh" ? a.name : a.nameEn;
+					const aName = itemName(a);
 					return `<div class="shop-item-row">
 						<div>
 							<div class="shop-item-name">${a.icon} ${aName}</div>
@@ -800,7 +793,7 @@
 					const sellPrice = Math.floor(item.buyPrice / 2);
 					const statLabel = typeFilter === 'weapon' ? `${T("statAtk_s")}${item.stat}` : `${T("statDef_s")}${item.stat}${T("statDef_e")}`;
 					const memberOptions = G.team.map((m, i) => `<option value="${i}">${m.name}</option>`).join("");
-					const displayName = (LANG.current === "en" && item.nameEn) ? item.nameEn : item.name;
+					const displayName = itemName(item);
 					return `<div class="shop-item-row" style="flex-wrap:wrap;gap:0.3rem 0.5rem;">
 						<div style="flex:1;min-width:80px;">
 							<div class="shop-item-name">${item.icon} ${displayName}</div>
@@ -820,7 +813,7 @@
 				const grid = document.getElementById("transport-grid");
 				const activeId = getActiveTransport()?.id;
 				grid.innerHTML = G.transports.map((t) => {
-					const tName = LANG.current === "zh" ? t.name : t.nameEn;
+					const tName = itemName(t);
 					const isActive = activeId === t.id;
 					const switchBtn = t.owned && !isActive
 						? `<button data-switch-id="${t.id}" style="margin-top:0.5rem;font-size:0.68rem;padding:0.25rem 0.7rem;background:none;border:1px solid var(--gold);color:var(--gold);cursor:pointer;font-family:inherit;letter-spacing:0.05em;">${T("btnSwitchTransport")}</button>`
@@ -831,8 +824,8 @@
 						<span class="transport-icon">${t.icon}</span>
 						<div class="transport-name">${tName}</div>
 						<div class="transport-stats" style="line-height:1.9;font-size:0.72rem;">
-							<div><span style="color:var(--text3)">${LANG.current === "en" ? "Cargo" : "载货"}</span> ${t.cap} &nbsp; <span style="color:var(--text3)">${LANG.current === "en" ? "Speed" : "速度"}</span> ${t.spd}</div>
-							<div><span style="color:var(--text3)">${LANG.current === "en" ? "Seats" : "载人"}</span> +${t.passengers} &nbsp; <span style="color:var(--text3)">${LANG.current === "en" ? "Fuel" : "耗油"}</span> ${t.fuelCost}/${T("travelDays")}</div>
+							<div><span style="color:var(--text3)">${T("transportCargo")}</span> ${t.cap} &nbsp; <span style="color:var(--text3)">${T("transportSpeed")}</span> ${t.spd}</div>
+							<div><span style="color:var(--text3)">${T("transportSeats")}</span> +${t.passengers} &nbsp; <span style="color:var(--text3)">${T("transportFuel")}</span> ${t.fuelCost}/${T("travelDays")}</div>
 						</div>
 						<div class="transport-price">${t.owned ? "—" : t.price + " " + T("gold")}</div>
 						${switchBtn}
@@ -851,7 +844,7 @@
 				const t = G.transports.find(x => x.id === id);
 				if (!t || !t.owned) return;
 				G.activeTransportId = id;
-				const tName = LANG.current === "zh" ? t.name : t.nameEn;
+				const tName = itemName(t);
 				showToast(T("toastSwitchTransport", t.icon, tName), "gold");
 				renderGame();
 			}
@@ -863,7 +856,7 @@
 				G.gold -= t.price;
 				t.owned = true;
 				G.activeTransportId = id;
-				showToast(T("toastTransport", LANG.current === "zh" ? t.name : t.nameEn), "gold");
+				showToast(T("toastTransport", itemName(t)), "gold");
 				renderGame();
 			}
 
@@ -898,9 +891,9 @@
 						${statsHtml}
 						<div class="team-footer">
 							<div>
-								${wData ? wData.icon + "·" + (LANG.current === "en" && wData.nameEn ? wData.nameEn : wData.name) : T("noWeapon")}
+								${wData ? wData.icon + "·" + itemName(wData) : T("noWeapon")}
 								&nbsp;
-								${armorData ? armorData.icon + "·" + (LANG.current === "en" && armorData.nameEn ? armorData.nameEn : armorData.name) : T("noArmor")}
+								${armorData ? armorData.icon + "·" + itemName(armorData) : T("noArmor")}
 							</div>
 							<div>
 								<span class="wage-label">${T("wageLabel")}</span>
@@ -1002,7 +995,7 @@
 					</button>`;
 				}).join("");
 
-				const tName = LANG.current === "zh" ? transport.name : transport.nameEn;
+				const tName = itemName(transport);
 				document.getElementById("travel-active-transport").textContent = `${transport.icon} ${tName} · ${T("travelSpeedLabel")}: ${transport.spd}`;
 				document.getElementById("travel-modal").classList.add("open");
 			}
@@ -1450,7 +1443,7 @@
 				if (C.isAuto) { autoBtn.classList.add("active-auto"); autoBtn.textContent = T("combatBtnAutoOff"); }
 				else          { autoBtn.classList.remove("active-auto"); autoBtn.textContent = T("combatBtnAuto"); }
 				const skipBtn = document.getElementById("combat-btn-skip");
-				if (skipBtn) skipBtn.textContent = LANG.current === "en" ? "⏭ Skip" : "⏭ 跳至结果";
+				if (skipBtn) skipBtn.textContent = T("combatBtnSkip");
 
 				if (C.enemies[C.selectedEnemyIdx] && C.enemies[C.selectedEnemyIdx].hp <= 0) {
 					let nextTarget = C.enemies.findIndex(e => e.hp > 0);
@@ -1540,10 +1533,10 @@
 				// 同步敌人 hp
 				renderCombatScreen();
 				if (C.enemies.every(e => e.hp <= 0)) {
-					combatLogAdd(LANG.current === "en" ? "⏭ <em>Skipped to result — Victory!</em>" : "⏭ <em>跳至结果 — 胜利！</em>");
+					combatLogAdd(T("combatSkipVictory"));
 					handleCombatVictory();
 				} else {
-					combatLogAdd(LANG.current === "en" ? "⏭ <em>Skipped to result — Defeated...</em>" : "⏭ <em>跳至结果 — 战败...</em>");
+					combatLogAdd(T("combatSkipDefeated"));
 					handlePlayerDefeat();
 				}
 			}
@@ -1700,14 +1693,14 @@
 							const wDropRate = (lootW.id === "holy_sword" || (lootW.name||"").includes("圣剑")) ? 0.1
 								: (lootW.id === "axe" || (lootW.name||"").includes("斧头") || (lootW.name||"").includes("斧")) ? 0.2
 								: 0.3;
-							if (Math.random() < wDropRate) { const lootWName = (LANG.current === "en" && lootW.nameEn) ? lootW.nameEn : lootW.name; combatLogAdd(T("combatLootW", lootWName)); G.equipWarehouse.push({ type: 'weapon', id: lootW.id, name: lootW.name, nameEn: lootW.nameEn, icon: lootW.icon, stat: lootW.atk, buyPrice: lootW.price }); }
+							if (Math.random() < wDropRate) { const lootWName = itemName(lootW); combatLogAdd(T("combatLootW", lootWName)); G.equipWarehouse.push({ type: 'weapon', id: lootW.id, name: lootW.name, nameEn: lootW.nameEn, icon: lootW.icon, stat: lootW.atk, buyPrice: lootW.price }); }
 						}
 						if (e.aIdx > 0) {
 							const lootA = ARMORS[e.aIdx - 1];
 							const aDropRate = (lootA.id === "riot_armor" || (lootA.name||"").includes("防暴")) ? 0.1
 								: (lootA.id === "bulletproof" || (lootA.name||"").includes("防弹衣")) ? 0.2
 								: 0.3;
-							if (Math.random() < aDropRate) { const lootAName = (LANG.current === "en" && lootA.nameEn) ? lootA.nameEn : lootA.name; combatLogAdd(T("combatLootA", lootAName)); G.equipWarehouse.push({ type: 'armor', id: lootA.id, name: lootA.name, nameEn: lootA.nameEn, icon: lootA.icon, stat: lootA.def, buyPrice: lootA.price }); }
+							if (Math.random() < aDropRate) { const lootAName = itemName(lootA); combatLogAdd(T("combatLootA", lootAName)); G.equipWarehouse.push({ type: 'armor', id: lootA.id, name: lootA.name, nameEn: lootA.nameEn, icon: lootA.icon, stat: lootA.def, buyPrice: lootA.price }); }
 						}
 					}
 				});
@@ -1802,57 +1795,57 @@
 			const ACHIEVEMENTS = [
 				{
 					id: "bankrupt",
-					get name() { return LANG.current === "en" ? "Bankrupt" : "破产"; },
-					get desc() { return LANG.current === "en" ? "Cash drops below -1000" : "现金低于 -1000"; },
+					get name() { return T("achBankruptName"); },
+					get desc() { return T("achBankruptDesc"); },
 					icon: "💸",
 					check: () => G.gold < -1000,
 				},
 				{
 					id: "deepDebt",
-					get name() { return LANG.current === "en" ? "Deadbeat" : "老赖"; },
-					get desc() { return LANG.current === "en" ? "Cash drops below -10000" : "现金低于 -10000"; },
+					get name() { return T("achDeepDebtName"); },
+					get desc() { return T("achDeepDebtDesc"); },
 					icon: "🕳️",
 					check: () => G.gold < -10000,
 				},
 				{
 					id: "capitalist",
-					get name() { return LANG.current === "en" ? "Capitalist" : "资本家"; },
-					get desc() { return LANG.current === "en" ? "Cash exceeds 1,000,000" : "现金超过 1,000,000"; },
+					get name() { return T("achCapitalistName"); },
+					get desc() { return T("achCapitalistDesc"); },
 					icon: "🏦",
 					check: () => G.gold > 1000000,
 				},
 				{
 					id: "notorious",
-					get name() { return LANG.current === "en" ? "Notorious" : "劣迹斑斑"; },
-					get desc() { return LANG.current === "en" ? "Reputation drops below -100" : "声誉低于 -100"; },
+					get name() { return T("achNotoriousName"); },
+					get desc() { return T("achNotoriousDesc"); },
 					icon: "😈",
 					check: () => G.rep < -100,
 				},
 				{
 					id: "saint",
-					get name() { return LANG.current === "en" ? "Saint" : "圣人"; },
-					get desc() { return LANG.current === "en" ? "Reputation reaches 100" : "声誉达到 100"; },
+					get name() { return T("achSaintName"); },
+					get desc() { return T("achSaintDesc"); },
 					icon: "😇",
 					check: () => G.rep >= 100,
 				},
 				{
 					id: "dontHitMe",
-					get name() { return LANG.current === "en" ? "Don't Hit Me!" : "别打我"; },
-					get desc() { return LANG.current === "en" ? "Surrender 10 times" : "投降 10 次"; },
+					get name() { return T("achDontHitMeName"); },
+					get desc() { return T("achDontHitMeDesc"); },
 					icon: "🙈",
 					check: () => (G.surrenderCount || 0) >= 10,
 				},
 				{
 					id: "wrongPerson",
-					get name() { return LANG.current === "en" ? "Wrong Person" : "找错人了"; },
-					get desc() { return LANG.current === "en" ? "Complete a wanted quest with only first or last name" : "只用姓或名完成通缉令"; },
+					get name() { return T("achWrongPersonName"); },
+					get desc() { return T("achWrongPersonDesc"); },
 					icon: "🤔",
 					check: () => (G.partialWantedCount || 0) >= 1,
 				},
 				{
 					id: "lottery",
-					get name() { return LANG.current === "en" ? "Jackpot!" : "中彩票"; },
-					get desc() { return LANG.current === "en" ? "Complete a wanted quest with exact full name" : "姓名完全正确完成一次通缉令"; },
+					get name() { return T("achLotteryName"); },
+					get desc() { return T("achLotteryDesc"); },
 					icon: "🎰",
 					check: () => (G.fullWantedCount || 0) >= 1,
 				},
@@ -1871,7 +1864,7 @@
 			function showAchievementToast(icon, name) {
 				const t = document.createElement("div");
 				t.className = "toast gold";
-				t.innerHTML = `🏆 ${LANG.current === "en" ? "Achievement Unlocked" : "获得成就"}：${icon} ${name}`;
+				t.innerHTML = `🏆 ${T("achUnlocked")}：${icon} ${name}`;
 				t.style.cssText += ";bottom:4.5rem;top:auto;";
 				document.body.appendChild(t);
 				setTimeout(() => t.remove(), 3200);

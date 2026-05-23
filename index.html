@@ -25,7 +25,18 @@
 			<div class="lang-inline-row">
 				<button class="lang-inline-btn active" id="lang-btn-zh" onclick="chooseLang('zh')">中文</button>
 				<span class="lang-divider">·</span>
-				<button class="lang-inline-btn" id="lang-btn-en" onclick="chooseLang('en')">English</button>
+				<button class="lang-inline-btn" id="lang-btn-en" onclick="chooseLang('en')">EN</button>
+				<span class="lang-divider">·</span>
+				<button class="lang-inline-btn" id="lang-btn-ja" onclick="chooseLang('ja')">日本語</button>
+				<span class="lang-divider">·</span>
+				<button class="lang-inline-btn" id="lang-btn-ko" onclick="chooseLang('ko')">한국어</button>
+			</div>
+			<div class="lang-inline-row">
+				<button class="lang-inline-btn" id="lang-btn-ru" onclick="chooseLang('ru')">Русский</button>
+				<span class="lang-divider">·</span>
+				<button class="lang-inline-btn" id="lang-btn-es" onclick="chooseLang('es')">Español</button>
+				<span class="lang-divider">·</span>
+				<button class="lang-inline-btn" id="lang-btn-pt" onclick="chooseLang('pt')">Português</button>
 			</div>
 		</div>
 		<input type="file" id="save-file-input" accept=".json" onchange="loadSaveFile(event)" />
@@ -218,11 +229,18 @@
 		</div>
 	</div>
 
-	<script src="lang.js"></script>
+	<script src="country.js"></script>
+	<script src="lang/lang.js"></script>
+	<script src="lang/lang.zh.js"></script>
+	<script src="lang/lang.en.js"></script>
+	<script src="lang/lang.ja.js"></script>
+	<script src="lang/lang.ko.js"></script>
+	<script src="lang/lang.ru.js"></script>
+	<script src="lang/lang.es.js"></script>
+	<script src="lang/lang.pt.js"></script>
 	<script src="data.js"></script>
 	<script src="function.js"></script>
 	<script src="music.js"></script>
-	<script src="country.js"></script>
 
 </body>
 
