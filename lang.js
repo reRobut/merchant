@@ -15,7 +15,7 @@ const TEXTS = {
     start: '踏上旅途', back: '← 返回',
     // 游戏标签
     tabBuy:'买入', tabInv:'库存', tabWeapon:'武器', tabArmor:'防具',
-    tabTransport:'交通', tabTeam:'团队', tabQuest:'任务',
+    tabTransport:'交通', tabTeam:'团队', tabQuest:'任务', tabAchievements:'成就',
     // Topbar
     travelBtn: '前往城市 ▸', saveBtn: '保存存档',
     repLabel: '声誉',
@@ -88,7 +88,7 @@ const TEXTS = {
     travelHint: '旅行消耗时间与汽油，注意携带量',
     travelDays: '天', travelDist: '里', travelFuel: '油',
     travelSpeedLabel: '速度',
-    travelCrimeLabel: '治安',
+    travelCrimeLabel: '犯罪率',
     // 战斗模态框
     combatTitle: '⚔️ 遭遇战斗 ⚔️',
     combatSubtitle: '回合制策略交锋',
@@ -198,7 +198,7 @@ const TEXTS = {
     namePlaceholder: 'Enter name...',
     start: 'Begin Journey', back: '← Back',
     tabBuy:'Buy', tabInv:'Inventory', tabWeapon:'Weapons', tabArmor:'Armor',
-    tabTransport:'Transport', tabTeam:'Team', tabQuest:'Quests',
+    tabTransport:'Transport', tabTeam:'Team', tabQuest:'Quests', tabAchievements:'Achiev.',
     travelBtn: 'Travel ▸', saveBtn: 'Save Game',
     repLabel: 'Rep',
     gold: 'coins', coins: 'coins',
@@ -322,7 +322,7 @@ const TEXTS = {
     roadPolice: 'A checkpoint ahead. Officials signal you to stop for inspection.',
     roadMerchant: 'You encounter a lone merchant on the road. He nods at you in greeting.',
     roadCriminal: 'Armed bandits block your path, eyeing your goods with menace.',
-    roadStealResult: (lost, pct) => `Lost ${lost} coins (${pct}%).`,
+    roadStealResult: (lost, pct) => `A thief stole ${lost} coins from you.`,
     roadPolicePass: 'Inspection passed without issue.',
     roadPoliceFine: (fine) => `Contraband found! Goods confiscated and fined ${fine} coins (50% of cash).`,
     roadPersonRob: (gold) => `Found ${gold} coins, but your reputation suffers.`,
@@ -383,6 +383,7 @@ function applyLang() {
   setText('tab-transport', T('tabTransport'));
   setText('tab-team', T('tabTeam'));
   setText('tab-quest', T('tabQuest'));
+  setText('tab-achievements', T('tabAchievements'));
 
   // Topbar 按钮
   setText('btn-travel', T('travelBtn'));

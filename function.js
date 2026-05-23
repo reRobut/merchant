@@ -181,7 +181,12 @@
 
 				let html = "";
 
-				// Available 栏
+				// ── 顶部提示 ──
+				html += `<div style="font-size:0.72rem;color:var(--text3);text-align:center;padding:0.4rem 0.6rem 0.5rem;border-bottom:1px solid var(--border2);margin-bottom:0.5rem;line-height:1.5;">
+					${LANG.current === "en"
+						? "💡 Submitting a member whose name matches only the first or last name earns <strong style='color:var(--gold)'>1/10</strong> of the reward."
+						: "💡 提交仅匹配姓或名的成员，可获得赏金的 <strong style='color:var(--gold)'>1/10</strong>"}
+				</div>`;
 				html += sectionLabel(LANG.current === "en" ? `Available (${available.length}/10)` : `可接受任务 (${available.length}/10)`);
 				if (available.length === 0) {
 					html += `<div style="color:var(--text3);text-align:center;padding:1rem;font-size:0.82rem;">${T("noQuest")}</div>`;
@@ -231,6 +236,12 @@
 				q.submitted = true;
 				q.payout = payout;
 				q.submitResult = fullMatch ? "full" : (surnameMatch || givenMatch) ? "partial" : "fail";
+				if (fullMatch) {
+					G.fullWantedCount = (G.fullWantedCount || 0) + 1;
+				} else if (surnameMatch || givenMatch) {
+					G.partialWantedCount = (G.partialWantedCount || 0) + 1;
+				}
+				checkAchievements();
 				// 提交即从队伍移除该成员
 				G.team.splice(memberIdx, 1);
 				showToast(msg, payout > 0 ? "gold" : "");
@@ -262,6 +273,7 @@
 				inventory: {}, cityPrices: {}, cityStock: {},
 				team: [], transports: [], quests: [], wantedQuests: [], activeNews: [],
 				equipWarehouse: [],
+				achievements: {}, surrenderCount: 0, partialWantedCount: 0, fullWantedCount: 0,
 			};
 
 			// ══════════════════════════════════
@@ -304,6 +316,7 @@
 				G.city     = cities[Math.floor(Math.random() * cities.length)];
 				G.prevCity = G.city;
 				G.gold = 100; G.day = 1; G.rep = 0; G.inventory = {}; G.wantedQuests = []; G.activeNews = [];
+				G.achievements = {}; G.surrenderCount = 0; G.partialWantedCount = 0; G.fullWantedCount = 0;
 				G.team = TEAM_TEMPLATES.map((t) => { const m = {...t}; if (m.name === "__PLAYER__") m.name = name; return m; });
 				G.transports = TRANSPORTS.map((t) => ({...t}));
 			
@@ -430,6 +443,8 @@
 				renderTransportGrid();
 				renderTeamGrid();
 				renderQuestList();
+				renderAchievements();
+				if (typeof checkAchievements === "function") checkAchievements();
 			}
 
 			function updateTopbar() {
@@ -815,9 +830,9 @@
 						${t.owned ? `<div class="owned-badge">${isActive ? "▶ " : ""}${T("transportOwned")}</div>` : ""}
 						<span class="transport-icon">${t.icon}</span>
 						<div class="transport-name">${tName}</div>
-						<div class="transport-stats" style="line-height:1.7">
-							<div>📦 ${t.cap} &nbsp; 🚀 ${t.spd}</div>
-							<div>👥 +${t.passengers} &nbsp; ⛽ ${t.fuelCost}/${T("travelDays")}</div>
+						<div class="transport-stats" style="line-height:1.9;font-size:0.72rem;">
+							<div><span style="color:var(--text3)">${LANG.current === "en" ? "Cargo" : "载货"}</span> ${t.cap} &nbsp; <span style="color:var(--text3)">${LANG.current === "en" ? "Speed" : "速度"}</span> ${t.spd}</div>
+							<div><span style="color:var(--text3)">${LANG.current === "en" ? "Seats" : "载人"}</span> +${t.passengers} &nbsp; <span style="color:var(--text3)">${LANG.current === "en" ? "Fuel" : "耗油"}</span> ${t.fuelCost}/${T("travelDays")}</div>
 						</div>
 						<div class="transport-price">${t.owned ? "—" : t.price + " " + T("gold")}</div>
 						${switchBtn}
@@ -1055,8 +1070,9 @@
 				const aIdx = Math.floor(Math.random() * 7);
 				const avg  = (wIdx + aIdx) / 2;
 				const tier = avg <= 1 ? "E" : avg <= 2 ? "D" : avg <= 3 ? "C" : avg <= 4 ? "B" : avg <= 5 ? "A" : "S";
+				const _talentTypeName = T("enemyType" + typeStr.charAt(0).toUpperCase() + typeStr.slice(1));
 				const e = {
-					name: `${typeStr}#${idx+1}`, type: typeStr,
+					name: `${_talentTypeName}#${idx+1}`, type: typeStr,
 					atk: atkTotal, def: defTotal, hp: hpTotal, maxHp: hpTotal,
 					wIdx, aIdx, tier, hasAttemptedFlee: false,
 					talent, talentOn,
@@ -1084,8 +1100,9 @@
 					const atkTotal = talentOn === "atk" ? Math.round(atkBase * talent) : atkBase;
 					const defTotal = talentOn === "def" ? Math.round(defBase * talent) : defBase;
 					const hpTotal  = talentOn === "hp"  ? Math.round(hpBase  * talent) : hpBase;
+					const _eliteTypeName = T("enemyType" + typeStr.charAt(0).toUpperCase() + typeStr.slice(1));
 					party.push({
-						name: `${T('eliteMark')}${typeStr}#${offset+i+1}`, type: typeStr,
+						name: `${T('eliteMark')}${_eliteTypeName}#${offset+i+1}`, type: typeStr,
 						atk: atkTotal, def: defTotal, hp: hpTotal, maxHp: hpTotal,
 						wIdx, aIdx, tier, hasAttemptedFlee: false,
 						talent, talentOn, isElite: true,
@@ -1113,8 +1130,9 @@
 						const aIdx = Math.floor(Math.random() * 7);
 						const avg  = (wIdx + aIdx) / 2;
 						const tier = avg <= 1 ? "E" : avg <= 2 ? "D" : avg <= 3 ? "C" : avg <= 4 ? "B" : avg <= 5 ? "A" : "S";
+						const _typeName = T("enemyType" + typeStr.charAt(0).toUpperCase() + typeStr.slice(1));
 						const e = {
-							name: `${typeStr}#${i+1}`, type: typeStr,
+							name: `${_typeName}#${i+1}`, type: typeStr,
 							atk: Math.floor(Math.random() * 101), def: Math.floor(Math.random() * 101),
 							hp: Math.floor(200 + Math.random() * 201), maxHp: 0,
 							wIdx, aIdx, tier, hasAttemptedFlee: false,
@@ -1486,6 +1504,8 @@
 				G.inventory = {};
 				G.transports.forEach(t => { if (t.id !== "walk") t.owned = false; });
 				G.city = G.prevCity;
+				G.surrenderCount = (G.surrenderCount || 0) + 1;
+				checkAchievements();
 				combatLogAdd(T("combatSurrender"));
 				renderGame();
 				setTimeout(() => { document.getElementById("combat-modal").classList.remove("open"); _showNextEvent(); }, 2000);
@@ -1775,5 +1795,105 @@
 			// ══════════════════════════════════
 			// INIT
 			// ══════════════════════════════════
+
+			// ══════════════════════════════════
+			// ACHIEVEMENT SYSTEM
+			// ══════════════════════════════════
+			const ACHIEVEMENTS = [
+				{
+					id: "bankrupt",
+					get name() { return LANG.current === "en" ? "Bankrupt" : "破产"; },
+					get desc() { return LANG.current === "en" ? "Cash drops below -1000" : "现金低于 -1000"; },
+					icon: "💸",
+					check: () => G.gold < -1000,
+				},
+				{
+					id: "deepDebt",
+					get name() { return LANG.current === "en" ? "Deadbeat" : "老赖"; },
+					get desc() { return LANG.current === "en" ? "Cash drops below -10000" : "现金低于 -10000"; },
+					icon: "🕳️",
+					check: () => G.gold < -10000,
+				},
+				{
+					id: "capitalist",
+					get name() { return LANG.current === "en" ? "Capitalist" : "资本家"; },
+					get desc() { return LANG.current === "en" ? "Cash exceeds 1,000,000" : "现金超过 1,000,000"; },
+					icon: "🏦",
+					check: () => G.gold > 1000000,
+				},
+				{
+					id: "notorious",
+					get name() { return LANG.current === "en" ? "Notorious" : "劣迹斑斑"; },
+					get desc() { return LANG.current === "en" ? "Reputation drops below -100" : "声誉低于 -100"; },
+					icon: "😈",
+					check: () => G.rep < -100,
+				},
+				{
+					id: "saint",
+					get name() { return LANG.current === "en" ? "Saint" : "圣人"; },
+					get desc() { return LANG.current === "en" ? "Reputation reaches 100" : "声誉达到 100"; },
+					icon: "😇",
+					check: () => G.rep >= 100,
+				},
+				{
+					id: "dontHitMe",
+					get name() { return LANG.current === "en" ? "Don't Hit Me!" : "别打我"; },
+					get desc() { return LANG.current === "en" ? "Surrender 10 times" : "投降 10 次"; },
+					icon: "🙈",
+					check: () => (G.surrenderCount || 0) >= 10,
+				},
+				{
+					id: "wrongPerson",
+					get name() { return LANG.current === "en" ? "Wrong Person" : "找错人了"; },
+					get desc() { return LANG.current === "en" ? "Complete a wanted quest with only first or last name" : "只用姓或名完成通缉令"; },
+					icon: "🤔",
+					check: () => (G.partialWantedCount || 0) >= 1,
+				},
+				{
+					id: "lottery",
+					get name() { return LANG.current === "en" ? "Jackpot!" : "中彩票"; },
+					get desc() { return LANG.current === "en" ? "Complete a wanted quest with exact full name" : "姓名完全正确完成一次通缉令"; },
+					icon: "🎰",
+					check: () => (G.fullWantedCount || 0) >= 1,
+				},
+			];
+
+			function checkAchievements() {
+				if (!G.achievements) G.achievements = {};
+				ACHIEVEMENTS.forEach(a => {
+					if (!G.achievements[a.id] && a.check()) {
+						G.achievements[a.id] = true;
+						showAchievementToast(a.icon, a.name);
+					}
+				});
+			}
+
+			function showAchievementToast(icon, name) {
+				const t = document.createElement("div");
+				t.className = "toast gold";
+				t.innerHTML = `🏆 ${LANG.current === "en" ? "Achievement Unlocked" : "获得成就"}：${icon} ${name}`;
+				t.style.cssText += ";bottom:4.5rem;top:auto;";
+				document.body.appendChild(t);
+				setTimeout(() => t.remove(), 3200);
+			}
+
+			function renderAchievements() {
+				checkAchievements();
+				const el = document.getElementById("achievement-list");
+				if (!el) return;
+				if (!G.achievements) G.achievements = {};
+				el.innerHTML = ACHIEVEMENTS.map(a => {
+					const unlocked = !!G.achievements[a.id];
+					return `<div style="display:flex;align-items:center;gap:0.7rem;padding:0.55rem 0.7rem;border:1px solid ${unlocked ? "var(--gold)" : "var(--border2)"};border-radius:4px;opacity:${unlocked ? "1" : "0.45"};background:${unlocked ? "rgba(201,168,76,0.06)" : "transparent"};">
+						<div style="font-size:1.5rem;filter:${unlocked ? "none" : "grayscale(1) brightness(0.3)"};">${a.icon}</div>
+						<div>
+							<div style="font-size:0.8rem;font-weight:600;color:${unlocked ? "var(--gold)" : "var(--text3)"};">${a.name}</div>
+							<div style="font-size:0.68rem;color:var(--text3);">${a.desc}</div>
+						</div>
+						${unlocked ? `<div style="margin-left:auto;color:var(--green2);font-size:0.75rem;">✓</div>` : ""}
+					</div>`;
+				}).join("");
+			}
+
 			applyLang();
 	
