@@ -72,6 +72,7 @@
 			<div class="topbar-right">
 				<button class="btn-sm" id="btn-travel" onclick="openTravel()"></button>
 				<button class="btn-sm" id="btn-save" onclick="saveGame()"></button>
+				<button class="btn-tutorial-help" onclick="tutorialReplay()" title="教学回放">?</button>
 			</div>
 		</div>
 
@@ -198,6 +199,21 @@
 		</div>
 	</div>
 
+	<div class="tutorial-overlay" id="tutorial-modal">
+		<div class="tutorial-container">
+			<img class="tutorial-portrait" id="tutorial-portrait" src="assets/tut_smile.png" alt="" />
+			<div class="tutorial-dialogue-box">
+				<div class="tutorial-speaker">行会秘书</div>
+				<div class="tutorial-text" id="tutorial-text"></div>
+				<div class="tutorial-actions">
+					<div class="tutorial-step-dots" id="tutorial-dots"></div>
+					<button class="tutorial-btn skip" id="tutorial-skip" onclick="tutorialSkip()">跳过</button>
+					<button class="tutorial-btn" id="tutorial-next" onclick="tutorialNext()">下一步</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="modal-overlay" id="combat-modal" style="z-index: 3000;">
 		<div class="modal-box" style="max-width: 600px; width: 90%; height: 85vh; padding: 1.2rem;">
 			<div class="combat-container">
@@ -241,6 +257,7 @@
 	<script src="data.js"></script>
 	<script src="function.js"></script>
 	<script src="music.js"></script>
+	<script src="tutorial.js"></script>
 
 </body>
 

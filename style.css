@@ -1543,3 +1543,227 @@
     .country-grid { grid-template-columns: repeat(2, 1fr); }
     .transport-grid { grid-template-columns: 1fr; }
 }
+
+/* ══════════════════════════════════
+   教学系统
+══════════════════════════════════ */
+.tutorial-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    z-index: 5000;
+    align-items: center;
+    justify-content: center;
+}
+.tutorial-overlay.open {
+    display: flex;
+}
+
+/* PC端：左立绘 + 右对话，整体居中 */
+.tutorial-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+    width: 90vw;
+    max-width: 720px;
+    position: relative;
+}
+
+/* 立绘：用 vh 控制高度，保证大小屏都合理 */
+.tutorial-portrait {
+    flex-shrink: 0;
+    height: clamp(240px, 50vh, 420px);
+    width: auto;
+    image-rendering: auto;
+    filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.5));
+    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: bottom center;
+}
+
+/* 说话弹跳 */
+.tutorial-portrait.bounce {
+    animation: tut-bounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes tut-bounce {
+    0%   { transform: translateY(0) scale(1); }
+    35%  { transform: translateY(-8px) scale(1.02, 0.98); }
+    60%  { transform: translateY(2px) scale(0.99, 1.01); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+/* 对话框 */
+.tutorial-dialogue-box {
+    flex: 1;
+    background: var(--bg2);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    min-height: 110px;
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.08);
+    min-width: 0;
+}
+.tutorial-dialogue-box::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.tutorial-speaker {
+    font-size: 0.72rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+.tutorial-text {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.8;
+    min-height: 2.5em;
+}
+.tutorial-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+    align-items: center;
+}
+.tutorial-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold2);
+    padding: 0.4rem 1.2rem;
+    font-family: "Noto Serif SC", serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+}
+.tutorial-btn:hover {
+    background: rgba(201, 168, 76, 0.12);
+    color: var(--gold3);
+}
+.tutorial-btn.skip {
+    border-color: var(--border2);
+    color: var(--text3);
+    font-size: 0.7rem;
+}
+.tutorial-btn.skip:hover {
+    border-color: var(--text3);
+    color: var(--text2);
+}
+.tutorial-step-dots {
+    display: flex;
+    gap: 6px;
+    margin-right: auto;
+}
+.tutorial-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border2);
+    transition: background 0.3s;
+}
+.tutorial-dot.active {
+    background: var(--gold);
+}
+.tutorial-dot.done {
+    background: var(--gold-dim);
+}
+
+/* 问号按钮 */
+.btn-tutorial-help {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    width: 1.6rem;
+    height: 1.6rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-family: "Cinzel", serif;
+    border-radius: 50%;
+    line-height: 1;
+}
+.btn-tutorial-help:hover {
+    background: rgba(201, 168, 76, 0.15);
+    color: var(--gold3);
+}
+
+/* 打字机光标 */
+.tutorial-text .cursor-blink {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--gold);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: cursor-blink 0.8s step-end infinite;
+}
+@keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ── 手机端：立绘在上、对话在下 ── */
+@media (max-width: 640px) {
+    .tutorial-overlay {
+        align-items: flex-end;
+    }
+    .tutorial-container {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        padding: 0 0.8rem;
+    }
+    .tutorial-portrait {
+        height: clamp(160px, 32vh, 260px);
+        margin-bottom: -0.5rem;
+        z-index: 1;
+    }
+    .tutorial-dialogue-box {
+        margin-bottom: 1.2rem;
+        padding: 1rem;
+        width: 100%;
+        min-height: 100px;
+    }
+    .tutorial-text {
+        font-size: 0.82rem;
+    }
+}
+
+/* ── 超小屏 ── */
+@media (max-width: 380px) {
+    .tutorial-portrait { height: clamp(130px, 28vh, 200px); }
+    .tutorial-dialogue-box { padding: 0.8rem; }
+    .tutorial-text { font-size: 0.78rem; }
+}
+
+/* ── 大屏幕 ── */
+@media (min-width: 1440px) {
+    .tutorial-container { max-width: 800px; }
+    .tutorial-portrait { height: clamp(320px, 45vh, 480px); }
+    .tutorial-text { font-size: 0.95rem; }
+}
+@media (min-width: 1920px) {
+    .tutorial-container { max-width: 880px; }
+    .tutorial-portrait { height: clamp(360px, 42vh, 520px); }
+    .tutorial-text { font-size: 1rem; }
+}
+@media (min-width: 2560px) {
+    .tutorial-container { max-width: 960px; }
+    .tutorial-portrait { height: clamp(400px, 40vh, 580px); }
+    .tutorial-dialogue-box { padding: 1.5rem 1.8rem; min-height: 140px; }
+    .tutorial-text { font-size: 1.05rem; }
+}
